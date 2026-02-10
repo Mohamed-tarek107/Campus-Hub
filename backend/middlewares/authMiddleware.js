@@ -44,4 +44,4 @@ const registerLimiter = rateLimit({
 
 
 
-module.exports = { loginLimiter, registerLimiter };
+module.exports = { loginLimiter, registerLimiter, ensureAuthenticated };

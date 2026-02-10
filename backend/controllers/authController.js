@@ -5,7 +5,7 @@ const { validationResult } = require("express-validator");
 
 
 
-const register = async (req,res) => {
+const registerRoute = async (req,res) => {
     const errors = validationResult(req)
     if(!errors.isEmpty()){
         return res.status(400).json({
@@ -54,7 +54,7 @@ const register = async (req,res) => {
     }
 }
 
-const LoginUser = async (req,res) => {
+const LoginRoute = async (req,res) => {
     
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -187,4 +187,31 @@ const refreshRoute = async (req,res) => {
         console.error("Refresh error:", error);
         return res.status(500).json({ message: "Server error" });
     }
+}
+
+const logout = async (req,res) => {
+    try {
+        const refreshToken = req.cookies.refreshToken;
+
+        if(!refreshToken) return res.status(400).json({ message: "No refresh token found" });
+
+        await db.execute( "DELETE FROM refreshtokens WHERE refresh_token = ?",
+            [refreshToken]
+        )
+
+        res.clearCookie("accessToken", { httpOnly: true, secure: false, sameSite: 'strict', path: "/" });
+        res.clearCookie("refreshToken", { httpOnly: true, secure: false, sameSite: 'strict', path: "/"});
+
+        return res.status(200).json({ message: "Logged Out" });
+    } catch (error) {
+        console.error(err);
+        return res.status(500).json({ message: "Server error" });
+    }
+}
+
+module.exports = { 
+    registerRoute,
+    LoginRoute,
+    refreshRoute, 
+    logout
 }
