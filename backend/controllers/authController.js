@@ -2,8 +2,7 @@ const bcrypt = require("bcryptjs");
 const db = require("../db.js");
 const jwt = require("jsonwebtoken");
 const { validationResult } = require("express-validator");
-const crypto = require("crypto");
-const { decode } = require("punycode");
+
 
 
 const register = async (req,res) => {
@@ -39,7 +38,7 @@ const register = async (req,res) => {
     try {
         const [exisitingUser] = await db.execute("SELECT * FROM users WHERE username = ?", [username])
 
-        if(exisitingUser.length) return res.status(400).json({ message: "Email already registered" });
+        if(exisitingUser.length) return res.status(400).json({ message: "username already registered" });
 
 
         const hashedPass = await bcrypt.hash(password, 12)
@@ -72,13 +71,13 @@ const LoginUser = async (req,res) => {
     const refreshTokenSECRET = process.env.JWT_Refresh_SECRET;
 
     try {
-        const [existingUser] = await db.execute("SELECT * FROM users WHERE username = ?", username)
+        const [existingUser] = await db.execute("SELECT * FROM users WHERE username = ?", [username])
 
         if(existingUser.length === 0) return res.status(400).json({ message: "User not registered" });
 
         const user = existingUser[0]
 
-        const isMatch = await bcrypt.compare(password, user.password_hashed)
+        const isMatch = await bcrypt.compare(password, user.hashedPass)
 
         if (!isMatch) return res.status(400).json({ message: "Incorrect password" });
 
@@ -115,7 +114,7 @@ const LoginUser = async (req,res) => {
             secure: true,
             path: "/", // only send to this endpoint ( ALL endpoint)
             sameSite: "strict", // prevent CSRF
-            maxAge: 15 * 60 * 1000  // 7 ayam
+            maxAge: 15 * 60 * 1000 
         })
 
         return res.status(200).json({
@@ -128,24 +127,3 @@ const LoginUser = async (req,res) => {
     }
 }
 
-async function ensureAuthenticated(req,res,next){
-    const accessToken = req.cookies.accessToken
-
-
-    if(!accessToken){
-        console.warn('Access token cookie missing');
-        return res.status(401).json({ message: "Access token not found!" });
-    }
-
-    try {
-        const decodedAccessToken = jwt.verify(
-        accessToken,
-        process.env.JWT_AccessToken_SECRET
-    );
-
-        req.user = {id: decodedAccessToken.id, user_id: decodedAccessToken.id}
-        next()
-    } catch (error) {
-        return res.status(401).json({ message: "access token invalid or expired" });
-    }
-}
