@@ -3,6 +3,7 @@ const db = require("../db.js");
 const jwt = require("jsonwebtoken");
 const { validationResult } = require("express-validator");
 const crypto = require("crypto");
+const { decode } = require("punycode");
 
 
 const register = async (req,res) => {
@@ -75,6 +76,12 @@ const LoginUser = async (req,res) => {
 
         if(existingUser.length === 0) return res.status(400).json({ message: "User not registered" });
 
+        const user = existingUser[0]
+
+        const isMatch = await bcrypt.compare(password, user.password_hashed)
+
+        if (!isMatch) return res.status(400).json({ message: "Incorrect password" });
+
         const userId = user.id
 
         const accessToken = jwt.sign({id: userId }, accessTokenSECRET, {
@@ -121,3 +128,24 @@ const LoginUser = async (req,res) => {
     }
 }
 
+async function ensureAuthenticated(req,res,next){
+    const accessToken = req.cookies.accessToken
+
+
+    if(!accessToken){
+        console.warn('Access token cookie missing');
+        return res.status(401).json({ message: "Access token not found!" });
+    }
+
+    try {
+        const decodedAccessToken = jwt.verify(
+        accessToken,
+        process.env.JWT_AccessToken_SECRET
+    );
+
+        req.user = {id: decodedAccessToken.id, user_id: decodedAccessToken.id}
+        next()
+    } catch (error) {
+        return res.status(401).json({ message: "access token invalid or expired" });
+    }
+}
