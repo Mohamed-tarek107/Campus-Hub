@@ -127,3 +127,64 @@ const LoginUser = async (req,res) => {
     }
 }
 
+const refreshRoute = async (req,res) => {
+    const refreshtoken = req.cookies.refreshToken
+    
+
+    if(!refreshtoken) return res.status(401).json({ message: "No Refreshtokens" });
+    try {
+        const [rows] = await db.execute(
+            "SELECT * FROM refreshtokens WHERE refresh_token = ?",[refreshtoken]
+        )
+
+        if(rows.length === 0) return res.status(403).json({ message: "invalid refresh token" })
+
+        jwt.verify(
+            refreshtoken,
+            process.env.JWT_Refresh_SECRET,
+            async(err, decoded) => {
+                if(err) return res.status(403).json({ message: "Expired refresh token" });
+
+                const newAccessToken = jwt.sign(
+                        { id: decoded.id }, 
+                        accessTokenSECRET,
+                        { subject: "accessToken", expiresIn: "15m" }
+                    );
+                const newRefreshToken = jwt.sign(
+                        { id: decoded.id }, 
+                        process.env.JWT_Refresh_SECRET,
+                        { subject: "RefreshToken", expiresIn: "7d" }
+                    );
+
+                // Remove old refresh token used
+                    await db.execute("DELETE FROM refreshtokens WHERE user_id = ?", [rows[0].user_id]);
+
+                // Insert new refresh token
+                    await db.execute(
+                        "INSERT INTO refreshtokens (user_id, refresh_token, ip_address) VALUES (?,?,?)",
+                        [decoded.id, newRefreshToken, req.ip]
+                    );
+                //  Update cookie
+                    res.cookie("accessToken", newAccessToken, {
+                        httpOnly: true,
+                        secure: false, //true in prod
+                        path: "/",
+                        sameSite: "strict",
+                        maxAge: 15 * 60 * 1000
+                    });
+
+                    res.cookie("refreshToken", newRefreshToken, {
+                        httpOnly: true,
+                        secure: false, //true in prod
+                        path: "/",
+                        sameSite: "strict",
+                        maxAge: 7 * 24 * 60 * 60 * 1000
+                    });
+        res.json({ message: "Refreshed Token"})
+    
+        })
+    } catch (error) {
+        console.error("Refresh error:", error);
+        return res.status(500).json({ message: "Server error" });
+    }
+}
