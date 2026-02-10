@@ -64,4 +64,60 @@ const LoginUser = async (req,res) => {
         });
     }
 
+    const {username, password} = req.body
+
+
+    const accessTokenSECRET = process.env.JWT_AccessToken_SECRET;
+    const refreshTokenSECRET = process.env.JWT_Refresh_SECRET;
+
+    try {
+        const [existingUser] = await db.execute("SELECT * FROM users WHERE username = ?", username)
+
+        if(existingUser.length === 0) return res.status(400).json({ message: "User not registered" });
+
+        const userId = user.id
+
+        const accessToken = jwt.sign({id: userId }, accessTokenSECRET, {
+            subject: "RefreshToken",
+            expiresIn: "15m"
+        })
+
+        const refreshToken = jwt.sign({ id: userId }, refreshTokenSECRET, {
+            subject: "accessToken",
+            expiresIn: "7d"
+        })
+
+
+        await db.execute("DELETE FROM refreshtokens WHERE user_id = ?",
+            [existingUser[0].id]
+        )
+        await db.execute("INSERT INTO refreshtokens ( user_id, refresh_tokens, ip_address ) VALUES (?, ?, ?)", 
+            [userId, refreshToken, req.ip]
+        )
+
+        res.cookie("refreshtoken", refreshToken, {
+            httpOnly: true, //not accessible in js
+            secure: true,
+            path: "/", // only send to this endpoint ( ALL endpoint)
+            sameSite: "strict", // prevent CSRF
+            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 ayam
+        })
+
+        res.cookie("accessToken", accessToken,{
+            httpOnly: true, //not accessible in js
+            secure: true,
+            path: "/", // only send to this endpoint ( ALL endpoint)
+            sameSite: "strict", // prevent CSRF
+            maxAge: 15 * 60 * 1000  // 7 ayam
+        })
+
+        return res.status(200).json({
+            id: userId,
+            message: "User Logged in successfully"
+        })
+    } catch (error) {
+        console.error("Error Logging user:", error.message);
+            return res.status(500).json({ message: "Server error" });
+    }
 }
+
