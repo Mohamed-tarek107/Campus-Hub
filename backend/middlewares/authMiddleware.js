@@ -3,6 +3,10 @@ const db = require("../db.js");
 const jwt = require("jsonwebtoken");
 const rateLimit = require("express-rate-limit");
 
+
+//MiddleWares
+
+//All endpoints students/admins
 async function ensureAuthenticated(req,res,next){
     const accessToken = req.cookies.accessToken
 
@@ -18,13 +22,23 @@ async function ensureAuthenticated(req,res,next){
         process.env.JWT_AccessToken_SECRET
     );
 
-        req.user = {id: decodedAccessToken.id, user_id: decodedAccessToken.id}
+        req.user = {id: decodedAccessToken.id, user_id: decodedAccessToken.id, role: decodedAccessToken.role}
         next()
     } catch (error) {
         return res.status(401).json({ message: "access token invalid or expired" });
     }
 }
 
+//admin enpoints Only
+const requireAdmin = async (req,res,next) => {
+    if (req.user.role !== "admin") {
+        return res.status(403).json({ message: "Admins only" });
+}
+    next();
+}
+
+
+// Limiters
 const loginLimiter = rateLimit({
     windowsMs: 15* 60 * 1000, //15 min
     max: 5,
@@ -44,4 +58,4 @@ const registerLimiter = rateLimit({
 
 
 
-module.exports = { loginLimiter, registerLimiter, ensureAuthenticated };
+module.exports = { loginLimiter, registerLimiter, ensureAuthenticated, requireAdmin };

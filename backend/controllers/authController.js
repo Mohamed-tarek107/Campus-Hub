@@ -81,14 +81,16 @@ const LoginRoute = async (req,res) => {
 
         if (!isMatch) return res.status(400).json({ message: "Incorrect password" });
 
-        const userId = user.id
+        let UserRole = user.role;
+        const userId = user.id;
+        const payload = { id: userId, role: UserRole}
 
-        const accessToken = jwt.sign({id: userId }, accessTokenSECRET, {
+        const accessToken = jwt.sign(payload, accessTokenSECRET, {
             subject: "RefreshToken",
             expiresIn: "15m"
         })
 
-        const refreshToken = jwt.sign({ id: userId }, refreshTokenSECRET, {
+        const refreshToken = jwt.sign(payload, refreshTokenSECRET, {
             subject: "accessToken",
             expiresIn: "7d"
         })
@@ -104,7 +106,7 @@ const LoginRoute = async (req,res) => {
         res.cookie("refreshtoken", refreshToken, {
             httpOnly: true, //not accessible in js
             secure: true,
-            path: "/", // only send to this endpoint ( ALL endpoint)
+            path: "/", // ALL endpoint
             sameSite: "strict", // prevent CSRF
             maxAge: 7 * 24 * 60 * 60 * 1000 // 7 ayam
         })
@@ -112,14 +114,17 @@ const LoginRoute = async (req,res) => {
         res.cookie("accessToken", accessToken,{
             httpOnly: true, //not accessible in js
             secure: true,
-            path: "/", // only send to this endpoint ( ALL endpoint)
+            path: "/", // ALL endpoint
             sameSite: "strict", // prevent CSRF
             maxAge: 15 * 60 * 1000 
         })
-
+        
+        
         return res.status(200).json({
-            id: userId,
-            message: "User Logged in successfully"
+            message: "User Logged in successfully",
+            user: { 
+                id: userId,
+                role: UserRole}
         })
     } catch (error) {
         console.error("Error Logging user:", error.message);
