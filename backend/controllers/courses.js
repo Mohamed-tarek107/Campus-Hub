@@ -1,5 +1,13 @@
 const db = require("../db.js");
-// need transaction
+
+//----------Expected REQ BODY-------
+// {
+//   "selections": [
+//     { "course_id": 1, "doctor_name": "Ahmed Ali" },
+//     { "course_id": 2, "doctor_name": "Sara Hassan" }
+//   ]
+// }
+// ***** Need transaction(begin -> commit(before return success) -> rollback(if error)  + no returns just throws new error with message to the catch)
 const AssignDoctors = async (req,res) => {
     const conn = await db.getConnection()
 
@@ -58,13 +66,6 @@ const AssignDoctors = async (req,res) => {
         conn.release();
         }
     }
-//----------Expected REQ BODY-------
-// {
-//   "selections": [
-//     { "course_id": 1, "doctor_name": "Ahmed Ali" },
-//     { "course_id": 2, "doctor_name": "Sara Hassan" }
-//   ]
-// }
 
 
 
