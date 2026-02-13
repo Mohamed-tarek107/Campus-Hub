@@ -122,8 +122,27 @@ const addCourse = async (req,res) => {
 
 }
 
+const listAllcourses = async (req,res) => {
+    try {
+        const user_id = req.user.id
+    const [user] = await db.execute("SELECT role FROM users WHERE id = ?", [user_id])
+        if (user.length === 0) throw new Error("USER_NOT_FOUND");
+        if (user[0].role !== 'admin') throw new Error("FORBIDDEN");
+
+    const [courses] = await db.execute("SELECT * FROM courses")
+    if(courses.length == 0) return res.status(404).json({ message: "No Courses Added :(" })
+    
+        res.status(200).json({ courses })
+    } catch (error) {
+        console.error("ListAllCourses error:", error.message);
+        res.status(500).json({ message: "Server error" });
+    }
+    
+}
+
 
 module.exports = {
     addDoctor,
-    addCourse
+    addCourse,
+    listAllcourses
 }
