@@ -47,7 +47,11 @@ const addDoctor = async (req,res) => {
         );
 
         await conn.commit();
-        res.status(201).json({ message: "Doctor added to course" });
+        res.status(201).json({ 
+            message: "Doctor added to course",
+            doctor_id,
+            course_id
+        });
 
     } catch (error) {
         await conn.rollback();
@@ -64,16 +68,62 @@ const addDoctor = async (req,res) => {
     if (error.message === "ALREADY_ASSIGNED")
         return res.status(400).json({ message: "Doctor already assigned to this course" });
 
-        console.error("AssignDoctors error:", error.message);
-        res.status(400).json({ message: "Server error" });    
     } finally {
         conn.release();
     }
 }
 
+const addCourse = async (req,res) => {
+    const user_id = req.user.id
+    const conn = await db.getConnection()
+    //check admin
+    try {
+        await conn.beginTransaction()
+    const [user] = await conn.execute("SELECT role FROM users WHERE id = ?", [user_id])
+        if (user.length === 0) throw new Error("USER_NOT_FOUND");
+        if (user[0].role !== 'admin') throw new Error("FORBIDDEN");
 
+    //validate input
+    const { course_name, department, year } = req.body
+    if( !course_name || !department || !year) throw new Error("Missing_Inputs")
+    
+    //check if existed
+    const [courses] = await conn.execute("SELECT course_name FROM courses WHERE course_name = ? AND department = ? AND year = ?",
+        [course_name, department, year]
+    )
+    if(courses.length > 0) throw new Error("Course_alreadyExist")
+    
+    await conn.execute("INSERT INTO courses (course_name, department, year) VALUES (?, ?, ?)", [course_name, department, year])
+
+
+    await conn.commit();
+    res.status(201).json({ message: "Course Added Successfully" });
+
+    } catch (error) {
+    await conn.rollback()
+    if (error.message === "USER_NOT_FOUND")
+        return res.status(404).json({ message: "User not found" });
+    if (error.message === "FORBIDDEN")
+        return res.status(403).json({ message: "Admin only" });
+
+    if (error.message === "Missing_Inputs")
+        return res.status(400).json({ message: "Missing Inputs" });
+
+    if (error.message === "Course_alreadyExist")
+        return res.status(400).json({ message: "Course already exist" })
+
+        console.error("AssignDoctors error:", error.message);
+        res.status(400).json({ message: "Server error" });  
+    } finally {
+        conn.release();
+    }
+    
+    
+
+}
 
 
 module.exports = {
     addDoctor,
+    addCourse
 }
