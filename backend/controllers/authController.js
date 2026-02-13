@@ -43,10 +43,10 @@ const registerRoute = async (req,res) => {
 
         const hashedPass = await bcrypt.hash(password, 12)
 
-        await db.execute(`INSERT INTO users ( username, phone_number, hashedPass, department, year) VALUES(?, ?, ?, ?, ?)`,
-            [username, phone_number, hashedPass, department, year]
+        await db.execute(`INSERT INTO users ( username, phone_number, hashedPass, department, year, is_firstlogin) VALUES(?, ?, ?, ?, ?, ?)`,
+            [username, phone_number, hashedPass, department, year, true]
         )
-
+        
         return res.status(201).json({ message: "User registered successfully" })
     } catch (error) {
         console.error("Register error:", error);
@@ -83,6 +83,7 @@ const LoginRoute = async (req,res) => {
 
         let UserRole = user.role;
         const userId = user.id;
+
         const payload = { id: userId, role: UserRole}
 
         const accessToken = jwt.sign(payload, accessTokenSECRET, {
@@ -119,12 +120,14 @@ const LoginRoute = async (req,res) => {
             maxAge: 15 * 60 * 1000 
         })
         
-        
+
         return res.status(200).json({
             message: "User Logged in successfully",
             user: { 
                 id: userId,
-                role: UserRole}
+                role: UserRole,
+                is_firstlogin: user.is_firstlogin
+            }
         })
     } catch (error) {
         console.error("Error Logging user:", error.message);
