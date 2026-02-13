@@ -124,10 +124,10 @@ const addCourse = async (req,res) => {
 
 const listAllcourses = async (req,res) => {
     try {
-        const user_id = req.user.id
+    const user_id = req.user.id
     const [user] = await db.execute("SELECT role FROM users WHERE id = ?", [user_id])
-        if (user.length === 0) throw new Error("USER_NOT_FOUND");
-        if (user[0].role !== 'admin') throw new Error("FORBIDDEN");
+        if (user.length === 0) return res.status(404).json({ message: "User not found" });
+        if (user[0].role !== 'admin') return res.status(403).json({ message: "Admin only" });
 
     const [courses] = await db.execute("SELECT * FROM courses")
     if(courses.length == 0) return res.status(404).json({ message: "No Courses Added :(" })
