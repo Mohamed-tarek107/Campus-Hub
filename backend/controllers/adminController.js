@@ -288,6 +288,39 @@ const listAllAnnounces = async (req,res) => {
     }
 }
 
+const deleteEvent = async (req,res) => {
+    const user_id = req.user.id
+    try {
+        const [user] = await db.execute("SELECT role FROM users WHERE id = ?", [user_id]);
+        if (user.length === 0) return res.status(404).json({ message: "User not found" });
+        if (user[0].role !== 'admin') return res.status(403).json({ message: "Admin only" });
+
+        const event_id = req.params
+        await db.execute("DELETE FROM events WHERE id = ?", [event_id])
+        
+        res.status(201).json({ message: "Event Deleted successfully" });
+    } catch (error) {
+        console.error("deleteEvent error:", error.message);
+        res.status(500).json({ message: "Server error" });
+    }
+}
+
+const deleteAnnouncment = async (req,res) => {
+    const user_id = req.user.id
+    try {
+        const [user] = await db.execute("SELECT role FROM users WHERE id = ?", [user_id]);
+        if (user.length === 0) return res.status(404).json({ message: "User not found" });
+        if (user[0].role !== 'admin') return res.status(403).json({ message: "Admin only" });
+
+        const announcment_id = req.params
+        await db.execute("DELETE FROM announcments WHERE id = ?", [announcment_id])
+        
+        res.status(201).json({ message: "announcment Deleted successfully" });
+    } catch (error) {
+        console.error("deleteannouncment error:", error.message);
+        res.status(500).json({ message: "Server error" });
+    }
+}
 module.exports = {
     addDoctor,
     addCourse,
@@ -297,5 +330,7 @@ module.exports = {
     addEvent,
     listAllEvents,
     addAnnouncment,
-    listAllAnnounces
+    listAllAnnounces,
+    deleteAnnouncment,
+    deleteEvent
 }

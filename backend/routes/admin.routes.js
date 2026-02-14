@@ -9,6 +9,8 @@ const {
     listAllEvents,
     addAnnouncment,
     listAllAnnounces,
+    deleteAnnouncment,
+    deleteEvent,
 } = require("../controllers/adminController.js");
 const { ensureAuthenticated, requireAdmin } = require("../middlewares/authMiddleware")
 const router = express.Router();
@@ -30,3 +32,6 @@ router.post("/addEvent",ensureAuthenticated, requireAdmin, addEvent)
 router.get("/listAllAnnounces", ensureAuthenticated, requireAdmin, listAllAnnounces)
 
 router.post("/addAnnouncment", ensureAuthenticated, requireAdmin, addAnnouncment)
+
+router.delete("/deleteEvent/:event_id", ensureAuthenticated, requireAdmin, deleteEvent)
+router.delete("/deleteEvent/:announcment_id", ensureAuthenticated, requireAdmin, deleteAnnouncment)
