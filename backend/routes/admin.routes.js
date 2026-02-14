@@ -6,7 +6,8 @@ const {
     courseDoctors,
     addAssignment,
     addEvent,
-    listAllEvents
+    listAllEvents,
+    addAnnouncment,
 } = require("../controllers/adminController.js");
 const { ensureAuthenticated, requireAdmin } = require("../middlewares/authMiddleware")
 const router = express.Router();
@@ -24,3 +25,5 @@ router.post("/coursedoctor/:coursedoctor_id/tasks", ensureAuthenticated, require
 router.get("/listAllEvents", ensureAuthenticated, requireAdmin,listAllEvents)
 
 router.post("/addEvent",ensureAuthenticated, requireAdmin, addEvent)
+
+router.post("/addAnnouncment", ensureAuthenticated, requireAdmin, addAnnouncment)
