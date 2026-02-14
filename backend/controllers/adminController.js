@@ -232,6 +232,24 @@ const addEvent = async (req,res) => {
     }
 }
 
+const listAllEvents = async (req,res) => {
+    try {
+    const user_id = req.user.id
+    const [user] = await db.execute("SELECT role FROM users WHERE id = ?", [user_id])
+        if (user.length === 0) return res.status(404).json({ message: "User not found" });
+        if (user[0].role !== 'admin') return res.status(403).json({ message: "Admin only" });
+
+    const [events] = await db.execute("SELECT * FROM events")
+    if(events.length == 0) return res.status(404).json({ message: "No Events Added :(" })
+    
+        res.status(200).json({ events })
+    } catch (error) {
+        console.error("ListAllEvents error:", error.message);
+        res.status(500).json({ message: "Server error" });
+    }
+}
+
+
 
 module.exports = {
     addDoctor,
@@ -239,5 +257,6 @@ module.exports = {
     listAllcourses,
     courseDoctors,
     addAssignment,
-    addEvent
+    addEvent,
+    listAllEvents
 }
