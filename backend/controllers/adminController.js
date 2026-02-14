@@ -210,10 +210,34 @@ const addAssignment = async (req,res) => {
 
 }
 
+const addEvent = async (req,res) => {
+    const user_id = req.user.id
+    try {
+        const [user] = await db.execute("SELECT role FROM users WHERE id = ?", [user_id]);
+        if (user.length === 0) return res.status(404).json({ message: "User not found" });
+        if (user[0].role !== 'admin') return res.status(403).json({ message: "Admin only" });
+
+
+        const { title, description, location, host, date } = req.body;
+        if(!title || !description || !location || !host || !date) return res.status(400).json({ message: "Missing input" });
+
+        await db.execute("INSERT INTO events (title, description, location, host, date) VALUES (?, ?, ?, ?, ?)",
+            [title,description,location,host,date]
+        )
+        
+        res.status(201).json({ message: "Event created successfully" });
+    } catch (error) {
+        console.error("addEvent error:", error.message);
+        res.status(500).json({ message: "Server error" });
+    }
+}
+
+
 module.exports = {
     addDoctor,
     addCourse,
     listAllcourses,
     courseDoctors,
-    addAssignment
+    addAssignment,
+    addEvent
 }
