@@ -257,8 +257,8 @@ const addAnnouncment = async (req,res) => {
         if (user[0].role !== 'admin') return res.status(403).json({ message: "Admin only" });
 
 
-        const { title, description, location, source, date } = req.body;
-        if(!title || !description || !location || !source || !date) return res.status(400).json({ message: "Missing input" });
+        const { title, description, source, date } = req.body;
+        if(!title || !description || !source || !date) return res.status(400).json({ message: "Missing input" });
 
         await db.execute("INSERT INTO events (title, description, source, date) VALUES (?, ?, ?, ?)",
             [title,description,source,date]
