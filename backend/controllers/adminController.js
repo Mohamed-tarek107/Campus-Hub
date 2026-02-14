@@ -140,9 +140,33 @@ const listAllcourses = async (req,res) => {
     
 }
 
+const courseDoctors = async (req,res) => {
+    const user_id = req.user.id
+    const  { course_id } = req.params
+    try {
+        const [user] = await db.execute("SELECT role FROM users WHERE id = ?", [user_id])
+        if (user.length === 0) return res.status(404).json({ message: "User not found" });
+        if (user[0].role !== 'admin') return res.status(403).json({ message: "Admin only" });
+
+        const [doctors] = await db.execute(`
+            SELECT d.id, d.name
+            FROM coursedoctors cd
+            JOIN doctors d ON cd.doctors_id = d.id
+            WHERE cd.course_id = ?`,
+            [course_id]
+        )
+        if(doctors.length == 0) return res.status(404).json({ message: "No doctors are assigned to this course yet"})
+            res.status(200).json({ doctors })
+    } catch (error) {
+        console.error("courseDoctors error:", error.message);
+        res.status(500).json({ message: "Server error" });
+    }
+}
+
 
 module.exports = {
     addDoctor,
     addCourse,
-    listAllcourses
+    listAllcourses,
+    courseDoctors
 }

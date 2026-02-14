@@ -1,9 +1,18 @@
 const express = require("express");
-const { addDoctors, addCourse, listAllcourses } = require("../controllers/adminController.js");
+const {
+    addDoctor,
+    addCourse,
+    listAllcourses,
+    courseDoctors,
+
+} = require("../controllers/adminController.js");
 const { ensureAuthenticated, requireAdmin } = require("../middlewares/authMiddleware")
 const router = express.Router();
 
-
-router.post("/addDoctor", ensureAuthenticated, requireAdmin, addDoctors)
 router.post("/addCourse", ensureAuthenticated, requireAdmin, addCourse)
-router.get("listAllCourses", ensureAuthenticated, requireAdmin, listAllcourses)
+
+router.get("/courses", ensureAuthenticated, requireAdmin, listAllcourses)
+
+router.post("/addDoctor", ensureAuthenticated, requireAdmin, addDoctor)
+
+router.get("/courses/:course_id/doctors", ensureAuthenticated, requireAdmin, courseDoctors)
