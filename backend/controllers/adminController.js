@@ -53,19 +53,13 @@ const addDoctor = async (req, res) => {
     } catch (error) {
         await conn.rollback();
 
-        if (error.message === "USER_NOT_FOUND")
-            return res.status(404).json({ message: "User not found" });
-
-        if (error.message === "FORBIDDEN")
-            return res.status(403).json({ message: "Admin only" });
-
         if (error.message === "COURSE_NOT_FOUND")
             return res.status(404).json({ message: "Course not found" });
 
         if (error.message === "ALREADY_ASSIGNED")
-            return res
-                .status(400)
-                .json({ message: "Doctor already assigned to this course" });
+            return res.status(400).json({ message: "Doctor already assigned to this course" });
+        console.error("addDoctor error:", error.message);
+        return res.status(500).json({ message: "Server error" });
     } finally {
         conn.release();
     }
@@ -161,7 +155,6 @@ const addAssignment = async (req, res) => {
     const conn = await db.getConnection();
     try {
         await conn.beginTransaction();
-
         //input
         const { title, deadline, type, details } = req.body;
         if (!title || !deadline || !type || !details)
@@ -181,12 +174,24 @@ const addAssignment = async (req, res) => {
             "INSERT INTO tasks (coursedoctor_id, type, details, title, deadline) VALUES (?, ?, ?, ?, ?)",
             [coursedoctor_id, type, details, title, deadline],
         );
-        conn.commit();
-        res.status(200).json({ message: "Task created successfully" });
+        await conn.commit();
+        res.status(201).json({ message: "Task created successfully" });
     } catch (error) {
-        await conn.rollback();
-        console.error("courseDoctors error:", error.message);
-        res.status(500).json({ message: "Server error" });
+    await conn.rollback();
+
+    if (error.message === "Missing_Input")
+        return res.status(400).json({ message: "Missing input" });
+
+    if (error.message === "Invalid_task_type")
+        return res.status(400).json({ message: "Invalid task type" });
+
+    if (error.message === "COURSE_DOCTOR_NOT_FOUND")
+        return res.status(404).json({ message: "Course doctor not found" });
+
+    console.error("addAssignment error:", error.message);
+    return res.status(500).json({ message: "Server error" });
+    } finally {
+        conn.release();
     }
 };
 
@@ -221,57 +226,60 @@ const listAllEvents = async (req, res) => {
     }
 };
 
-const addAnnouncment = async (req, res) => {
+const addAnnouncement = async (req, res) => {
     try {
         const { title, description, source, date } = req.body;
         if (!title || !description || !source || !date)
             return res.status(400).json({ message: "Missing input" });
 
         await db.execute(
-            "INSERT INTO events (title, description, source, date) VALUES (?, ?, ?, ?)",
+            "INSERT INTO announcements (title, description, source, date) VALUES (?, ?, ?, ?)",
             [title, description, source, date],
         );
 
-        res.status(201).json({ message: "Announcment created successfully" });
+        res.status(201).json({ message: "Announcement created successfully" });
     } catch (error) {
         console.error("addAnnouncment error:", error.message);
         res.status(500).json({ message: "Server error" });
     }
 };
 
-const listAllAnnounces = async (req, res) => {
+const listAllAnnouncements = async (req, res) => {
     try {
-        const [announces] = await db.execute("SELECT * FROM announcments");
-        if (announces.length == 0)
-            return res.status(404).json({ message: "No announcments Added :(" });
+        const [announcements] = await db.execute("SELECT * FROM announcements");
+        if (announcements.length == 0)
+            return res.status(404).json({ message: "No announcements Added :(" });
 
-        res.status(200).json({ announces });
+        res.status(200).json({ announcements });
     } catch (error) {
-        console.error("ListAllannounces error:", error.message);
+        console.error("ListAllAnnouncements error:", error.message);
         res.status(500).json({ message: "Server error" });
     }
 };
 
 const deleteEvent = async (req, res) => {
     try {
-        const event_id = req.params;
-        await db.execute("DELETE FROM events WHERE id = ?", [event_id]);
+        const { event_id } = req.params;
+        const [result] = await db.execute("DELETE FROM events WHERE id = ?", [event_id]);
 
-        res.status(201).json({ message: "Event Deleted successfully" });
+        if (result.affectedRows === 0) return res.status(404).json({ message: "Event not found" });
+
+        res.status(200).json({ message: "Event Deleted successfully" });
     } catch (error) {
         console.error("deleteEvent error:", error.message);
         res.status(500).json({ message: "Server error" });
     }
 };
 
-const deleteAnnouncment = async (req, res) => {
+const deleteAnnouncement = async (req, res) => {
     try {
-        const announcment_id = req.params;
-        await db.execute("DELETE FROM announcments WHERE id = ?", [announcment_id]);
+        const { announcement_id } = req.params;
+        const [result] = await db.execute("DELETE FROM announcements WHERE id = ?", [announcement_id]);
+        if (result.affectedRows === 0) return res.status(404).json({ message: "Announcement not found" });
 
-        res.status(201).json({ message: "announcment Deleted successfully" });
+        res.status(200).json({ message: "announcement Deleted successfully" });
     } catch (error) {
-        console.error("deleteannouncment error:", error.message);
+        console.error("deleteannouncement error:", error.message);
         res.status(500).json({ message: "Server error" });
     }
 };
@@ -283,8 +291,8 @@ module.exports = {
     addAssignment,
     addEvent,
     listAllEvents,
-    addAnnouncment,
-    listAllAnnounces,
-    deleteAnnouncment,
+    addAnnouncement,
+    listAllAnnouncements,
+    deleteAnnouncement,
     deleteEvent,
 };

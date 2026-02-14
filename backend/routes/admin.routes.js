@@ -7,9 +7,9 @@ const {
     addAssignment,
     addEvent,
     listAllEvents,
-    addAnnouncment,
-    listAllAnnounces,
-    deleteAnnouncment,
+    addAnnouncement,
+    listAllAnnouncements,
+    deleteAnnouncement,
     deleteEvent,
 } = require("../controllers/adminController.js");
 const { ensureAuthenticated, requireAdmin } = require("../middlewares/authMiddleware")
@@ -29,9 +29,10 @@ router.get("/listAllEvents", ensureAuthenticated, requireAdmin,listAllEvents)
 
 router.post("/addEvent",ensureAuthenticated, requireAdmin, addEvent)
 
-router.get("/listAllAnnounces", ensureAuthenticated, requireAdmin, listAllAnnounces)
+router.get("/listAllAnnounces", ensureAuthenticated, requireAdmin, listAllAnnouncements)
 
-router.post("/addAnnouncment", ensureAuthenticated, requireAdmin, addAnnouncment)
+router.post("/addAnnouncment", ensureAuthenticated, requireAdmin, addAnnouncement)
 
-router.delete("/deleteEvent/:event_id", ensureAuthenticated, requireAdmin, deleteEvent)
-router.delete("/deleteEvent/:announcment_id", ensureAuthenticated, requireAdmin, deleteAnnouncment)
+
+router.delete("/events/:event_id", ensureAuthenticated, requireAdmin, deleteEvent)
+router.delete("/announcements/:announcement_id", ensureAuthenticated, requireAdmin, deleteAnnouncement)
