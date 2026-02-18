@@ -1,3 +1,4 @@
+const { use } = require("react");
 const db = require("../db.js");
 
 //----------Expected REQ BODY-------
@@ -67,10 +68,63 @@ const AssignDoctors = async (req,res) => {
         }
     }
 
+// GET REQUESTS: view all assagined COURSES and thier doctor -- view all assignments related to doctor (all and done only and not done only)
+const viewAllstudent_courses = async (req,res) => {
+    const user_id = req.user.id
+    try {
+        const [courses] = await db.execute(`
+            SELECT c.*
+            FROM studentcourses sc
+            JOIN courses c ON sc.course_id = c.id
+            JOIN users u ON u.id = sc.student_id
+            WHERE sc.student_id = ?
+                AND c.department = u.department
+                AND c.year = u.year
+        `, [user_id]);
 
+        if (courses.length === 0) return res.status(404).json({ message: "No Courses Available for you :(" });
 
+        return res.status(200).json({ courses });
 
+    } catch (error) {
+        console.error("viewAllStudentCourses error:", error.message);
+        return res.status(500).json({ message: "Server error" });
+    }
+};
+
+const viewAllstudent_doctors = async (req,res) => {
+    const user_id = req.user.id
+    try {
+        const [doctors] = await db.execute(`
+            SELECT d.* 
+            FROM studentdoctors sd
+            JOIN coursedoctors cd ON sc.course_id = cd.course_id
+            JOIN doctors d ON cd.doctor_id = d.id
+            WHERE sc.student_id = ?
+        `, [user_id]);
+
+        if (doctors.length === 0) return res.status(404).json({ message: "No Courses Available for you :(" });
+
+        return res.status(200).json({ doctors });
+
+    } catch (error) {
+        console.error("viewAllStudent_doctors error:", error.message);
+        return res.status(500).json({ message: "Server error" });
+    }
+}
+
+const viewAllstudent_tasks = async (req,res) => {
+    const user_id = req.user.id;
+    try {
+        
+    } catch (error) {
+        
+    }
+}
 
 module.exports = { 
     AssignDoctors,
+    viewAllstudent_courses,
+    viewAllstudent_doctors,
+    viewAllstudent_tasks
 }
