@@ -5,14 +5,16 @@ const cookieParser = require("cookie-parser");
 const helmet = require("helmet");
 
 const app = express();
+
 app.use(helmet());
 app.use(cookieParser());
+app.use(express.json());
 
-const allowedOrigins = process.env.ALLOWED_ORIGINS 
+const allowedOrigins = process.env.ALLOWED_ORIGINS
     ? process.env.ALLOWED_ORIGINS.split(',')
     : ["http://localhost:4200"];
 
-pp.use(cors({
+app.use(cors({
     origin: function (origin, callback) {
         if (!origin) return callback(null, true);
         if (allowedOrigins.indexOf(origin) !== -1) {
@@ -22,15 +24,30 @@ pp.use(cors({
         }
     },
     credentials: true,
-    methods: ["GET", "POST","PUT","DELETE","PATCH"],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
-app.use(express.json());
+// Routes
+const authRoutes = require("./routes/auth.routes.js");
+const adminRoutes = require("./routes/admin.routes.js");
+const studentRoutes = require("./routes/students.routes.js");
+
 app.get("/", (req, res) => res.send("Server is running..."));
+app.use("/api/auth", authRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/api/student", studentRoutes);
 
+// 404
+app.use((req, res) => {
+    res.status(404).json({ message: "Route not found" });
+});
 
-
+// Global error handler
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ message: "Something went wrong" });
+});
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
