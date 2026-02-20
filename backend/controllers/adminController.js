@@ -1,117 +1,107 @@
 const db = require("../db.js");
 
 const addDoctor = async (req, res) => {
-    const conn = await db.getConnection();
+    const client = await db.connect();
     try {
-        await conn.beginTransaction();
-        //validate input
+        await client.query('BEGIN');
+
         const { course_id, doctor_name } = req.body;
         if (!course_id || !doctor_name) throw new Error("MISSING_DATA");
-        //ensure course exist
-        const [courses] = await conn.execute(
-            "SELECT id FROM courses WHERE id = ?",
-            [course_id],
-        );
 
+        const { rows: courses } = await client.query(
+            "SELECT id FROM courses WHERE id = $1",
+            [course_id]
+        );
         if (courses.length == 0) throw new Error("COURSE_NOT_FOUND");
-        //insert doctor if not existed
-        let [doctors] = await conn.execute(
-            "SELECT id FROM doctors WHERE name = ?",
-            [doctor_name],
+
+        let { rows: doctors } = await client.query(
+            "SELECT id FROM doctors WHERE name = $1",
+            [doctor_name]
         );
 
         if (doctors.length === 0) {
-            await conn.execute("INSERT INTO doctors (name) VALUES (?)", [
-                doctor_name,
-            ]);
-            [doctors] = await conn.execute("SELECT id FROM doctors WHERE name = ?", [
-                doctor_name,
-            ]);
+            await client.query(
+                "INSERT INTO doctors (name) VALUES ($1)",
+                [doctor_name]
+            );
+            const { rows: newDoctor } = await client.query(
+                "SELECT id FROM doctors WHERE name = $1",
+                [doctor_name]
+            );
+            doctors = newDoctor;
         }
 
         const doctor_id = doctors[0].id;
 
-        // prevent dublicates
-        const [exists] = await conn.execute(
-            "SELECT 1 FROM coursedoctors WHERE course_id = ? AND doctor_id = ?",
-            [course_id, doctor_id],
+        const { rows: exists } = await client.query(
+            "SELECT 1 FROM coursedoctors WHERE course_id = $1 AND doctor_id = $2",
+            [course_id, doctor_id]
         );
         if (exists.length > 0) throw new Error("ALREADY_ASSIGNED");
 
-        //link doctors to courses
-        await conn.execute(
-            "INSERT INTO coursedoctors (course_id, doctor_id) VALUES (?,?) ",
-            [course_id, doctor_id],
+        await client.query(
+            "INSERT INTO coursedoctors (course_id, doctor_id) VALUES ($1, $2)",
+            [course_id, doctor_id]
         );
 
-        await conn.commit();
-        res.status(201).json({
-            message: "Doctor added to course",
-            doctor_id,
-            course_id,
-        });
-    } catch (error) {
-        await conn.rollback();
+        await client.query('COMMIT');
+        res.status(201).json({ message: "Doctor added to course", doctor_id, course_id });
 
+    } catch (error) {
+        await client.query('ROLLBACK');
         if (error.message === "COURSE_NOT_FOUND")
             return res.status(404).json({ message: "Course not found" });
-
         if (error.message === "ALREADY_ASSIGNED")
             return res.status(400).json({ message: "Doctor already assigned to this course" });
         console.error("addDoctor error:", error.message);
         return res.status(500).json({ message: "Server error" });
     } finally {
-        conn.release();
+        client.release();
     }
 };
 
 const addCourse = async (req, res) => {
-    const conn = await db.getConnection();
-
+    const client = await db.connect();
     try {
-        await conn.beginTransaction();
+        await client.query('BEGIN');
 
-        //validate input
         const { course_name, department, year } = req.body;
         if (!course_name || !department || !year) throw new Error("Missing_Inputs");
 
-        //check if existed
-        const [courses] = await conn.execute(
-            "SELECT course_name FROM courses WHERE course_name = ? AND department = ? AND year = ?",
-            [course_name, department, year],
+        const { rows: courses } = await client.query(
+            "SELECT course_name FROM courses WHERE course_name = $1 AND department = $2 AND year = $3",
+            [course_name, department, year]
         );
         if (courses.length > 0) throw new Error("Course_alreadyExist");
 
-        await conn.execute(
-            "INSERT INTO courses (course_name, department, year) VALUES (?, ?, ?)",
-            [course_name, department, year],
+        await client.query(
+            "INSERT INTO courses (course_name, department, year) VALUES ($1, $2, $3)",
+            [course_name, department, year]
         );
 
-        await conn.commit();
+        await client.query('COMMIT');
         res.status(201).json({ message: "Course Added Successfully" });
+
     } catch (error) {
-        await conn.rollback();
+        await client.query('ROLLBACK');
         if (error.message === "USER_NOT_FOUND")
             return res.status(404).json({ message: "User not found" });
         if (error.message === "FORBIDDEN")
             return res.status(403).json({ message: "Admin only" });
-
         if (error.message === "Missing_Inputs")
             return res.status(400).json({ message: "Missing Inputs" });
-
         if (error.message === "Course_alreadyExist")
             return res.status(400).json({ message: "Course already exist" });
-
-        console.error("AssignDoctors error:", error.message);
-        res.status(400).json({ message: "Server error" });
+        console.error("addCourse error:", error.message);
+        res.status(500).json({ message: "Server error" });
     } finally {
-        conn.release();
+        client.release();
     }
 };
 
 const listAllcourses = async (req, res) => {
     try {
-        const [courses] = await db.execute("SELECT * FROM courses");
+        const { rows: courses } = await db.query("SELECT * FROM courses");
         if (courses.length == 0)
             return res.status(404).json({ message: "No Courses Added :(" });
 
@@ -125,23 +115,16 @@ const listAllcourses = async (req, res) => {
 const courseDoctors = async (req, res) => {
     const { course_id } = req.params;
     try {
-        // -------- EXPECTED RESPONSE
-        // [
-        //   { "coursedoctor_id": 7, "doctor_id": 3, "name": "Dr Ahmed" },
-        //   { "coursedoctor_id": 8, "doctor_id": 5, "name": "Dr Sara" }
-        // ]
-        const [doctors] = await db.execute(
-            `
-            SELECT cd.id AS coursedoctor_id, d.id AS doctor_id, d.name
-            FROM coursedoctors cd
-            JOIN doctors d ON cd.doctor_id = d.id
-            WHERE cd.course_id = ?`,
-            [course_id],
+        const { rows: doctors } = await db.query(
+            `SELECT cd.id AS coursedoctor_id, d.id AS doctor_id, d.name
+             FROM coursedoctors cd
+             JOIN doctors d ON cd.doctor_id = d.id
+             WHERE cd.course_id = $1`,
+            [course_id]
         );
         if (doctors.length == 0)
-            return res
-                .status(404)
-                .json({ message: "No doctors are assigned to this course yet" });
+            return res.status(404).json({ message: "No doctors are assigned to this course yet" });
+
         res.status(200).json({ doctors });
     } catch (error) {
         console.error("courseDoctors error:", error.message);
@@ -151,47 +134,42 @@ const courseDoctors = async (req, res) => {
 
 const addAssignment = async (req, res) => {
     const { coursedoctor_id } = req.params;
-
-    const conn = await db.getConnection();
+    const client = await db.connect();
     try {
-        await conn.beginTransaction();
-        //input
-        const { title, deadline, type, details } = req.body;
-        if (!title || !deadline || !type || !details)
-            throw new Error("Missing_Input");
-        const types = ["exam", "assignment", "project"];
-        if (!types.includes(type)) {
-            throw new Error("Invalid_task_type");
-        }
+        await client.query('BEGIN');
 
-        const [exists] = await conn.execute(
-            "SELECT id FROM coursedoctors WHERE id = ?",
-            [coursedoctor_id],
+        const { title, deadline, type, details } = req.body;
+        if (!title || !deadline || !type || !details) throw new Error("Missing_Input");
+
+        const types = ["exam", "assignment", "project"];
+        if (!types.includes(type)) throw new Error("Invalid_task_type");
+
+        const { rows: exists } = await client.query(
+            "SELECT id FROM coursedoctors WHERE id = $1",
+            [coursedoctor_id]
         );
         if (exists.length === 0) throw new Error("COURSE_DOCTOR_NOT_FOUND");
 
-        await conn.execute(
-            "INSERT INTO tasks (coursedoctor_id, type, details, title, deadline) VALUES (?, ?, ?, ?, ?)",
-            [coursedoctor_id, type, details, title, deadline],
+        await client.query(
+            "INSERT INTO tasks (coursedoctor_id, type, details, title, deadline) VALUES ($1, $2, $3, $4, $5)",
+            [coursedoctor_id, type, details, title, deadline]
         );
-        await conn.commit();
+
+        await client.query('COMMIT');
         res.status(201).json({ message: "Task created successfully" });
+
     } catch (error) {
-    await conn.rollback();
-
-    if (error.message === "Missing_Input")
-        return res.status(400).json({ message: "Missing input" });
-
-    if (error.message === "Invalid_task_type")
-        return res.status(400).json({ message: "Invalid task type" });
-
-    if (error.message === "COURSE_DOCTOR_NOT_FOUND")
-        return res.status(404).json({ message: "Course doctor not found" });
-
-    console.error("addAssignment error:", error.message);
-    return res.status(500).json({ message: "Server error" });
+        await client.query('ROLLBACK');
+        if (error.message === "Missing_Input")
+            return res.status(400).json({ message: "Missing input" });
+        if (error.message === "Invalid_task_type")
+            return res.status(400).json({ message: "Invalid task type" });
+        if (error.message === "COURSE_DOCTOR_NOT_FOUND")
+            return res.status(404).json({ message: "Course doctor not found" });
+        console.error("addAssignment error:", error.message);
+        return res.status(500).json({ message: "Server error" });
     } finally {
-        conn.release();
+        client.release();
     }
 };
 
@@ -201,9 +179,9 @@ const addEvent = async (req, res) => {
         if (!title || !description || !location || !host || !date)
             return res.status(400).json({ message: "Missing input" });
 
-        await db.execute(
-            "INSERT INTO events (title, description, location, host, date) VALUES (?, ?, ?, ?, ?)",
-            [title, description, location, host, date],
+        await db.query(
+            "INSERT INTO events (title, description, location, host, date) VALUES ($1, $2, $3, $4, $5)",
+            [title, description, location, host, date]
         );
 
         res.status(201).json({ message: "Event created successfully" });
@@ -215,7 +193,7 @@ const addEvent = async (req, res) => {
 
 const listAllEvents = async (req, res) => {
     try {
-        const [events] = await db.execute("SELECT * FROM events");
+        const { rows: events } = await db.query("SELECT * FROM events");
         if (events.length == 0)
             return res.status(404).json({ message: "No Events Added :(" });
 
@@ -232,21 +210,21 @@ const addAnnouncement = async (req, res) => {
         if (!title || !description || !source || !date)
             return res.status(400).json({ message: "Missing input" });
 
-        await db.execute(
-            "INSERT INTO announcements (title, description, source, date) VALUES (?, ?, ?, ?)",
-            [title, description, source, date],
+        await db.query(
+            "INSERT INTO announcements (title, description, source, date) VALUES ($1, $2, $3, $4)",
+            [title, description, source, date]
         );
 
         res.status(201).json({ message: "Announcement created successfully" });
     } catch (error) {
-        console.error("addAnnouncment error:", error.message);
+        console.error("addAnnouncement error:", error.message);
         res.status(500).json({ message: "Server error" });
     }
 };
 
 const listAllAnnouncements = async (req, res) => {
     try {
-        const [announcements] = await db.execute("SELECT * FROM announcements");
+        const { rows: announcements } = await db.query("SELECT * FROM announcements");
         if (announcements.length == 0)
             return res.status(404).json({ message: "No announcements Added :(" });
 
@@ -260,11 +238,13 @@ const listAllAnnouncements = async (req, res) => {
 const deleteEvent = async (req, res) => {
     try {
         const { event_id } = req.params;
-        const [result] = await db.execute("DELETE FROM events WHERE id = ?", [event_id]);
+        const { rowCount } = await db.query(
+            "DELETE FROM events WHERE id = $1",
+            [event_id]
+        );
+        if (rowCount === 0) return res.status(404).json({ message: "Event not found" });
 
-        if (result.affectedRows === 0) return res.status(404).json({ message: "Event not found" });
-
-        res.status(200).json({ message: "Event Deleted successfully" });
+        res.status(200).json({ message: "Event deleted successfully" });
     } catch (error) {
         console.error("deleteEvent error:", error.message);
         res.status(500).json({ message: "Server error" });
@@ -274,15 +254,19 @@ const deleteEvent = async (req, res) => {
 const deleteAnnouncement = async (req, res) => {
     try {
         const { announcement_id } = req.params;
-        const [result] = await db.execute("DELETE FROM announcements WHERE id = ?", [announcement_id]);
-        if (result.affectedRows === 0) return res.status(404).json({ message: "Announcement not found" });
+        const { rowCount } = await db.query(
+            "DELETE FROM announcements WHERE id = $1",
+            [announcement_id]
+        );
+        if (rowCount === 0) return res.status(404).json({ message: "Announcement not found" });
 
-        res.status(200).json({ message: "announcement Deleted successfully" });
+        res.status(200).json({ message: "Announcement deleted successfully" });
     } catch (error) {
-        console.error("deleteannouncement error:", error.message);
+        console.error("deleteAnnouncement error:", error.message);
         res.status(500).json({ message: "Server error" });
     }
 };
+
 module.exports = {
     addDoctor,
     addCourse,
