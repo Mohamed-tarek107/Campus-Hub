@@ -61,7 +61,8 @@ const editInfo = async (req,res) => {
 
             return res.json(updatedTask[0])
     } catch (error) {
-        
+        console.error("editInfo error:", error.message);
+        return res.status(500).json({ message: "Server error" });
     }
 }
 
@@ -69,4 +70,5 @@ const editInfo = async (req,res) => {
 
 module.exports = {
     userInfo,
+    editInfo
 }
