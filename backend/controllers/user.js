@@ -66,9 +66,28 @@ const editInfo = async (req,res) => {
     }
 }
 
+const deleteAccount = async (req,res) => {
+    const id = req.user.id
 
+    try {
+        await db.query("DELETE FROM users WHERE id = $1",[id])
+        await db.query("DELETE FROM refreshtokens WHERE id = $1",[id])
+        await db.query("DELETE FROM studentcourses WHERE id = $1",[id])
+        await db.query("DELETE FROM studenttasks WHERE id = $1",[id])
+        const {rows: result} = await db.execute("DELETE FROM users WHERE id = ?", [id])
+
+        if(result.length == 0) return res.status(401).json({ message: "User Not found"})
+
+        return res.json({ message: "Account deleted successfully"})
+        
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Server Error" });
+    }
+}
 
 module.exports = {
     userInfo,
-    editInfo
+    editInfo,
+    deleteAccount
 }
