@@ -7,7 +7,7 @@ const AssignDoctors = async (req, res) => {
         const userId = req.user.id;
 
         const { rows: userRows } = await client.query(
-            "SELECT is_firstlogin FROM users WHERE id = $1", 
+            "SELECT is_firstlogin FROM users WHERE id = $1",
             [userId]
         );
         if (userRows.length === 0) throw new Error("USER_NOT_FOUND");
@@ -20,7 +20,7 @@ const AssignDoctors = async (req, res) => {
             const { course_id, doctor_name } = sel;
 
             const { rows: docRows } = await client.query(
-                "SELECT id FROM doctors WHERE name = $1", 
+                "SELECT id FROM doctors WHERE name = $1",
                 [doctor_name]
             );
             if (docRows.length === 0) throw new Error(`Doctor ${doctor_name} not found`);
@@ -40,7 +40,7 @@ const AssignDoctors = async (req, res) => {
         }
 
         await client.query(
-            "UPDATE users SET is_firstlogin = FALSE WHERE id = $1", 
+            "UPDATE users SET is_firstlogin = FALSE WHERE id = $1",
             [userId]
         );
 

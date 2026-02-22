@@ -26,12 +26,12 @@ export class RegisterPage {
   isLoading = false;
   errorMessage = '';
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) { }
 
   async onRegister() {
     if (!this.form.username || !this.form.phone_number ||
-        !this.form.department || !this.form.year ||
-        !this.form.password || !this.form.confirmpassword) {
+      !this.form.department || !this.form.year ||
+      !this.form.password || !this.form.confirmpassword) {
       this.errorMessage = 'Please fill in all fields.';
       return;
     }

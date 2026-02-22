@@ -49,7 +49,7 @@ const LoginRoute = async (req, res) => {
 
     try {
         const { rows: existingUser } = await db.query(
-            "SELECT id, username, role, hashedpass, is_firstlogin FROM users WHERE username = $1", 
+            "SELECT id, username, role, hashedpass, is_firstlogin FROM users WHERE username = $1",
             [username]
         )
         if (existingUser.length === 0) return res.status(400).json({ message: "User not registered" });

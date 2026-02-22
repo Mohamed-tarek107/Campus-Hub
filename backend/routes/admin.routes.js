@@ -25,9 +25,9 @@ router.get("/courses/:course_id/doctors", ensureAuthenticated, requireAdmin, cou
 
 router.post("/coursedoctor/:coursedoctor_id/tasks", ensureAuthenticated, requireAdmin, addAssignment)
 
-router.get("/listAllEvents", ensureAuthenticated, requireAdmin,listAllEvents)
+router.get("/listAllEvents", ensureAuthenticated, requireAdmin, listAllEvents)
 
-router.post("/addEvent",ensureAuthenticated, requireAdmin, addEvent)
+router.post("/addEvent", ensureAuthenticated, requireAdmin, addEvent)
 
 router.get("/listAllAnnounces", ensureAuthenticated, requireAdmin, listAllAnnouncements)
 

@@ -13,7 +13,7 @@ app.use(express.json());
 const isProd = process.env.NODE_ENV === "production"
 
 app.use(cors({
-    origin: isProd ? process.env.FRONTEND_PROD_URL: process.env.FRONTEND_URL ,
+    origin: isProd ? process.env.FRONTEND_PROD_URL : process.env.FRONTEND_URL,
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"]
