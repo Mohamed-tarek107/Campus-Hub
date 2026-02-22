@@ -1,6 +1,5 @@
-const { use } = require("react");
 const db = require("../db.js");
-
+const bcrypt = require("bcryptjs");
 
 const userInfo = async (req,res) => {
     const { id } = req.user.id
@@ -67,7 +66,7 @@ const editInfo = async (req,res) => {
 }
 
 const deleteAccount = async (req,res) => {
-    const id = req.user.id
+    const { id } = req.user.id
 
     try {
         await db.query("DELETE FROM users WHERE id = $1",[id])
@@ -86,8 +85,37 @@ const deleteAccount = async (req,res) => {
     }
 }
 
+const changepass = async (req,res) => {
+    const { id } = req.user.id
+    const { currentpass, newpass, confirmpass} = req.body
+    if(!currentpass){
+        return res.status(400).json({message: " Need current password "});
+    }
+    if(!newpass || !confirmpass){
+        return res.status(400).json({ message: "Provide New pass and its confirmation" });
+    }
+
+    if(newpass !== confirmpass){
+        return res.status(400).json({ message: "new Password dont match the confirmation" });
+    }
+    try {
+        const {rows: user} = await db.query("SELECT hashedpass FROM users WHERE id = $1", [id])
+        const  verify = await bcrypt.compare(currentpass, user)
+
+        if(!verify) return res.status(400).json({ message: "current password is not correct"})
+
+        const hashedpass = await bcrypt.hash(currentpass, 10)
+        await db.query("UPDATE users SET hashedpass = $1 WHERE id = $2", [hashedpass, id])
+    return res.status(200).json({ message: "password changed successfully" })
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Server Error" });
+    }
+}
+
 module.exports = {
     userInfo,
     editInfo,
-    deleteAccount
+    deleteAccount,
+    changepass
 }
