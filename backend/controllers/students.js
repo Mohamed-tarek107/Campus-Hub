@@ -14,10 +14,14 @@ const AssignDoctors = async (req, res) => {
         if (!userRows[0].is_firstlogin) throw new Error("ALREADY_ASSIGNED");
 
         const selections = req.body.selections;
+        const validDays = ['monday','tuesday','wednesday','thursday','saturday','sunday']
+        const validTimeSlots = ['08:00-10:00','10:00-12:00','12:00-14:00','14:00-16:00','16:00-18:00','18:00-20:00']
         if (!Array.isArray(selections) || selections.length === 0) throw new Error("NO_SELECTIONS");
 
         for (const sel of selections) {
-            const { course_id, doctor_name } = sel;
+            const { course_id, doctor_name, day, timeslot } = sel;
+            if (!validDays.includes(day)) throw new Error("INVALID_DAY");
+            if (!validTimeSlots.includes(timeslot)) throw new Error("INVALID_SLOT");
 
             const { rows: docRows } = await client.query(
                 "SELECT id FROM doctors WHERE name = $1",
@@ -34,8 +38,8 @@ const AssignDoctors = async (req, res) => {
             if (coursesDocs.length === 0) throw new Error(`Doctor ${doctor_name} doesn't teach this course`);
 
             await client.query(
-                "INSERT INTO studentCourses (student_id, course_id, doctor_id) VALUES ($1, $2, $3)",
-                [userId, course_id, doctor_id]
+                "INSERT INTO studentCourses (student_id, course_id, doctor_id, day, timeslot) VALUES ($1, $2, $3)",
+                [userId, course_id, doctor_id, day, timeslot]
             );
         }
 
