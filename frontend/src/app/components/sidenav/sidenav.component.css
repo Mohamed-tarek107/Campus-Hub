@@ -1,0 +1,120 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=DM+Sans:wght@400;500&display=swap');
+
+:host {
+  display: block;
+  height: 100vh;
+  font-family: 'DM Sans', sans-serif;
+}
+
+/* ── Sidenav Shell ───────────────────────────────────── */
+.sidenav {
+  width: 220px;
+  height: 100vh;
+  background: #0f1623;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem 1rem;
+  position: relative;
+  border-right: 1px solid rgba(255,255,255,.06);
+  overflow: hidden;
+}
+
+/* Subtle glow top-left */
+.sidenav::before {
+  content: '';
+  position: absolute;
+  top: -80px; left: -80px;
+  width: 260px; height: 260px;
+  background: radial-gradient(circle, rgba(59,130,246,.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* ── Brand ───────────────────────────────────────────── */
+.sidenav-brand {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  padding: .5rem .5rem 1.75rem;
+}
+
+.brand-icon {
+  width: 36px; height: 36px;
+  background: #2563eb;
+  border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Sora', sans-serif;
+  font-weight: 700; font-size: .95rem;
+  color: white;
+  flex-shrink: 0;
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-name {
+  font-family: 'Sora', sans-serif;
+  font-weight: 600; font-size: 1rem;
+  color: white;
+  line-height: 1.2;
+}
+
+.brand-sub {
+  font-size: .7rem;
+  color: rgba(255,255,255,.35);
+}
+
+/* ── Nav Links ───────────────────────────────────────── */
+.nav-links {
+  list-style: none;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: .25rem;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  padding: .65rem .85rem;
+  border-radius: 10px;
+  text-decoration: none;
+  color: rgba(255,255,255,.45);
+  font-size: .88rem;
+  font-weight: 500;
+  transition: background .2s, color .2s;
+  cursor: pointer;
+}
+
+.nav-item svg {
+  width: 17px; height: 17px;
+  flex-shrink: 0;
+  transition: color .2s;
+}
+
+.nav-item:hover {
+  background: rgba(255,255,255,.06);
+  color: rgba(255,255,255,.85);
+}
+
+.nav-item.active {
+  background: rgba(37,99,235,.2);
+  color: #60a5fa;
+}
+
+.nav-item.active svg { color: #60a5fa; }
+
+/* ── Bottom Section ──────────────────────────────────── */
+.nav-bottom {
+  display: flex;
+  flex-direction: column;
+  gap: .25rem;
+}
+
+.divider-line {
+  height: 1px;
+  background: rgba(255,255,255,.06);
+  margin: .75rem 0;
+}
