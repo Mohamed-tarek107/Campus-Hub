@@ -1,8 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=DM+Sans:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=Inter:wght@400;500;600&display=swap');
 
 :host {
   display: block;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
   position: relative;
   z-index: 100;
 }
@@ -10,13 +10,13 @@
 /* ── Topnav Shell ────────────────────────────────────── */
 .topnav {
   width: 100%;
-  height: 60px;
+  height: 82px;
   background: #0f1623;
   border-bottom: 1px solid rgba(255,255,255,.06);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 1.75rem;
+  padding: 0 2.5rem;
   gap: 1rem;
 }
 
@@ -24,12 +24,12 @@
 .search-wrap {
   display: flex;
   align-items: center;
-  gap: .65rem;
+  gap: .75rem;
   background: rgba(255,255,255,.05);
-  border: 1px solid rgba(255,255,255,.08);
-  border-radius: 10px;
-  padding: .5rem 1rem;
-  width: 280px;
+  border: 3px solid rgba(255,255,255,.08);
+  border-radius: 11px;
+  padding: .65rem 1.25rem;
+  width: 340px;
   transition: border-color .2s, background .2s;
 }
 
@@ -39,7 +39,7 @@
 }
 
 .search-wrap svg {
-  width: 15px; height: 15px;
+  width: 17px; height: 17px;
   color: rgba(255,255,255,.3);
   flex-shrink: 0;
 }
@@ -48,8 +48,8 @@
   background: none;
   border: none;
   outline: none;
-  font-size: .87rem;
-  font-family: 'DM Sans', sans-serif;
+  font-size: 1rem;
+  font-family: 'Inter', sans-serif;
   color: rgba(255,255,255,.8);
   width: 100%;
 }
@@ -60,24 +60,24 @@
 .topnav-right {
   display: flex;
   align-items: center;
-  gap: .75rem;
+  gap: .85rem;
   position: relative;
 }
 
 /* ── Icon Button (Notifications) ────────────────────── */
 .icon-btn {
   position: relative;
-  width: 36px; height: 36px;
+  width: 42px; height: 42px;
   background: rgba(255,255,255,.05);
   border: 1px solid rgba(255,255,255,.08);
-  border-radius: 9px;
+  border-radius: 10px;
   display: flex; align-items: center; justify-content: center;
   cursor: pointer;
   color: rgba(255,255,255,.5);
   transition: background .2s, color .2s;
 }
 
-.icon-btn svg { width: 17px; height: 17px; }
+.icon-btn svg { width: 20px; height: 20px; }
 
 .icon-btn:hover {
   background: rgba(255,255,255,.09);
@@ -86,8 +86,8 @@
 
 .notif-dot {
   position: absolute;
-  top: 7px; right: 7px;
-  width: 7px; height: 7px;
+  top: 8px; right: 8px;
+  width: 8px; height: 8px;
   background: #ef4444;
   border-radius: 50%;
   border: 1.5px solid #0f1623;
@@ -97,9 +97,9 @@
 .avatar-wrap {
   display: flex;
   align-items: center;
-  gap: .6rem;
-  padding: .4rem .75rem .4rem .4rem;
-  border-radius: 10px;
+  gap: .75rem;
+  padding: .5rem .9rem .5rem .5rem;
+  border-radius: 11px;
   cursor: pointer;
   transition: background .2s;
   position: relative;
@@ -108,12 +108,12 @@
 .avatar-wrap:hover { background: rgba(255,255,255,.06); }
 
 .avatar {
-  width: 34px; height: 34px;
+  width: 40px; height: 40px;
   background: linear-gradient(135deg, #2563eb, #6366f1);
-  border-radius: 8px;
+  border-radius: 10px;
   display: flex; align-items: center; justify-content: center;
   font-family: 'Sora', sans-serif;
-  font-weight: 600; font-size: .8rem;
+  font-weight: 600; font-size: .88rem;
   color: white;
   flex-shrink: 0;
 }
@@ -124,19 +124,20 @@
 }
 
 .user-name {
-  font-size: .85rem;
+  font-size: 1rem;
   font-weight: 500;
   color: rgba(255,255,255,.85);
   line-height: 1.2;
 }
 
 .user-role {
-  font-size: .72rem;
+  font-size: .85rem;
   color: rgba(255,255,255,.35);
+  margin-top: .1rem;
 }
 
 .chevron {
-  width: 14px; height: 14px;
+  width: 16px; height: 16px;
   color: rgba(255,255,255,.3);
   transition: transform .2s;
 }
@@ -146,14 +147,14 @@
 /* ── Dropdowns ───────────────────────────────────────── */
 .dropdown {
   position: absolute;
-  top: calc(100% + .75rem);
+  top: calc(100% + .85rem);
   background: #151e2e;
   border: 1px solid rgba(255,255,255,.08);
-  border-radius: 12px;
-  padding: .5rem;
+  border-radius: 13px;
+  padding: .6rem;
   box-shadow: 0 8px 40px rgba(0,0,0,.5);
   z-index: 200;
-  min-width: 200px;
+  min-width: 220px;
   animation: fadeDown .15s ease;
 }
 
@@ -163,24 +164,24 @@
 }
 
 .user-dropdown  { right: 0; }
-.notif-dropdown { right: 2.5rem; min-width: 260px; }
+.notif-dropdown { right: 3rem; min-width: 300px; }
 
 .dropdown-title {
-  font-size: .72rem;
+  font-size: .75rem;
   font-weight: 600;
   color: rgba(255,255,255,.25);
   text-transform: uppercase;
   letter-spacing: .06em;
-  padding: .4rem .75rem .6rem;
+  padding: .5rem .85rem .7rem;
 }
 
 .dropdown-item {
   display: flex;
   align-items: center;
-  gap: .65rem;
-  padding: .6rem .75rem;
-  border-radius: 8px;
-  font-size: .87rem;
+  gap: .75rem;
+  padding: .75rem .85rem;
+  border-radius: 9px;
+  font-size: 1rem;
   color: rgba(255,255,255,.65);
   text-decoration: none;
   cursor: pointer;
@@ -188,10 +189,10 @@
   background: none;
   border: none;
   width: 100%;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
 }
 
-.dropdown-item svg { width: 15px; height: 15px; flex-shrink: 0; }
+.dropdown-item svg { width: 17px; height: 17px; flex-shrink: 0; }
 
 .dropdown-item:hover {
   background: rgba(255,255,255,.06);
@@ -204,44 +205,44 @@
 .dropdown-divider {
   height: 1px;
   background: rgba(255,255,255,.06);
-  margin: .4rem 0;
+  margin: .5rem 0;
 }
 
 /* Notification items */
 .notif-item {
   display: flex;
   align-items: flex-start;
-  gap: .65rem;
-  padding: .65rem .75rem;
-  border-radius: 8px;
+  gap: .75rem;
+  padding: .75rem .85rem;
+  border-radius: 9px;
   transition: background .15s;
 }
 
 .notif-item:hover { background: rgba(255,255,255,.04); }
 
 .notif-dot-sm {
-  width: 7px; height: 7px;
+  width: 8px; height: 8px;
   background: #2563eb;
   border-radius: 50%;
-  margin-top: .35rem;
+  margin-top: .4rem;
   flex-shrink: 0;
 }
 
 .notif-text {
-  font-size: .84rem;
+  font-size: .97rem;
   color: rgba(255,255,255,.75);
-  line-height: 1.4;
+  line-height: 1.45;
 }
 
 .notif-time {
-  font-size: .75rem;
+  font-size: .87rem;
   color: rgba(255,255,255,.3);
-  margin-top: .2rem;
+  margin-top: .25rem;
 }
 
 .dropdown-empty {
-  font-size: .84rem;
+  font-size: .9rem;
   color: rgba(255,255,255,.25);
   text-align: center;
-  padding: 1rem;
+  padding: 1.25rem;
 }

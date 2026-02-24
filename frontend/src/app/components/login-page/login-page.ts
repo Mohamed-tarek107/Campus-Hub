@@ -20,16 +20,17 @@ export class LoginPage {
   constructor(private router: Router) {}
 
   async onLogin() {
-    if (!this.credentials.username || !this.credentials.password) {
-      this.errorMessage = 'Please fill in all fields.';
-      return;
-    }
+    // if (!this.credentials.username || !this.credentials.password) {
+    //   this.errorMessage = 'Please fill in all fields.';
+    //   return;
+    // }
 
     this.isLoading = true;
     this.errorMessage = '';
 
     try {
       // TODO: inject AuthService and call this.authService.login(this.credentials)
+      this.router.navigate(['/dashboard']);
       // On success: this.router.navigate(['/dashboard']);
       console.log('Login payload:', this.credentials);
     } catch (error: any) {
