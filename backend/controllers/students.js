@@ -38,7 +38,7 @@ const AssignDoctors = async (req, res) => {
             if (coursesDocs.length === 0) throw new Error(`Doctor ${doctor_name} doesn't teach this course`);
 
             await client.query(
-                "INSERT INTO studentCourses (student_id, course_id, doctor_id, day, timeslot) VALUES ($1, $2, $3)",
+                "INSERT INTO studentCourses (student_id, course_id, doctor_id, day, timeslot) VALUES ($1, $2, $3, $4, $5)",
                 [userId, course_id, doctor_id, day, timeslot]
             );
         }
@@ -62,6 +62,33 @@ const AssignDoctors = async (req, res) => {
         client.release();
     }
 };
+
+const getStudentCourses = async (req,res) => {
+    const user_id = req.user.id
+    try {
+        const {rows: user} = await db.query(`
+            SELECT department, year FROM users WHERE id = ?`,
+            [user_id]
+        )
+
+        if (user.length === 0) return res.status(404).json({ message: "User not found" });
+
+        const { rows: courses } = await db.query(
+            "SELECT id, course_name FROM courses WHERE department = $1 AND year = $2",
+            [user[0].department, user[0].year]
+        );
+
+        if (courses.length === 0) return res.status(404).json({ message: "No courses found for your department and year" });
+        return res.status(200).json({ courses });
+    } catch (error) {
+        console.error("getStudentCourses error:", error.message);
+        return res.status(500).json({ message: "Server error" });
+    }
+}
+
+
+
+
 
 const viewAllstudent_courses = async (req, res) => {
     const user_id = req.user.id;
