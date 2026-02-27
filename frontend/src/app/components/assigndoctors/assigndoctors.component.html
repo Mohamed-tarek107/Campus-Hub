@@ -1,0 +1,147 @@
+<div class="page-wrapper">
+
+  <!-- Background glows -->
+  <div class="glow glow-1"></div>
+  <div class="glow glow-2"></div>
+
+  <div class="page-content">
+
+    <!-- Header -->
+    <div class="page-header">
+      <div class="brand">
+        <div class="brand-icon">BIS</div>
+        <span class="brand-name">$Username</span>
+      </div>
+      <div class="header-text">
+        <h1>Set up your schedule</h1>
+        <p>Choose a doctor for each of your courses, then pick your lecture day and time.</p>
+      </div>
+      <div class="step-badge">First time setup</div>
+    </div>
+
+    <!-- Progress bar -->
+    <div class="progress-wrap">
+      <div class="progress-track">
+        <div class="progress-fill" [style.width.%]="progressPercent"></div>
+      </div>
+      <span class="progress-label">{{ completedCount }} of {{ selections.length }} completed</span>
+    </div>
+
+    <!-- Course selection rows -->
+    <div class="selections-grid">
+      <div
+        class="selection-card"
+        *ngFor="let sel of selections; let i = index"
+        [class.complete]="isRowComplete(i)"
+      >
+        <div class="card-number">{{ i + 1 }}</div>
+
+        <div class="card-fields">
+
+          <!-- Course dropdown -->
+          <div class="field-group">
+            <label>Course</label>
+            <div class="select-wrap">
+              <select
+                [(ngModel)]="sel.course_id"
+                (change)="onCourseSelected(sel.course_id, i)"
+                [disabled]="isLoading"
+              >
+                <option value="" disabled>Select a course</option>
+                <option *ngFor="let c of availableCourses" [value]="c.id">
+                  {{ c.course_name }}
+                </option>
+              </select>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Doctor dropdown -->
+          <div class="field-group">
+            <label>Doctor</label>
+            <div class="select-wrap" [class.loading]="sel.loadingDoctors">
+              <select
+                [(ngModel)]="sel.doctor_name"
+                [disabled]="!sel.course_id || sel.loadingDoctors"
+              >
+                <option value="" disabled>
+                  {{ sel.loadingDoctors ? 'Loading...' : 'Select a doctor' }}
+                </option>
+                <option *ngFor="let d of sel.doctors" [value]="d.name">
+                  {{ d.name }}
+                </option>
+              </select>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Day dropdown -->
+          <div class="field-group">
+            <label>Day</label>
+            <div class="select-wrap">
+              <select
+                [(ngModel)]="sel.day"
+                [disabled]="!sel.doctor_name"
+              >
+                <option value="" disabled>Select a day</option>
+                <option *ngFor="let d of validDays" [value]="d">
+                  {{ d | titlecase }}
+                </option>
+              </select>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Time slot dropdown -->
+          <div class="field-group">
+            <label>Time Slot</label>
+            <div class="select-wrap">
+              <select
+                [(ngModel)]="sel.timeslot"
+                [disabled]="!sel.day"
+              >
+                <option value="" disabled>Select a time</option>
+                <option *ngFor="let t of validTimeSlots" [value]="t">{{ t }}</option>
+              </select>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Complete checkmark -->
+        <div class="check-icon" *ngIf="isRowComplete(i)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Error -->
+    <p class="error-msg" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+    <!-- Submit -->
+    <div class="submit-wrap">
+      <button
+        class="btn-submit"
+        (click)="onSubmit()"
+        [disabled]="!allComplete || isLoading"
+      >
+        <span *ngIf="!isLoading">Confirm Schedule</span>
+        <span *ngIf="isLoading" class="spinner"></span>
+      </button>
+      <p class="submit-hint" *ngIf="!allComplete">Complete all {{ selections.length }} courses to continue</p>
+    </div>
+
+  </div>
+</div>

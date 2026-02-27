@@ -30,7 +30,10 @@ export class LoginPage {
 
     try {
       // TODO: inject AuthService and call this.authService.login(this.credentials)
-      this.router.navigate(['/dashboard']);
+      // this.router.navigate(['/dashboard']);
+      this.router.navigate(['/assignDoctors']);
+      
+      
       // On success: this.router.navigate(['/dashboard']);
       console.log('Login payload:', this.credentials);
     } catch (error: any) {
