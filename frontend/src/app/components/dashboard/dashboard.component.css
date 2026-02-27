@@ -1,0 +1,343 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=DM+Sans:wght@400;500&display=swap');
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── Layout ──────────────────────────────────────────── */
+.layout {
+  display: flex;
+  height: 100vh;
+  font-family: 'DM Sans', sans-serif;
+  background: #0c1220;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ── Dashboard scroll area ───────────────────────────── */
+.dashboard {
+  flex: 1;
+  overflow-y: auto;
+  padding: 2rem 2.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* ── Welcome ─────────────────────────────────────────── */
+.welcome h1 {
+  font-family: 'Sora', sans-serif;
+  font-size: 1.55rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: .35rem;
+}
+
+.welcome p {
+  font-size: .92rem;
+  color: rgba(255,255,255,.4);
+}
+
+/* ── Hero Cards ──────────────────────────────────────── */
+.hero-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.hero-card {
+  border-radius: 16px;
+  padding: 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: transform .2s, box-shadow .2s;
+  text-decoration: none;
+}
+
+.hero-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0,0,0,.3);
+}
+
+.hero-blue {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+}
+
+.hero-purple {
+  background: linear-gradient(135deg, #7c3aed, #6d28d9);
+}
+
+.hero-card-text {
+  display: flex;
+  flex-direction: column;
+  gap: .4rem;
+}
+
+.hero-label {
+  font-family: 'Sora', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: white;
+}
+
+.hero-sub {
+  font-size: .87rem;
+  color: rgba(255,255,255,.6);
+}
+
+.hero-badge {
+  display: inline-block;
+  background: rgba(255,255,255,.15);
+  color: white;
+  font-size: .78rem;
+  font-weight: 600;
+  padding: .3rem .75rem;
+  border-radius: 20px;
+  margin-top: .25rem;
+  width: fit-content;
+}
+
+.hero-card svg {
+  width: 52px; height: 52px;
+  color: rgba(255,255,255,.2);
+  flex-shrink: 0;
+}
+
+/* ── Stat Cards ──────────────────────────────────────── */
+.stat-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+}
+
+.stat-card {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 14px;
+  padding: 1.35rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: .6rem;
+}
+
+.stat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stat-title {
+  font-size: .82rem;
+  font-weight: 600;
+  color: rgba(255,255,255,.4);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+
+.stat-header svg {
+  width: 16px; height: 16px;
+  color: rgba(255,255,255,.2);
+}
+
+.stat-value {
+  font-family: 'Sora', sans-serif;
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: white;
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: .82rem;
+  font-weight: 500;
+}
+
+.stat-label.good    { color: #34d399; }
+.stat-label.warn    { color: #fbbf24; }
+.stat-label.neutral { color: rgba(255,255,255,.3); }
+
+/* GPA label colors */
+.gpa-excellent  { color: #34d399; }
+.gpa-very-good  { color: #60a5fa; }
+.gpa-good       { color: #a78bfa; }
+.gpa-pass       { color: #fbbf24; }
+.gpa-fail       { color: #f87171; }
+
+/* ── Bottom Row ──────────────────────────────────────── */
+.bottom-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+/* ── Panel ───────────────────────────────────────────── */
+.panel {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 1.4rem 1.5rem 1rem;
+  border-bottom: 1px solid rgba(255,255,255,.05);
+}
+
+.panel-header h3 {
+  font-family: 'Sora', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: white;
+  margin-bottom: .25rem;
+}
+
+.panel-header p {
+  font-size: .82rem;
+  color: rgba(255,255,255,.3);
+}
+
+.panel-link {
+  font-size: .82rem;
+  color: #60a5fa;
+  text-decoration: none;
+  font-weight: 500;
+  white-space: nowrap;
+  margin-top: .2rem;
+}
+
+.panel-link:hover { text-decoration: underline; }
+
+.panel-body {
+  flex: 1;
+  padding: .75rem .75rem;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Announcement Items ──────────────────────────────── */
+.announcement-item {
+  display: flex;
+  align-items: flex-start;
+  gap: .85rem;
+  padding: .85rem .75rem;
+  border-radius: 10px;
+  transition: background .15s;
+}
+
+.announcement-item:hover { background: rgba(255,255,255,.04); }
+
+.announcement-dot {
+  width: 8px; height: 8px;
+  background: #2563eb;
+  border-radius: 50%;
+  margin-top: .35rem;
+  flex-shrink: 0;
+}
+
+.announcement-title {
+  font-size: .9rem;
+  color: rgba(255,255,255,.8);
+  margin-bottom: .25rem;
+  line-height: 1.4;
+}
+
+.announcement-source {
+  font-size: .78rem;
+  color: rgba(255,255,255,.3);
+}
+
+/* ── Task Items ──────────────────────────────────────── */
+.task-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: .85rem .75rem;
+  border-radius: 10px;
+  transition: background .15s;
+  gap: 1rem;
+}
+
+.task-item:hover { background: rgba(255,255,255,.04); }
+
+.task-title {
+  font-size: .9rem;
+  color: rgba(255,255,255,.8);
+  margin-bottom: .2rem;
+}
+
+.task-course {
+  font-size: .78rem;
+  color: rgba(255,255,255,.3);
+}
+
+.task-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: .35rem;
+  flex-shrink: 0;
+}
+
+.task-due {
+  font-size: .78rem;
+  color: rgba(255,255,255,.3);
+}
+
+.task-badge {
+  font-size: .72rem;
+  font-weight: 600;
+  padding: .25rem .65rem;
+  border-radius: 20px;
+  text-transform: capitalize;
+}
+
+.badge-pending {
+  background: rgba(251,191,36,.12);
+  color: #fbbf24;
+}
+
+.badge-done {
+  background: rgba(52,211,153,.12);
+  color: #34d399;
+}
+
+/* ── Empty State ─────────────────────────────────────── */
+.empty-state {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: .75rem;
+  padding: 2.5rem 1rem;
+  color: rgba(255,255,255,.2);
+}
+
+.empty-state svg {
+  width: 32px; height: 32px;
+}
+
+.empty-state p {
+  font-size: .88rem;
+}
+
+/* ── Responsive ──────────────────────────────────────── */
+@media (max-width: 1100px) {
+  .stat-cards { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 800px) {
+  .hero-cards  { grid-template-columns: 1fr; }
+  .bottom-row  { grid-template-columns: 1fr; }
+  .dashboard   { padding: 1.5rem 1.25rem; }
+}
