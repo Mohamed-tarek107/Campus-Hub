@@ -167,4 +167,4 @@ const viewAllstudent_tasks = async (req, res) => {
     }
 };
 
-module.exports = { AssignDoctors, viewAllstudent_courses, viewAllstudent_doctors, viewAllstudent_tasks };
+module.exports = { AssignDoctors, viewAllstudent_courses, viewAllstudent_doctors, viewAllstudent_tasks, getCourseDoctors, getStudentCourses};
