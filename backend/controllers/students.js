@@ -86,7 +86,24 @@ const getStudentCourses = async (req,res) => {
     }
 }
 
+const getCourseDoctors = async (req,res) => {
+    const { course_id } = req.params
+    try {
+        const {rows: doctors} = db.query(`
+            SELECT d.id, d.name
+            FROM coursedoctors cd
+            JOIN doctors d ON cd.doctor_id = d.id
+            WHERE cd.course_id = $1`,
+            [course_id]
+        )
 
+        if (doctors.length === 0) return res.status(404).json({ message: "No doctors assigned to this course" });
+        return res.status(200).json({ doctors });
+    } catch (error) {
+        console.error("getDoctorsForCourse error:", error.message);
+        return res.status(500).json({ message: "Server error" });
+    }
+}
 
 
 
