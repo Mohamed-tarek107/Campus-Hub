@@ -4,6 +4,7 @@ import { RegisterPage } from './components/register-page/register-page';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { AssigndoctorsComponent } from './components/assigndoctors/assigndoctors.component';
 import { GpaCalculatorComponent } from './components/gpa-calculator.component/gpa-calculator.component';
+import { MyCoursesComponent } from './components/mycourses/mycourses.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full'},
@@ -11,5 +12,6 @@ export const routes: Routes = [
     { path: 'register', component: RegisterPage },
     { path: 'dashboard', component: DashboardComponent},
     { path: 'assignDoctors', component: AssigndoctorsComponent},
-    { path: 'gpaCalculator', component: GpaCalculatorComponent}
+    { path: 'gpaCalculator', component: GpaCalculatorComponent},
+    { path: 'myCourses', component: MyCoursesComponent}
 ];
