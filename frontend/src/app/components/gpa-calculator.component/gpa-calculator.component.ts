@@ -37,12 +37,12 @@ export class GpaCalculatorComponent implements OnInit {
   // ── Grade scale ───────────────────────────────────────
   gradeOptions = [
     { label: 'A+', value: 4.00 },
-    { label: 'A',  value: 4.00 },
-    { label: 'B+', value: 3.50 },
+    { label: 'A',  value: 3.50 },
+    { label: 'B+', value: 3.30 },
     { label: 'B',  value: 3.00 },
     { label: 'C+', value: 2.50 },
     { label: 'C',  value: 2.00 },
-    { label: 'D',  value: 1.00 },
+    { label: 'D',  value: 1.70 },
     { label: 'F',  value: 0.00 },
   ];
 
@@ -112,7 +112,7 @@ export class GpaCalculatorComponent implements OnInit {
   }
 
   private getGpaClass(gpa: number): string {
-    if (gpa >= 3.7) return 'gpa-excellent';
+    if (gpa >= 3.5) return 'gpa-excellent';
     if (gpa >= 3.0) return 'gpa-very-good';
     if (gpa >= 2.5) return 'gpa-good';
     if (gpa >= 2.0) return 'gpa-pass';

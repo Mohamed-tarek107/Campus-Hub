@@ -14,7 +14,14 @@
         </div>
         <div class="current-gpa-badge">
           <span class="badge-label">Current GPA</span>
-          <span class="badge-value">{{ currentGpa }}</span>
+          <input
+            class="gpa-input"
+            type="number"
+            [(ngModel)]="currentGpa"
+            (input)="onGradeChange()"
+            min="0" max="4" step="0.01"
+            placeholder="0.00"
+          />
           <span class="badge-status" [ngClass]="gpaClass">{{ gpaLabel }}</span>
         </div>
       </div>
