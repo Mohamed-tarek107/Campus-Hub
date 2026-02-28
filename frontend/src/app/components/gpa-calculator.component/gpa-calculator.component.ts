@@ -35,15 +35,25 @@ export class GpaCalculatorComponent implements OnInit {
     { course_name: 'Software Engineering', credits: 3, selectedGrade: '' },
   ];
 
-  // ── Grade scale ───────────────────────────────────────
+  // ── Grade scale — BIS/FMI Credit Hour System ──────────
+  // A+  90% and above        → 4.00
+  // A   85% to less than 90% → 3.75
+  // B+  80% to less than 85% → 3.40
+  // B   75% to less than 80% → 3.10
+  // C+  70% to less than 75% → 2.80
+  // C   65% to less than 70% → 2.50
+  // D+  60% to less than 65% → 2.25
+  // D   50% to less than 60% → 2.00
+  // F   less than 50%        → 0.00
   gradeOptions = [
     { label: 'A+', value: 4.00 },
-    { label: 'A',  value: 3.50 },
-    { label: 'B+', value: 3.30 },
-    { label: 'B',  value: 3.00 },
-    { label: 'C+', value: 2.50 },
-    { label: 'C',  value: 2.00 },
-    { label: 'D',  value: 1.70 },
+    { label: 'A',  value: 3.75 },
+    { label: 'B+', value: 3.40 },
+    { label: 'B',  value: 3.10 },
+    { label: 'C+', value: 2.80 },
+    { label: 'C',  value: 2.50 },
+    { label: 'D+', value: 2.25 },
+    { label: 'D',  value: 2.00 },
     { label: 'F',  value: 0.00 },
   ];
 
@@ -80,24 +90,22 @@ export class GpaCalculatorComponent implements OnInit {
 
   // ── Methods ───────────────────────────────────────────
 
-  // Returns the grade points for a selected grade value
   getGradePoints(value: string): number {
     return parseFloat(value);
   }
 
-  // Called whenever a grade dropdown changes
+  // GPA = sum(score × credit hours) / total credit hours
   onGradeChange(): void {
     const graded = this.courses.filter(c => c.selectedGrade !== '');
     if (graded.length === 0) {
       this.projectedGpa = null;
       return;
     }
-    const totalPoints = graded.reduce((sum, c) => sum + (c.credits * parseFloat(c.selectedGrade)), 0);
+    const totalPoints  = graded.reduce((sum, c) => sum + (c.credits * parseFloat(c.selectedGrade)), 0);
     const totalCredits = graded.reduce((sum, c) => sum + c.credits, 0);
-    this.projectedGpa = parseFloat((totalPoints / totalCredits).toFixed(2));
+    this.projectedGpa  = parseFloat((totalPoints / totalCredits).toFixed(2));
   }
 
-  // Resets all grade selections
   resetGrades(): void {
     this.courses.forEach(c => c.selectedGrade = '');
     this.projectedGpa = null;
@@ -105,18 +113,18 @@ export class GpaCalculatorComponent implements OnInit {
 
   // ── Helpers ───────────────────────────────────────────
   private getGpaLabel(gpa: number): string {
-    if (gpa >= 3.5) return 'Excellent';
-    if (gpa >= 3.0) return 'Very Good';
-    if (gpa >= 2.5) return 'Good';
-    if (gpa >= 2.0) return 'Pass';
+    if (gpa >= 3.75) return 'Excellent';
+    if (gpa >= 3.10) return 'Very Good';
+    if (gpa >= 2.80) return 'Good';
+    if (gpa >= 2.00) return 'Pass';
     return 'Fail';
   }
 
   private getGpaClass(gpa: number): string {
-    if (gpa >= 3.5) return 'gpa-excellent';
-    if (gpa >= 3.0) return 'gpa-very-good';
-    if (gpa >= 2.5) return 'gpa-good';
-    if (gpa >= 2.0) return 'gpa-pass';
+    if (gpa >= 3.75) return 'gpa-excellent';
+    if (gpa >= 3.10) return 'gpa-very-good';
+    if (gpa >= 2.80) return 'gpa-good';
+    if (gpa >= 2.00) return 'gpa-pass';
     return 'gpa-fail';
   }
 }
