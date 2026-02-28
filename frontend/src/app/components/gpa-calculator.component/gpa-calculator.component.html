@@ -1,1 +1,136 @@
-<p>gpa-calculator.component works!</p>
+<div class="layout">
+  <app-sidenav></app-sidenav>
+
+  <div class="main">
+    <app-topnav></app-topnav>
+
+    <div class="page">
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <div>
+          <h1>GPA Calculator</h1>
+          <p>Select your expected grade for each course to calculate your projected GPA.</p>
+        </div>
+        <div class="current-gpa-badge">
+          <span class="badge-label">Current GPA</span>
+          <span class="badge-value">{{ currentGpa }}</span>
+          <span class="badge-status" [ngClass]="gpaClass">{{ gpaLabel }}</span>
+        </div>
+      </div>
+
+      <div class="content-grid">
+
+        <!-- Course Grade Inputs -->
+        <div class="courses-panel">
+          <div class="panel-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+            </svg>
+            <span>Your Courses</span>
+          </div>
+
+          <div class="course-list">
+            <div class="course-row" *ngFor="let course of courses; let i = index">
+              <div class="course-index">{{ i + 1 }}</div>
+
+              <div class="course-info">
+                <p class="course-name">{{ course.course_name }}</p>
+                <p class="course-meta">{{ course.credits }} Credit Hours</p>
+              </div>
+
+              <div class="grade-select-wrap">
+                <select
+                  [(ngModel)]="course.selectedGrade"
+                  (change)="onGradeChange()"
+                  class="grade-select"
+                  [class.selected]="course.selectedGrade !== ''"
+                >
+                  <option value="" disabled>Grade</option>
+                  <option *ngFor="let g of gradeOptions" [value]="g.value">
+                    {{ g.label }}
+                  </option>
+                </select>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="6 9 12 15 18 9"/>
+                </svg>
+              </div>
+
+              <div class="grade-points" *ngIf="course.selectedGrade !== ''">
+                {{ getGradePoints(course.selectedGrade) | number:'1.2-2' }}
+              </div>
+              <div class="grade-points empty" *ngIf="course.selectedGrade === ''">—</div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- Result Panel -->
+        <div class="result-panel">
+
+          <!-- Projected GPA -->
+          <div class="result-card">
+            <p class="result-label">Projected GPA</p>
+            <p class="result-value" [ngClass]="projectedGpaClass">
+              {{ projectedGpa !== null ? (projectedGpa | number:'1.2-2') : '—' }}
+            </p>
+            <p class="result-status" [ngClass]="projectedGpaClass" *ngIf="projectedGpa !== null">
+              {{ projectedGpaLabel }}
+            </p>
+            <p class="result-hint" *ngIf="projectedGpa === null">
+              Select grades to see your projected GPA
+            </p>
+          </div>
+
+          <!-- Comparison -->
+          <div class="compare-card" *ngIf="projectedGpa !== null">
+            <div class="compare-row">
+              <span class="compare-label">Current GPA</span>
+              <span class="compare-val">{{ currentGpa }}</span>
+            </div>
+            <div class="compare-arrow">
+              <svg *ngIf="gpaDiff > 0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/>
+              </svg>
+              <svg *ngIf="gpaDiff < 0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/>
+              </svg>
+              <svg *ngIf="gpaDiff === 0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+              </svg>
+              <span [class.up]="gpaDiff > 0" [class.down]="gpaDiff < 0" [class.neutral]="gpaDiff === 0">
+                {{ gpaDiff > 0 ? '+' : '' }}{{ gpaDiff | number:'1.2-2' }}
+              </span>
+            </div>
+            <div class="compare-row">
+              <span class="compare-label">Projected GPA</span>
+              <span class="compare-val">{{ projectedGpa | number:'1.2-2' }}</span>
+            </div>
+          </div>
+
+          <!-- Grade scale reference -->
+          <div class="scale-card">
+            <p class="scale-title">Grade Scale</p>
+            <div class="scale-list">
+              <div class="scale-row" *ngFor="let g of gradeOptions">
+                <span class="scale-grade">{{ g.label }}</span>
+                <div class="scale-bar-wrap">
+                  <div class="scale-bar" [style.width.%]="(g.value / 4) * 100"></div>
+                </div>
+                <span class="scale-points">{{ g.value | number:'1.2-2' }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Reset -->
+          <button class="btn-reset" (click)="resetGrades()">
+            Reset All Grades
+          </button>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

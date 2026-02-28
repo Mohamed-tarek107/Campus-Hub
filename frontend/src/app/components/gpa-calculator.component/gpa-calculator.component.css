@@ -1,0 +1,410 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=DM+Sans:wght@400;500&display=swap');
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── Layout ──────────────────────────────────────────── */
+.layout {
+  display: flex;
+  height: 100vh;
+  font-family: 'DM Sans', sans-serif;
+  background: #0c1220;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.page {
+  flex: 1;
+  overflow-y: auto;
+  padding: 2rem 2.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+/* ── Page Header ─────────────────────────────────────── */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1.5rem;
+}
+
+.page-header h1 {
+  font-family: 'Sora', sans-serif;
+  font-size: 1.55rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: .35rem;
+}
+
+.page-header p {
+  font-size: .92rem;
+  color: rgba(255,255,255,.4);
+}
+
+/* Current GPA badge */
+.current-gpa-badge {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 14px;
+  padding: 1rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .2rem;
+  flex-shrink: 0;
+  min-width: 130px;
+}
+
+.badge-label {
+  font-size: .75rem;
+  font-weight: 600;
+  color: rgba(255,255,255,.3);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.badge-value {
+  font-family: 'Sora', sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: white;
+  line-height: 1.1;
+}
+
+.badge-status {
+  font-size: .8rem;
+  font-weight: 500;
+}
+
+/* ── Content Grid ────────────────────────────────────── */
+.content-grid {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+/* ── Courses Panel ───────────────────────────────────── */
+.courses-panel {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.panel-title {
+  display: flex;
+  align-items: center;
+  gap: .65rem;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid rgba(255,255,255,.05);
+  font-family: 'Sora', sans-serif;
+  font-size: .95rem;
+  font-weight: 600;
+  color: white;
+}
+
+.panel-title svg {
+  width: 17px; height: 17px;
+  color: #60a5fa;
+}
+
+/* Course rows */
+.course-list { padding: .5rem; }
+
+.course-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1rem;
+  border-radius: 11px;
+  transition: background .15s;
+}
+
+.course-row:hover { background: rgba(255,255,255,.03); }
+
+.course-index {
+  width: 32px; height: 32px;
+  background: rgba(255,255,255,.05);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Sora', sans-serif;
+  font-size: .82rem; font-weight: 700;
+  color: rgba(255,255,255,.3);
+  flex-shrink: 0;
+}
+
+.course-info { flex: 1; min-width: 0; }
+
+.course-name {
+  font-size: .93rem;
+  font-weight: 500;
+  color: rgba(255,255,255,.85);
+  margin-bottom: .2rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.course-meta {
+  font-size: .78rem;
+  color: rgba(255,255,255,.3);
+}
+
+/* Grade select */
+.grade-select-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.grade-select {
+  appearance: none;
+  padding: .55rem 2rem .55rem .9rem;
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: 9px;
+  font-size: .9rem;
+  font-family: 'DM Sans', sans-serif;
+  color: rgba(255,255,255,.5);
+  cursor: pointer;
+  outline: none;
+  transition: border-color .2s, background .2s;
+  min-width: 90px;
+}
+
+.grade-select.selected {
+  color: white;
+  border-color: rgba(37,99,235,.4);
+  background: rgba(37,99,235,.08);
+}
+
+.grade-select:focus {
+  border-color: rgba(37,99,235,.5);
+}
+
+.grade-select option {
+  background: #1a2436;
+  color: white;
+}
+
+.grade-select-wrap svg {
+  position: absolute;
+  right: .55rem; top: 50%;
+  transform: translateY(-50%);
+  width: 13px; height: 13px;
+  color: rgba(255,255,255,.3);
+  pointer-events: none;
+}
+
+/* Grade points display */
+.grade-points {
+  font-family: 'Sora', sans-serif;
+  font-size: .95rem;
+  font-weight: 600;
+  color: #60a5fa;
+  width: 50px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.grade-points.empty { color: rgba(255,255,255,.15); }
+
+/* ── Result Panel ────────────────────────────────────── */
+.result-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Projected GPA card */
+.result-card {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 16px;
+  padding: 1.75rem;
+  text-align: center;
+}
+
+.result-label {
+  font-size: .78rem;
+  font-weight: 600;
+  color: rgba(255,255,255,.3);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  margin-bottom: .6rem;
+}
+
+.result-value {
+  font-family: 'Sora', sans-serif;
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: white;
+  line-height: 1;
+  margin-bottom: .5rem;
+  transition: color .3s;
+}
+
+.result-status {
+  font-size: .9rem;
+  font-weight: 600;
+}
+
+.result-hint {
+  font-size: .82rem;
+  color: rgba(255,255,255,.2);
+  line-height: 1.5;
+}
+
+/* GPA color classes */
+.gpa-excellent  { color: #34d399; }
+.gpa-very-good  { color: #60a5fa; }
+.gpa-good       { color: #a78bfa; }
+.gpa-pass       { color: #fbbf24; }
+.gpa-fail       { color: #f87171; }
+
+/* Compare card */
+.compare-card {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+}
+
+.compare-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .3rem;
+}
+
+.compare-label {
+  font-size: .72rem;
+  color: rgba(255,255,255,.3);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  font-weight: 600;
+}
+
+.compare-val {
+  font-family: 'Sora', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: white;
+}
+
+.compare-arrow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .25rem;
+}
+
+.compare-arrow svg {
+  width: 18px; height: 18px;
+}
+
+.compare-arrow .up   { color: #34d399; font-size: .82rem; font-weight: 700; }
+.compare-arrow .down { color: #f87171; font-size: .82rem; font-weight: 700; }
+.compare-arrow .neutral { color: rgba(255,255,255,.3); font-size: .82rem; font-weight: 700; }
+
+/* Scale card */
+.scale-card {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+}
+
+.scale-title {
+  font-size: .78rem;
+  font-weight: 600;
+  color: rgba(255,255,255,.3);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  margin-bottom: .85rem;
+}
+
+.scale-list {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+
+.scale-row {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+}
+
+.scale-grade {
+  font-size: .82rem;
+  font-weight: 600;
+  color: rgba(255,255,255,.6);
+  width: 28px;
+  flex-shrink: 0;
+}
+
+.scale-bar-wrap {
+  flex: 1;
+  height: 5px;
+  background: rgba(255,255,255,.06);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.scale-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #2563eb, #6366f1);
+  border-radius: 10px;
+  transition: width .4s ease;
+}
+
+.scale-points {
+  font-size: .78rem;
+  color: rgba(255,255,255,.35);
+  width: 32px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* Reset button */
+.btn-reset {
+  width: 100%;
+  padding: .8rem;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: 11px;
+  font-size: .9rem;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  color: rgba(255,255,255,.4);
+  cursor: pointer;
+  transition: border-color .2s, color .2s, background .2s;
+}
+
+.btn-reset:hover {
+  border-color: rgba(239,68,68,.3);
+  color: #f87171;
+  background: rgba(239,68,68,.05);
+}
+
+/* ── Responsive ──────────────────────────────────────── */
+@media (max-width: 900px) {
+  .content-grid { grid-template-columns: 1fr; }
+  .result-panel { order: -1; }
+}
+
+@media (max-width: 600px) {
+  .page { padding: 1.5rem 1rem; }
+  .page-header { flex-direction: column; }
+}
