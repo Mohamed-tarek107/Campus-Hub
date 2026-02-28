@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { SidenavComponent } from '../sidenav/sidenav.component';
 import { TopnavComponent } from '../uppernav/uppernav.component';
+import { GpaAdvisorComponent } from '../gpa-advisor/gpa-advisor.component';
 
 interface Course {
   course_name: string;
@@ -14,7 +15,7 @@ interface Course {
 @Component({
   selector: 'app-gpa-calculator',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, DecimalPipe, SidenavComponent, TopnavComponent],
+  imports: [CommonModule, FormsModule, RouterModule, DecimalPipe, SidenavComponent, TopnavComponent, GpaAdvisorComponent],
   templateUrl: './gpa-calculator.component.html',
   styleUrls: ['./gpa-calculator.component.css']
 })
