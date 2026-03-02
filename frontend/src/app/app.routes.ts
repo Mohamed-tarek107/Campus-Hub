@@ -6,6 +6,7 @@ import { AssigndoctorsComponent } from './components/assigndoctors/assigndoctors
 import { GpaCalculatorComponent } from './components/gpa-calculator.component/gpa-calculator.component';
 import { MyCoursesComponent } from './components/mycourses/mycourses.component';
 import { AnnouncementsComponent } from './components/announcements/announcements.component';
+import { EventsComponent } from './components/events-component/events.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full'},
@@ -15,5 +16,6 @@ export const routes: Routes = [
     { path: 'assignDoctors', component: AssigndoctorsComponent},
     { path: 'gpaCalculator', component: GpaCalculatorComponent},
     { path: 'myCourses', component: MyCoursesComponent},
-    { path: 'announcements', component: AnnouncementsComponent}
+    { path: 'announcements', component: AnnouncementsComponent},
+    { path: 'events', component: EventsComponent}
 ];
