@@ -17,6 +17,14 @@
   position: relative;
   border-right: 1px solid rgba(255,255,255,.06);
   overflow: hidden;
+  transition: width .3s cubic-bezier(.4,0,.2,1),
+              padding .3s cubic-bezier(.4,0,.2,1);
+}
+
+/* ── Collapsed state ─────────────────────────────────── */
+.sidenav.collapsed {
+  width: 72px;
+  padding: 2rem .75rem;
 }
 
 .sidenav::before {
@@ -34,6 +42,8 @@
   align-items: center;
   gap: .9rem;
   padding: .5rem .5rem 2rem;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .brand-icon {
@@ -51,13 +61,17 @@
 .brand-text {
   display: flex;
   flex-direction: column;
+  opacity: 1;
+  transition: opacity .2s ease;
+  overflow: hidden;
 }
+
+.collapsed .brand-text { opacity: 0; pointer-events: none; }
 
 .brand-name {
   font-family: 'Sora', sans-serif;
   font-weight: 600; font-size: 1.2rem;
-  color: white;
-  line-height: 1.2;
+  color: white; line-height: 1.2;
 }
 
 .brand-sub {
@@ -73,6 +87,7 @@
   display: flex;
   flex-direction: column;
   gap: .3rem;
+  overflow: hidden;
 }
 
 .nav-item {
@@ -85,8 +100,17 @@
   color: rgba(255,255,255,.45);
   font-size: 1.05rem;
   font-weight: 500;
-  transition: background .2s, color .2s;
+  transition: background .2s, color .2s, padding .3s;
   cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* Center icons when collapsed */
+.collapsed .nav-item {
+  padding: .85rem;
+  justify-content: center;
+  gap: 0;
 }
 
 .nav-item svg {
@@ -94,6 +118,14 @@
   flex-shrink: 0;
   transition: color .2s;
 }
+
+.nav-item span {
+  opacity: 1;
+  transition: opacity .15s ease;
+  overflow: hidden;
+}
+
+.collapsed .nav-item span { opacity: 0; width: 0; }
 
 .nav-item:hover {
   background: rgba(255,255,255,.06);
@@ -112,10 +144,55 @@
   display: flex;
   flex-direction: column;
   gap: .3rem;
+  overflow: hidden;
 }
 
 .divider-line {
   height: 1px;
   background: rgba(255,255,255,.06);
   margin: .85rem 0;
+}
+
+/* ── Collapse Button ─────────────────────────────────── */
+.collapse-btn {
+  display: flex;
+  align-items: center;
+  gap: .9rem;
+  padding: .85rem 1rem;
+  border-radius: 11px;
+  background: none;
+  border: none;
+  color: rgba(255,255,255,.3);
+  font-size: 1.05rem;
+  font-weight: 500;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  transition: background .2s, color .2s, padding .3s;
+}
+
+.collapsed .collapse-btn {
+  padding: .85rem;
+  justify-content: center;
+  gap: 0;
+}
+
+.collapse-btn span {
+  opacity: 1;
+  transition: opacity .15s ease;
+}
+
+.collapsed .collapse-btn span { opacity: 0; width: 0; }
+
+.collapse-btn svg {
+  width: 18px; height: 18px;
+  flex-shrink: 0;
+  transition: color .2s;
+}
+
+.collapse-btn:hover {
+  background: rgba(255,255,255,.05);
+  color: rgba(255,255,255,.6);
 }
