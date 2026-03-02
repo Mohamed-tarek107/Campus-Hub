@@ -2,24 +2,26 @@ import { Routes } from '@angular/router';
 import { LoginPage } from './components/login-page/login-page';
 import { RegisterPage } from './components/register-page/register-page';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
-import { AssigndoctorsComponent } from './components/assigndoctors/assigndoctors.component';
+import { AssignDoctorsComponent } from './components/assigndoctors/assigndoctors.component';
 import { GpaCalculatorComponent } from './components/gpa-calculator.component/gpa-calculator.component';
 import { MyCoursesComponent } from './components/mycourses/mycourses.component';
 import { AnnouncementsComponent } from './components/announcements/announcements.component';
 import { EventsComponent } from './components/events-component/events.component';
 import { FeedbackComponent } from './components/feedback.component/feedback.component';
 import { SettingsComponent } from './components/settings.component/settings.component';
+import { EditDoctorsComponent } from './components/edit-doctors.component/edit-doctors.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full'},
     { path: 'login', component: LoginPage },
     { path: 'register', component: RegisterPage },
     { path: 'dashboard', component: DashboardComponent},
-    { path: 'assignDoctors', component: AssigndoctorsComponent},
+    { path: 'assignDoctors', component: AssignDoctorsComponent},
     { path: 'gpaCalculator', component: GpaCalculatorComponent},
     { path: 'myCourses', component: MyCoursesComponent},
     { path: 'announcements', component: AnnouncementsComponent},
     { path: 'events', component: EventsComponent},
     { path: 'feedback', component: FeedbackComponent},
     { path: 'settings', component: SettingsComponent},
+    { path: 'editDoctors', component: EditDoctorsComponent}
 ];
