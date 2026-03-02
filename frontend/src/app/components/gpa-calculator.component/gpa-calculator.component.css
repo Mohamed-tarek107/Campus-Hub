@@ -428,3 +428,14 @@
   .page { padding: 1.5rem 1rem; }
   .page-header { flex-direction: column; }
 }
+
+.copyright {
+  display: block;
+  width: 100%;
+  text-align: center;
+  margin-top: 1rem;
+  padding-bottom: .35rem;
+  font-size: .82rem;
+  color: rgba(148,163,184,.58);
+  z-index: 1;
+}
