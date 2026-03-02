@@ -1,0 +1,125 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=DM+Sans:wght@400;500&display=swap');
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+.layout {
+  display: flex;
+  height: 100vh;
+  font-family: 'DM Sans', sans-serif;
+  background: #0c1220;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.page {
+  flex: 1;
+  overflow-y: auto;
+  padding: 2rem 2.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.page-header h1 {
+  font-family: 'Sora', sans-serif;
+  font-size: 1.55rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: .35rem;
+}
+
+.page-header p {
+  font-size: .92rem;
+  color: rgba(255,255,255,.4);
+}
+
+/* ── Feedback ─────────────────────────────────────────── */
+.feedback-wrap {
+  max-width: 600px;
+}
+
+.feedback-card {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.feedback-textarea {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 1.5rem;
+  font-size: .95rem;
+  font-family: 'DM Sans', sans-serif;
+  color: rgba(255,255,255,.8);
+  resize: none;
+  line-height: 1.7;
+}
+
+.feedback-textarea::placeholder { color: rgba(255,255,255,.2); }
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid rgba(255,255,255,.05);
+}
+
+.char-count {
+  font-size: .8rem;
+  color: rgba(255,255,255,.25);
+}
+
+.btn-submit {
+  padding: .65rem 1.5rem;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 9px;
+  font-size: .9rem;
+  font-weight: 600;
+  font-family: 'Sora', sans-serif;
+  cursor: pointer;
+  min-width: 130px;
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .2s;
+}
+
+.btn-submit:hover:not(:disabled) { background: #1d4ed8; }
+.btn-submit:disabled { opacity: .4; cursor: not-allowed; }
+
+.success-msg {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  padding: 1.25rem 1.5rem;
+  background: rgba(52,211,153,.08);
+  border: 1px solid rgba(52,211,153,.2);
+  border-radius: 14px;
+  font-size: .95rem;
+  color: #34d399;
+  font-weight: 500;
+}
+
+.success-msg svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+.spinner {
+  width: 16px; height: 16px;
+  border: 2px solid rgba(255,255,255,.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }

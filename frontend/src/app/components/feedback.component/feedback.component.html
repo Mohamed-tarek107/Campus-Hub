@@ -1,0 +1,48 @@
+<div class="layout">
+  <app-sidenav></app-sidenav>
+
+  <div class="main">
+    <app-topnav></app-topnav>
+
+    <div class="page">
+
+      <div class="page-header">
+        <h1>Feedback</h1>
+        <p>Share your thoughts with us. We read everything.</p>
+      </div>
+
+      <div class="feedback-wrap">
+
+        <div class="success-msg" *ngIf="submitted">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          Thank you — your feedback has been received.
+        </div>
+
+        <div class="feedback-card" *ngIf="!submitted">
+          <textarea
+            [(ngModel)]="feedbackText"
+            placeholder="Write your feedback here..."
+            rows="8"
+            class="feedback-textarea"
+            maxlength="1000"
+          ></textarea>
+          <div class="card-footer">
+            <span class="char-count">{{ feedbackText.length }} / 1000</span>
+            <button
+              class="btn-submit"
+              (click)="onSubmit()"
+              [disabled]="!feedbackText.trim() || isLoading"
+            >
+              <span *ngIf="!isLoading">Send Feedback</span>
+              <span *ngIf="isLoading" class="spinner"></span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
