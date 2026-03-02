@@ -9,8 +9,10 @@
     <div class="header">
       <div class="brand-icon">Z</div>
       <div>
-        <h1>Choose Your Doctors</h1>
-        <p>Select a doctor, day, and time for each of your courses.</p>
+        <h1 *ngIf="!isEditMode">Choose Your Doctors</h1>
+        <h1 *ngIf="isEditMode">Edit Your Doctors</h1>
+        <p *ngIf="!isEditMode">Select a doctor, day, and time for each of your courses.</p>
+        <p *ngIf="isEditMode">Update any of your current doctor selections.</p>
       </div>
     </div>
 
@@ -79,7 +81,8 @@
     <!-- Submit -->
     <div class="submit-row">
       <button class="btn-submit" (click)="onSubmit()" [disabled]="!allComplete || isLoading">
-        <span *ngIf="!isLoading">Confirm</span>
+        <span *ngIf="!isLoading && !isEditMode">Confirm</span>
+        <span *ngIf="!isLoading && isEditMode">Save Changes</span>
         <span *ngIf="isLoading" class="spinner"></span>
       </button>
       <p class="submit-hint" *ngIf="!allComplete">Fill all rows to continue</p>

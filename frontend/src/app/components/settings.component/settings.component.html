@@ -27,6 +27,26 @@
 
       <div class="sections">
 
+        <!-- Doctor Selections Card -->
+        <div class="section-card nav-card" (click)="goToAssignDoctors()">
+          <div class="nav-card-left">
+            <div class="nav-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+            </div>
+            <div>
+              <h2 class="nav-card-title">My Doctor Selections</h2>
+              <p class="nav-card-sub">View or change the doctors assigned to your courses.</p>
+            </div>
+          </div>
+          <svg class="nav-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="5" y1="12" x2="19" y2="12"/>
+            <polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </div>
+
         <!-- Profile Info -->
         <div class="section-card">
           <h2 class="section-title">Profile Information</h2>

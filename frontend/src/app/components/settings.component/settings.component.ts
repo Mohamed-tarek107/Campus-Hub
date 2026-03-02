@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { SidenavComponent } from '../sidenav/sidenav.component';
 import { TopnavComponent } from '../uppernav/uppernav.component';
 
@@ -13,7 +14,6 @@ import { TopnavComponent } from '../uppernav/uppernav.component';
 })
 export class SettingsComponent implements OnInit {
 
-  // ── State ─────────────────────────────────────────────
   isLoadingProfile  = false;
   isLoadingPassword = false;
   successMsg = '';
@@ -22,7 +22,6 @@ export class SettingsComponent implements OnInit {
   showCurrentPass = false;
   showNewPass     = false;
 
-  // ── Forms ─────────────────────────────────────────────
   profileForm = {
     username:     '',
     phone_number: '',
@@ -37,15 +36,24 @@ export class SettingsComponent implements OnInit {
     confirmPassword: ''
   };
 
+  constructor(private router: Router) {}
+
   ngOnInit(): void {
     // TODO: GET /api/student/profile → populate profileForm fields
+  }
+
+  // Navigates to assign-doctors.
+  // Pass mode='edit' so the component knows to load existing selections.
+  // Pass mode='assign' for first-time students (handled by is_firstlogin check server-side).
+  // The assign-doctors component itself decides what to show based on whether
+  // the student already has enrolled courses or not.
+  goToAssignDoctors(): void {
+    this.router.navigate(['/assignDoctors']);
   }
 
   onSaveProfile(): void {
     this.clearMessages();
     // TODO: PATCH /api/student/profile with profileForm
-    // on success → successMsg = 'Profile updated successfully.'
-    // on error   → errorMsg = error message
   }
 
   onChangePassword(): void {
@@ -55,8 +63,6 @@ export class SettingsComponent implements OnInit {
       return;
     }
     // TODO: PATCH /api/student/password with { currentPassword, newPassword }
-    // on success → successMsg = 'Password updated successfully.'
-    // on error   → errorMsg = error message
   }
 
   private clearMessages(): void {

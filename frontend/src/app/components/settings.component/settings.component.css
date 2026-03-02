@@ -183,3 +183,61 @@
   .fields { grid-template-columns: 1fr; }
   .page { padding: 1.5rem 1rem; }
 }
+
+/* ── Doctor Selections Nav Card ──────────────────────── */
+.nav-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: border-color .2s, background .2s;
+  padding: 1.25rem 1.5rem;
+}
+
+.nav-card:hover {
+  border-color: rgba(37,99,235,.35);
+  background: rgba(37,99,235,.05);
+}
+
+.nav-card-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.nav-icon {
+  width: 42px; height: 42px;
+  background: rgba(37,99,235,.15);
+  border-radius: 11px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+.nav-icon svg {
+  width: 18px; height: 18px;
+  color: #60a5fa;
+}
+
+.nav-card-title {
+  font-family: 'Sora', sans-serif;
+  font-size: .97rem; font-weight: 600;
+  color: white; margin-bottom: .2rem;
+  border: none; padding: 0;
+}
+
+.nav-card-sub {
+  font-size: .83rem;
+  color: rgba(255,255,255,.35);
+}
+
+.nav-arrow {
+  width: 16px; height: 16px;
+  color: rgba(255,255,255,.25);
+  flex-shrink: 0;
+  transition: color .2s, transform .2s;
+}
+
+.nav-card:hover .nav-arrow {
+  color: #60a5fa;
+  transform: translateX(3px);
+}
