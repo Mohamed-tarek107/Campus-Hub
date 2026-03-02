@@ -8,6 +8,7 @@ import { MyCoursesComponent } from './components/mycourses/mycourses.component';
 import { AnnouncementsComponent } from './components/announcements/announcements.component';
 import { EventsComponent } from './components/events-component/events.component';
 import { FeedbackComponent } from './components/feedback.component/feedback.component';
+import { SettingsComponent } from './components/settings.component/settings.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full'},
@@ -19,5 +20,6 @@ export const routes: Routes = [
     { path: 'myCourses', component: MyCoursesComponent},
     { path: 'announcements', component: AnnouncementsComponent},
     { path: 'events', component: EventsComponent},
-    { path: 'feedback', component: FeedbackComponent}
+    { path: 'feedback', component: FeedbackComponent},
+    { path: 'settings', component: SettingsComponent},
 ];
