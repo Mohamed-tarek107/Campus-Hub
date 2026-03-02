@@ -1,0 +1,55 @@
+<div class="layout">
+  <app-sidenav></app-sidenav>
+
+  <div class="main">
+    <app-topnav></app-topnav>
+
+    <div class="page">
+
+      <!-- Header -->
+      <div class="page-header">
+        <div>
+          <h1>Announcements</h1>
+          <p>Latest updates from your department.</p>
+        </div>
+        <div class="count-badge">
+          <span class="count-value">{{ announcements.length }}</span>
+          <span class="count-label">Total</span>
+        </div>
+      </div>
+
+      <!-- Empty state -->
+      <div class="empty-state" *ngIf="announcements.length === 0">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        </svg>
+        <p>No announcements right now</p>
+        <span>Check back later for updates from your department.</span>
+      </div>
+
+      <!-- Announcements list -->
+      <div class="announcements-list" *ngIf="announcements.length > 0">
+        <div class="announcement-card" *ngFor="let a of announcements; let i = index">
+
+          <div class="card-left">
+            <div class="card-dot"></div>
+            <div class="card-line" *ngIf="i < announcements.length - 1"></div>
+          </div>
+
+          <div class="card-body">
+            <div class="card-meta">
+              <span class="card-source">{{ a.source }}</span>
+              <span class="meta-dot">·</span>
+              <span class="card-date">{{ a.date }}</span>
+            </div>
+            <h3 class="card-title">{{ a.title }}</h3>
+            <p class="card-description">{{ a.description }}</p>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

@@ -1,0 +1,207 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=DM+Sans:wght@400;500&display=swap');
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── Layout ──────────────────────────────────────────── */
+.layout {
+  display: flex;
+  height: 100vh;
+  font-family: 'DM Sans', sans-serif;
+  background: #0c1220;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.page {
+  flex: 1;
+  overflow-y: auto;
+  padding: 2rem 2.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+/* ── Page Header ─────────────────────────────────────── */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.page-header h1 {
+  font-family: 'Sora', sans-serif;
+  font-size: 1.55rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: .35rem;
+}
+
+.page-header p {
+  font-size: .92rem;
+  color: rgba(255,255,255,.4);
+}
+
+.count-badge {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 14px;
+  padding: .85rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .1rem;
+  flex-shrink: 0;
+}
+
+.count-value {
+  font-family: 'Sora', sans-serif;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: white;
+  line-height: 1;
+}
+
+.count-label {
+  font-size: .75rem;
+  color: rgba(255,255,255,.3);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  font-weight: 600;
+}
+
+/* ── Empty State ─────────────────────────────────────── */
+.empty-state {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: .85rem;
+  padding: 5rem 1rem;
+  color: rgba(255,255,255,.2);
+}
+
+.empty-state svg {
+  width: 44px; height: 44px;
+}
+
+.empty-state p {
+  font-family: 'Sora', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: rgba(255,255,255,.3);
+}
+
+.empty-state span {
+  font-size: .85rem;
+  color: rgba(255,255,255,.2);
+}
+
+/* ── Announcements List ──────────────────────────────── */
+.announcements-list {
+  display: flex;
+  flex-direction: column;
+  max-width: 760px;
+}
+
+/* ── Announcement Card ───────────────────────────────── */
+.announcement-card {
+  display: flex;
+  gap: 1.25rem;
+}
+
+/* Left timeline column */
+.card-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  padding-top: .25rem;
+}
+
+.card-dot {
+  width: 12px; height: 12px;
+  background: #2563eb;
+  border-radius: 50%;
+  border: 2px solid #0c1220;
+  outline: 2px solid #2563eb;
+  flex-shrink: 0;
+  z-index: 1;
+}
+
+.card-line {
+  width: 1px;
+  flex: 1;
+  background: rgba(255,255,255,.07);
+  margin: .4rem 0;
+  min-height: 1.5rem;
+}
+
+/* Card body */
+.card-body {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 14px;
+  padding: 1.25rem 1.5rem;
+  flex: 1;
+  margin-bottom: 1rem;
+  transition: border-color .2s, background .2s;
+}
+
+.card-body:hover {
+  border-color: rgba(255,255,255,.12);
+  background: rgba(255,255,255,.06);
+}
+
+.card-meta {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  margin-bottom: .65rem;
+}
+
+.card-source {
+  font-size: .78rem;
+  font-weight: 600;
+  color: #60a5fa;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+
+.meta-dot {
+  color: rgba(255,255,255,.2);
+  font-size: .78rem;
+}
+
+.card-date {
+  font-size: .78rem;
+  color: rgba(255,255,255,.3);
+}
+
+.card-title {
+  font-family: 'Sora', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: white;
+  margin-bottom: .6rem;
+  line-height: 1.4;
+}
+
+.card-description {
+  font-size: .9rem;
+  color: rgba(255,255,255,.5);
+  line-height: 1.7;
+}
+
+/* ── Responsive ──────────────────────────────────────── */
+@media (max-width: 600px) {
+  .page { padding: 1.5rem 1rem; }
+  .page-header { flex-wrap: wrap; }
+  .card-body { padding: 1rem 1.1rem; }
+}
