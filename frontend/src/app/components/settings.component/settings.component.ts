@@ -15,7 +15,9 @@ import { TopnavComponent } from '../uppernav/uppernav.component';
 export class SettingsComponent implements OnInit {
 
   isLoadingProfile  = false;
-  isLoadingPassword = false;
+  isLoadingPassword  = false;
+  isDeleting         = false;
+  showDeleteConfirm  = false;
   successMsg = '';
   errorMsg   = '';
 
@@ -63,6 +65,16 @@ export class SettingsComponent implements OnInit {
       return;
     }
     // TODO: PATCH /api/student/password with { currentPassword, newPassword }
+  }
+
+  onDeleteAccount(): void {
+    // TODO: DELETE /api/student/account
+    // on success → clear token, navigate to /login
+    // this.isDeleting = true;
+    // this.authService.deleteAccount().subscribe({
+    //   next: () => { this.router.navigate(['/login']); },
+    //   error: (err) => { this.isDeleting = false; this.errorMsg = err.error?.message || 'Could not delete account.'; }
+    // });
   }
 
   private clearMessages(): void {

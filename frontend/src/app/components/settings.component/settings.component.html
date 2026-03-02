@@ -161,7 +161,43 @@
           </div>
         </div>
 
+        <!-- Delete Account -->
+        <div class="section-card danger-card">
+          <div class="danger-info">
+            <h2 class="section-title danger-title">Delete Account</h2>
+            <p class="danger-desc">Permanently delete your account and all associated data. This action cannot be undone.</p>
+          </div>
+          <div class="section-footer">
+            <button class="btn-delete" (click)="showDeleteConfirm = true">
+              Delete My Account
+            </button>
+          </div>
+        </div>
+
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="overlay" *ngIf="showDeleteConfirm" (click)="showDeleteConfirm = false">
+  <div class="confirm-modal" (click)="$event.stopPropagation()">
+    <div class="confirm-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="3 6 5 6 21 6"/>
+        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+        <path d="M10 11v6M14 11v6"/>
+        <path d="M9 6V4h6v2"/>
+      </svg>
+    </div>
+    <h3>Are you sure?</h3>
+    <p>Your account and all your data will be permanently deleted. There is no going back.</p>
+    <div class="confirm-actions">
+      <button class="btn-cancel-delete" (click)="showDeleteConfirm = false">Cancel</button>
+      <button class="btn-confirm-delete" (click)="onDeleteAccount()" [disabled]="isDeleting">
+        <span *ngIf="!isDeleting">Yes, delete my account</span>
+        <span *ngIf="isDeleting" class="spinner"></span>
+      </button>
     </div>
   </div>
 </div>
