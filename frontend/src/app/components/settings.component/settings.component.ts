@@ -27,7 +27,7 @@ export class SettingsComponent implements OnInit {
     phone_number: '',
     department:   'bis',
     year:         1,
-    bio:          ''
+    gpa:          0.00
   };
 
   passwordForm = {
