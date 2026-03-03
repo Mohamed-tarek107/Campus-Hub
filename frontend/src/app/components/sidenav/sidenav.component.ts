@@ -9,7 +9,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   styleUrl: './sidenav.component.css',
 })
 export class SidenavComponent {
-  isCollapsed = true;
+  isCollapsed = false;
 
   toggle(): void {
     this.isCollapsed = !this.isCollapsed;

@@ -66,5 +66,5 @@ const HTMLresponse_AI = async (title, details, date, type, host = "BIS") => {
     }
 }
 
-
+module.exports = { HTMLresponse_AI }
 

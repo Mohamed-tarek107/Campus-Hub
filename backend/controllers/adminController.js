@@ -215,6 +215,8 @@ const addAnnouncement = async (req, res) => {
             [title, description, source, date]
         );
 
+        const html = await HTMLresponse_AI(title, description, date, type = "Announcement", source)
+        
         res.status(201).json({ message: "Announcement created successfully" });
     } catch (error) {
         console.error("addAnnouncement error:", error.message);

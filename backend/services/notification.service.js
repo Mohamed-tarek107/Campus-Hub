@@ -1,5 +1,6 @@
 const nodemailer = require("nodemailer");
 require("dotenv").config();
+const db = require("../config/db")
 
 const transporter = nodemailer.createTransport({
     service: "gmail",
@@ -9,18 +10,28 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-const notificationMail = async (to, subject, html) => {
+const notificationMail = async (subject, html) => {
     try {
-        await transporter.sendMail({
-            from: {
-                name: "CampusHub App",
-                address: process.env.MYMAIL,
-            },
-            to,
-            subject: `${subject}`,
-            html: `${html}`,
-        });
+        const batchSize = 30;
+        const { rows: users } = await db.query("SELECT email FROM users");
 
+        for (let i = 0; i < users.length; i += batchSize) {
+            const batch = users.slice(i, i + batchSize).filter((user) => user?.email);
+
+            await Promise.all(
+                batch.map((user) =>
+                    transporter.sendMail({
+                        from: {
+                            name: "CampusHub App",
+                            address: process.env.MYMAIL,
+                        },
+                        to: user.email,
+                        subject: `${subject}`,
+                        html: `${html}`,
+                    })
+                )
+            );
+        }
         return true;
     } catch (error) {
         console.error("Mail error:", error);
