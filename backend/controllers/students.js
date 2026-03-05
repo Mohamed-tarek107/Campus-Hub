@@ -177,7 +177,7 @@ const takeFeedback = async (req,res) => {
 
         await db.query("INSERT INTO feedbacks (user_id, feedback) VALUES ($1,$2)", [user_id, feedback])
 
-        return res.status(200).json({ message: "Feedback Taken Successfully" });
+        return res.status(201).json({ message: "Feedback Taken Successfully" });
     } catch (error) {
         console.error("viewAllStudent_tasks error:", error.message);
         return res.status(500).json({ message: "Server error" });

@@ -276,6 +276,21 @@ const deleteAnnouncement = async (req, res) => {
     }
 };
 
+
+
+const listAllFeedbacks = async (req,res) => {
+    try {
+        const {rows: feedbacks} = db.query("SELECT * FROM feedbacks")
+
+        if(feedbacks.length === 0) return res.status(404).json({ message: "No feedbacks Added :(" });
+
+        res.status(200).json({ feedbacks })
+    } catch (error) {
+        console.error("listfeedbacks error:", error.message);
+        res.status(500).json({ message: "Server error" });
+    }
+}
+
 module.exports = {
     addDoctor,
     addCourse,
@@ -288,4 +303,5 @@ module.exports = {
     listAllAnnouncements,
     deleteAnnouncement,
     deleteEvent,
+    listAllFeedbacks
 };

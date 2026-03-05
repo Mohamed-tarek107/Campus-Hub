@@ -11,6 +11,7 @@ const {
     listAllAnnouncements,
     deleteAnnouncement,
     deleteEvent,
+    listAllFeedbacks,
 } = require("../controllers/adminController.js");
 const { ensureAuthenticated, requireAdmin } = require("../middlewares/authMiddleware")
 const router = express.Router();
@@ -33,6 +34,7 @@ router.get("/listAllAnnounces", ensureAuthenticated, requireAdmin, listAllAnnoun
 
 router.post("/addAnnouncment", ensureAuthenticated, requireAdmin, addAnnouncement)
 
+router.get("/listFeedbacks", ensureAuthenticated, requireAdmin, listAllFeedbacks)
 
 router.delete("/events/:event_id", ensureAuthenticated, requireAdmin, deleteEvent)
 router.delete("/announcements/:announcement_id", ensureAuthenticated, requireAdmin, deleteAnnouncement)
