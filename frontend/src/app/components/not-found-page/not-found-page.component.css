@@ -1,0 +1,78 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=DM+Sans:wght@400;500&display=swap');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+.page {
+    min-height: 100vh;
+    background: #0f1623;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Sans', sans-serif;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.glow {
+    position: fixed;
+    width: 500px;
+    height: 500px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(37, 99, 235, .07) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+}
+
+h1 {
+    font-family: 'Sora', sans-serif;
+    font-size: 6rem;
+    font-weight: 700;
+    color: white;
+    line-height: 1;
+    letter-spacing: -.03em;
+}
+
+.sub {
+    font-family: 'Sora', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, .5);
+}
+
+.hint {
+    font-size: .88rem;
+    color: rgba(255, 255, 255, .2);
+}
+
+.btn-home {
+    margin-top: .75rem;
+    padding: .75rem 2rem;
+    background: #2563eb;
+    color: white;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: .92rem;
+    font-weight: 600;
+    font-family: 'Sora', sans-serif;
+    transition: background .2s;
+}
+
+.btn-home:hover {
+    background: #1d4ed8;
+}
