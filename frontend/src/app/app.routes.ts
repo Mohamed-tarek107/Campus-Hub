@@ -10,9 +10,13 @@ import { EventsComponent } from './components/events-component/events.component'
 import { FeedbackComponent } from './components/feedback.component/feedback.component';
 import { SettingsComponent } from './components/settings.component/settings.component';
 import { NotFoundPageComponent } from './components/not-found-page/not-found-page.component';
+import { AdminDashboardComponent } from './components/Admin/admin.dashboard/admin.dashboard.component';
 
 export const routes: Routes = [
+    //starter route
     { path: '', redirectTo: 'login', pathMatch: 'full'},
+
+    //user routes
     { path: 'login', component: LoginPage },
     { path: 'register', component: RegisterPage },
     { path: 'dashboard', component: DashboardComponent},
@@ -24,6 +28,12 @@ export const routes: Routes = [
     { path: 'feedback', component: FeedbackComponent},
     { path: 'settings', component: SettingsComponent},
     
+    //Admin Routes
+    { path: 'adminDashboard', component: AdminDashboardComponent },
+    
 
-    { path: '**', component: NotFoundPageComponent}
+
+
+    //Not found route
+    // { path: '**', component: NotFoundPageComponent}
 ];

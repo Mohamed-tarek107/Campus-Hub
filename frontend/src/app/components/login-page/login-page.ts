@@ -35,7 +35,12 @@ export class LoginPage {
       
       
       // On success: 
-      this.router.navigate(['/dashboard']);
+
+      if(this.credentials.username == 'admin'){
+        this.router.navigate(['/adminDashboard']);
+      }else{
+          this.router.navigate(['/dashboard']);
+      }
       console.log('Login payload:', this.credentials);
     } catch (error: any) {
       this.errorMessage = error?.message || 'Login failed. Please try again.';
