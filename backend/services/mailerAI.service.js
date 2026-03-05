@@ -23,6 +23,7 @@ Design rules:
 - Mobile friendly: all widths in percentages or max-width, no fixed pixel widths on containers
 - No images, no external resources, no JavaScript
 - Professional and clean — this goes to university students
+- Dont forget to mention my name in the footer of it as created by: "Mohamed Tarek" not strictly like that but mention my name
 
 You will receive the notification in this format:
 Type: [announcement | event | task_deadline]
