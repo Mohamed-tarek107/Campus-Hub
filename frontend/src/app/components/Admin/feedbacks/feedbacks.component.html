@@ -1,0 +1,47 @@
+<div class="layout">
+    <app-admin-sidenav></app-admin-sidenav>
+
+    <div class="main">
+        <app-admin-topnav></app-admin-topnav>
+
+        <div class="page">
+
+            <div class="page-header">
+                <div>
+                    <h1>Inbox</h1>
+                    <p>Feedback submitted by students.</p>
+                </div>
+                <div class="count-badge">
+                    <span class="count-value">{{ feedbacks.length }}</span>
+                    <span class="count-label">Total</span>
+                </div>
+            </div>
+
+            <!-- Empty state -->
+            <div class="empty-state" *ngIf="feedbacks.length === 0">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                </svg>
+                <p>No feedback yet</p>
+                <span>Students haven't submitted anything.</span>
+            </div>
+
+            <!-- Feedback list -->
+            <div class="feedback-list" *ngIf="feedbacks.length > 0">
+                <div class="feedback-card" *ngFor="let f of feedbacks">
+                    <div class="card-top">
+                        <div class="user-info">
+                            <div class="avatar">{{ getInitials(f.username) }}</div>
+                            <div>
+                                <p class="username">{{ f.username }}</p>
+                                <p class="date">{{ f.date }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="feedback-text">{{ f.message }}</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
