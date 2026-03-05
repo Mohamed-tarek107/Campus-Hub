@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { RouterModule, Router } from '@angular/router';
 
 @Component({
-  selector: 'app-admin.topnav.component',
+  selector: 'app-admin-topnav',
   imports: [CommonModule, RouterModule],
   templateUrl: './admin.topnav.component.html',
   styleUrl: './admin.topnav.component.css',

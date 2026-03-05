@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 @Component({
-  selector: 'app-admin.sidenav.component',
+  selector: 'app-admin-sidenav',
   imports: [CommonModule, RouterModule],
   templateUrl: './admin.sidenav.component.html',
   styleUrl: './admin.sidenav.component.css',

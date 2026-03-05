@@ -1,0 +1,93 @@
+<div class="layout">
+  <app-admin-sidenav></app-admin-sidenav>
+
+  <div class="main">
+    <app-admin-topnav></app-admin-topnav>
+
+    <div class="dashboard">
+
+      <!-- Welcome -->
+      <div class="welcome">
+        <h1>Admin Dashboard</h1>
+        <p>System overview at a glance.</p>
+      </div>
+
+      <!-- Nav Cards (hero style) -->
+      <div class="hero-cards">
+
+        <div class="hero-card hero-directory" routerLink="/admin/directory">
+          <div class="hero-card-text">
+            <span class="hero-label">Directory</span>
+            <span class="hero-sub">Manage doctors and courses</span>
+            <!-- OPTIONAL: add a count badge if you want e.g. courses count -->
+            <!-- <span class="hero-badge">{{ totalCourses }} Courses</span> -->
+          </div>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+          </svg>
+        </div>
+
+        <div class="hero-card hero-feedback" routerLink="/admin/feedback">
+          <div class="hero-card-text">
+            <span class="hero-label">Feedback</span>
+            <span class="hero-sub">Read what students are saying</span>
+            <!-- OPTIONAL: show unread feedback count -->
+            <!-- <span class="hero-badge">{{ totalFeedback }} Submissions</span> -->
+          </div>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+        </div>
+
+      </div>
+
+      <!-- Stat Cards -->
+      <div class="stat-cards">
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <span class="stat-title">Students</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </div>
+          <p class="stat-value">{{ totalStudents }}</p>
+          <p class="stat-label">Registered in the system</p>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <span class="stat-title">Doctors</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+          </div>
+          <p class="stat-value">{{ totalDoctors }}</p>
+          <p class="stat-label">Registered in the system</p>
+        </div>
+
+        <!-- OPTIONAL: add courses count card -->
+        
+        <div class="stat-card">
+          <div class="stat-header">
+            <span class="stat-title">Courses</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+            </svg>
+          </div>
+          <p class="stat-value"> 0</p>
+          <p class="stat-label">Active this semester</p>
+        </div>
+        
+
+      </div>
+
+    </div>
+  </div>
+</div>
