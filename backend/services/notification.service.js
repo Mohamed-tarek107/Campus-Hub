@@ -12,6 +12,10 @@ const transporter = nodemailer.createTransport({
 
 const notificationMail = async (subject, html) => {
     try {
+        if (!html) { 
+        console.error("notificationMail: no html body, skipping.");
+        return false;
+    }
         const batchSize = 30;
         const { rows: users } = await db.query("SELECT email FROM users");
 

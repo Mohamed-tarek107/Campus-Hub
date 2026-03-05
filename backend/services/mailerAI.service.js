@@ -47,7 +47,7 @@ const HTMLresponse_AI = async (title, details, date, type, host = "BIS", locatio
         Date: ${date}
         location: ${location},`
 
-        const result = model.generateContent({
+        const result = await model.generateContent({
             contents: [{
                 parts: [{ text: prompt }]
             }]
