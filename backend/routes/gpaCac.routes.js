@@ -5,3 +5,5 @@ const router = express.Router();
 
 
 router.post("/assginGpa", ensureAuthenticated, editUserGpa)
+
+module.exports = router

@@ -11,3 +11,5 @@ router.patch("/editInfo", ensureAuthenticated, editInfo)
 router.patch("/changePassword", ensureAuthenticated, changepass)
 
 router.delete("/deleteAccount", deleteAccount)
+
+module.exports = router

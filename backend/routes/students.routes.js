@@ -10,3 +10,5 @@ router.get("/:course_id/doctors", ensureAuthenticated, getCourseDoctors)
 router.get("/viewAllStudentCourses", ensureAuthenticated, viewAllstudent_courses)
 router.get("/viewAllStudentdoctors", ensureAuthenticated, viewAllstudent_doctors)
 router.get("/viewAllStudenttasks", ensureAuthenticated, viewAllstudent_tasks)
+
+module.exports = router

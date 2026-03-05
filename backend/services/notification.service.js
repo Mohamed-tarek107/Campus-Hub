@@ -39,4 +39,6 @@ const notificationMail = async (subject, html) => {
     }
 };
 
-module.exports = notificationMail;
+module.exports = {
+    notificationMail
+};

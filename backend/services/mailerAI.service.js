@@ -38,13 +38,14 @@ Adjust the accent color slightly based on type:
 })
 
 
-const HTMLresponse_AI = async (title, details, date, type, host = "BIS") => {
+const HTMLresponse_AI = async (title, details, date, type, host = "BIS", location = "BIS") => {
     try {
         const prompt = `Type: ${type}
         Title: ${title}
         Description: ${details}
         Source or Host: ${host}
-        Date: ${date}`;
+        Date: ${date}
+        location: ${location},`
 
         const result = model.generateContent({
             contents: [{

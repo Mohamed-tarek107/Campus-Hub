@@ -1,5 +1,3 @@
-const bcrypt = require("bcryptjs");
-const db = require("../db.js");
 const jwt = require("jsonwebtoken");
 const rateLimit = require("express-rate-limit");
 

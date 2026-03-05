@@ -1,4 +1,6 @@
-const db = require("../db.js");
+const db = require("../config/db");
+const { notificationMail } = require("../services/notification.service.js")
+const { HTMLresponse_AI } = require("../services/mailerAI.service.js")
 
 const addDoctor = async (req, res) => {
     const client = await db.connect();
@@ -154,6 +156,8 @@ const addAssignment = async (req, res) => {
             "INSERT INTO tasks (coursedoctor_id, type, details, title, deadline) VALUES ($1, $2, $3, $4, $5)",
             [coursedoctor_id, type, details, title, deadline]
         );
+        const html = await HTMLresponse_AI(title, details ,deadline, type)
+        await notificationMail(title, html)
 
         await client.query('COMMIT');
         res.status(201).json({ message: "Task created successfully" });
@@ -183,6 +187,8 @@ const addEvent = async (req, res) => {
             "INSERT INTO events (title, description, location, host, date) VALUES ($1, $2, $3, $4, $5)",
             [title, description, location, host, date]
         );
+        const html = await HTMLresponse_AI(title, description, date, "Event", host, location )
+        await notificationMail(title, html)
 
         res.status(201).json({ message: "Event created successfully" });
     } catch (error) {
@@ -215,8 +221,9 @@ const addAnnouncement = async (req, res) => {
             [title, description, source, date]
         );
 
-        const html = await HTMLresponse_AI(title, description, date, type = "Announcement", source)
-        
+        const html = await HTMLresponse_AI(title, description, date, "Announcement", source)
+        await notificationMail(title, html)
+    
         res.status(201).json({ message: "Announcement created successfully" });
     } catch (error) {
         console.error("addAnnouncement error:", error.message);

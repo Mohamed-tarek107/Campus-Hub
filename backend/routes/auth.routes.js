@@ -8,3 +8,5 @@ router.post("/register", registerLimiter, registerRoute)
 router.post("/login", loginLimiter, LoginRoute)
 router.post("/refresh-token", refreshRoute)
 router.post("/logout", logout)
+
+module.exports = router

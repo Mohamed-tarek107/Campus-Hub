@@ -36,3 +36,5 @@ router.post("/addAnnouncment", ensureAuthenticated, requireAdmin, addAnnouncemen
 
 router.delete("/events/:event_id", ensureAuthenticated, requireAdmin, deleteEvent)
 router.delete("/announcements/:announcement_id", ensureAuthenticated, requireAdmin, deleteAnnouncement)
+
+module.exports = router

@@ -1,4 +1,4 @@
-const db = require("../db.js");
+const db = require("../config/db");
 
 const AssignDoctors = async (req, res) => {
     const client = await db.connect();
