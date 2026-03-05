@@ -11,6 +11,7 @@ import { FeedbackComponent } from './components/feedback.component/feedback.comp
 import { SettingsComponent } from './components/settings.component/settings.component';
 import { NotFoundPageComponent } from './components/not-found-page/not-found-page.component';
 import { AdminDashboardComponent } from './components/Admin/admin.dashboard/admin.dashboard.component';
+import { AdminFeedbacksComponent } from './components/Admin/feedbacks/feedbacks.component';
 
 export const routes: Routes = [
     //starter route
@@ -30,7 +31,7 @@ export const routes: Routes = [
     
     //Admin Routes
     { path: 'adminDashboard', component: AdminDashboardComponent },
-    
+    { path: 'adminFeedbacks', component: AdminFeedbacksComponent}
 
 
 
