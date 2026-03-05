@@ -1,1 +1,71 @@
-<p>admin.sidenav.component works!</p>
+<nav class="sidenav" [class.collapsed]="isCollapsed">
+
+  <div class="sidenav-brand">
+    <div class="brand-icon">AD</div>
+    <div class="brand-text">
+      <span class="brand-name">CampusHub</span>
+      <span class="brand-sub">Admin Panel</span>
+    </div>
+  </div>
+
+  <ul class="nav-links">
+    <li>
+      <a routerLink="/admin/dashboard" routerLinkActive="active" class="nav-item" [title]="isCollapsed ? 'Dashboard' : ''">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+          <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+        </svg>
+        <span>Dashboard</span>
+      </a>
+    </li>
+    <li>
+      <a routerLink="/admin/students" routerLinkActive="active" class="nav-item" [title]="isCollapsed ? 'Students' : ''">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+        <span>Students</span>
+      </a>
+    </li>
+    <li>
+      <a routerLink="/admin/directory" routerLinkActive="active" class="nav-item" [title]="isCollapsed ? 'Directory' : ''">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+        </svg>
+        <span>Directory</span>
+      </a>
+    </li>
+    <li>
+      <a routerLink="/admin/content" routerLinkActive="active" class="nav-item" [title]="isCollapsed ? 'Content' : ''">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        </svg>
+        <span>Content</span>
+      </a>
+    </li>
+    <li>
+      <a routerLink="/admin/feedback" routerLinkActive="active" class="nav-item" [title]="isCollapsed ? 'Feedback' : ''">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
+        <span>Feedback</span>
+      </a>
+    </li>
+  </ul>
+
+  <div class="nav-bottom">
+    <div class="divider-line"></div>
+    <button class="collapse-btn" (click)="toggle()" [title]="isCollapsed ? 'Expand' : 'Collapse'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline *ngIf="!isCollapsed" points="15 18 9 12 15 6"/>
+        <polyline *ngIf="isCollapsed"  points="9 18 15 12 9 6"/>
+      </svg>
+      <span>Collapse</span>
+    </button>
+  </div>
+
+</nav>

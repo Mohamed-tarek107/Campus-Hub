@@ -1,1 +1,41 @@
-<p>admin.topnav.component works!</p>
+<header class="topnav">
+
+  <!-- Search -->
+  <div class="search-wrap">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </svg>
+    <input type="text" placeholder="Search students, courses..." />
+  </div>
+
+  <!-- Right side -->
+  <div class="topnav-right">
+
+    <!-- Avatar + Dropdown -->
+    <div class="avatar-wrap" (click)="toggleUserMenu()">
+      <div class="avatar">AD</div>
+      <div class="user-info">
+        <span class="user-name">Admin</span>
+        <span class="user-role">Administrator</span>
+      </div>
+      <svg class="chevron" [class.rotated]="showUserMenu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="6 9 12 15 18 9"/>
+      </svg>
+    </div>
+
+    <!-- User Dropdown -->
+    <div class="dropdown user-dropdown" *ngIf="showUserMenu">
+      <p class="dropdown-title">Admin Account</p>
+      <div class="dropdown-divider"></div>
+      <button class="dropdown-item logout" (click)="onLogout()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+        Log out
+      </button>
+    </div>
+
+  </div>
+</header>
