@@ -298,15 +298,17 @@ const listAllFeedbacks = async (req,res) => {
 
 
 const deleteCourse = async (req,res) => {
-    try {
-            const { course_id } = req.params
-            if(!course_id) return res.status(401).json({ message: "No course_id provided" })
-            
-            db.query("DELETE FROM courses WHERE id = $1", [course_id])
-            db.query("DELETE FROM coursedoctors WHERE course_id = $1", [course_id])
-            db.query("DELETE FROM studentcourses WHERE course_id = $1", [course_id])
+        try {
+        const { course_id } = req.params;
 
-            res.status(203).json({ message: "deleted successfually"})
+        //children first to not cause FK violation
+        await db.query("DELETE FROM studentcourses WHERE course_id = $1", [course_id]);
+        await db.query("DELETE FROM coursedoctors WHERE course_id = $1", [course_id]);
+        const { rowCount } = await db.query("DELETE FROM courses WHERE id = $1", [course_id]);
+
+        if (rowCount === 0) return res.status(404).json({ message: "Course not found" });
+
+        res.status(200).json({ message: "Course deleted successfully" });
     } catch (error) {
         console.error("deleteCourse error:", error.message);
         res.status(500).json({ message: "Server error" });
@@ -314,8 +316,21 @@ const deleteCourse = async (req,res) => {
 }
 
 
-const courseDoctor_Counter = async (req,res) => {
-    
+const dashboardStats = async (req,res) => {
+    try {
+        const { rows: doctors_count } = await db.query("SELECT COUNT(id) FROM doctors")
+        const { rows: courses_count } = await db.query("SELECT COUNT(id) FROM courses")
+        const { rows: student_count } = await db.query("SELECT COUNT(id) FROM users")
+
+        res.status(200).json({ 
+            doctors_count: doctors_count[0].count,
+            courses_count: courses_count[0].count,
+            students_count: student_count[0].count
+        })
+    } catch (error) {
+        console.error("dashboardStats error:", error.message);
+        res.status(500).json({ message: "Server error" });
+    }
 }
 
 
@@ -332,5 +347,7 @@ module.exports = {
     listAllAnnouncements,
     deleteAnnouncement,
     deleteEvent,
-    listAllFeedbacks
+    listAllFeedbacks,
+    dashboardStats, 
+    deleteCourse
 };
