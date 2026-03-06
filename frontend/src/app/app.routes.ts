@@ -13,7 +13,7 @@ import { NotFoundPageComponent } from './components/not-found-page/not-found-pag
 import { AdminDashboardComponent } from './components/Admin/admin.dashboard/admin.dashboard.component';
 import { AdminFeedbacksComponent } from './components/Admin/admin.feedbacks/feedbacks.component';
 import { AdminAcademicsComponent } from './components/Admin/admin.academics/admin.academics.component';
-import { AdminEventsComponent } from './components/Admin/admin.events/admin.events.component';
+import { AdminPublishComponent } from './components/Admin/admin.publish/admin.publish.component';
 
 export const routes: Routes = [
     //starter route
@@ -34,7 +34,7 @@ export const routes: Routes = [
     //Admin Routes
     { path: 'admin/dashboard', component: AdminDashboardComponent },
     { path: 'admin/feedbacks', component: AdminFeedbacksComponent},
-    { path: 'admin/events', component: AdminEventsComponent},
+    { path: 'admin/publish', component: AdminPublishComponent},
     { path: 'admin/academics', component: AdminAcademicsComponent},
 
 

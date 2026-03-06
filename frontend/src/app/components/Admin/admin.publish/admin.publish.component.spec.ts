@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AdminEventsComponent } from './admin.events.component';
+import { AdminPublishComponent } from './admin.publish.component';
 
 describe('AdminEventsComponent', () => {
-  let component: AdminEventsComponent;
-  let fixture: ComponentFixture<AdminEventsComponent>;
+  let component: AdminPublishComponent;
+  let fixture: ComponentFixture<AdminPublishComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AdminEventsComponent]
+      imports: [AdminPublishComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(AdminEventsComponent);
+    fixture = TestBed.createComponent(AdminPublishComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

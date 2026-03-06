@@ -1,0 +1,231 @@
+<div class="layout">
+    <app-admin-sidenav></app-admin-sidenav>
+    <div class="main">
+        <app-admin-topnav></app-admin-topnav>
+        <div class="page">
+
+            <div class="page-header">
+                <div>
+                    <h1>Publish</h1>
+                    <p>Manage announcements, events and assignments. Automatically Connected to the notification system in the mail!</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-secondary" (click)="open('assignment')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <line x1="12" y1="5" x2="12" y2="19" />
+                            <line x1="5" y1="12" x2="19" y2="12" />
+                        </svg>
+                        Assignment
+                    </button>
+                    <button class="btn-secondary" (click)="open('event')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <line x1="12" y1="5" x2="12" y2="19" />
+                            <line x1="5" y1="12" x2="19" y2="12" />
+                        </svg>
+                        Event
+                    </button>
+                    <button class="btn-primary" (click)="open('announcement')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <line x1="12" y1="5" x2="12" y2="19" />
+                            <line x1="5" y1="12" x2="19" y2="12" />
+                        </svg>
+                        Announcement
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab" [class.active]="activeTab === 'announcements'"
+                    (click)="activeTab = 'announcements'">Announcements</button>
+                <button class="tab" [class.active]="activeTab === 'events'"
+                    (click)="activeTab = 'events'">Events</button>
+            </div>
+
+            <!-- Announcements Tab -->
+            <div *ngIf="activeTab === 'announcements'">
+                <div class="empty-state" *ngIf="announcements.length === 0">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                    </svg>
+                    <p>No announcements yet</p>
+                </div>
+                <div class="list" *ngIf="announcements.length > 0">
+                    <div class="list-item" *ngFor="let a of announcements; let i = index">
+                        <div class="item-info">
+                            <p class="item-title">{{ a.title }}</p>
+                            <p class="item-meta">{{ a.source }} · {{ a.date }}</p>
+                            <p class="item-desc">{{ a.description }}</p>
+                        </div>
+                        <button class="delete-btn" (click)="deleteAnnouncement(i)">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="3 6 5 6 21 6" />
+                                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                                <path d="M10 11v6M14 11v6" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Events Tab -->
+            <div *ngIf="activeTab === 'events'">
+                <div class="empty-state" *ngIf="events.length === 0">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <circle cx="12" cy="12" r="10" />
+                        <polyline points="12 6 12 12 16 14" />
+                    </svg>
+                    <p>No events yet</p>
+                </div>
+                <div class="list" *ngIf="events.length > 0">
+                    <div class="list-item" *ngFor="let e of events; let i = index">
+                        <div class="item-info">
+                            <p class="item-title">{{ e.title }}</p>
+                            <p class="item-meta">{{ e.host }} · {{ e.date }} · {{ e.location }}</p>
+                            <p class="item-desc">{{ e.description }}</p>
+                        </div>
+                        <button class="delete-btn" (click)="deleteEvent(i)">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="3 6 5 6 21 6" />
+                                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                                <path d="M10 11v6M14 11v6" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- ── Popup Overlay ───────────────────────────────────── -->
+<div class="overlay" *ngIf="popupType" (click)="close()">
+    <div class="popup" (click)="$event.stopPropagation()">
+
+        <div class="popup-header">
+            <h2>{{ popupTitle }}</h2>
+            <button class="close-btn" (click)="close()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+            </button>
+        </div>
+
+        <div class="popup-body">
+
+            <!-- Announcement fields -->
+            <ng-container *ngIf="popupType === 'announcement'">
+                <div class="field">
+                    <label>Title</label>
+                    <input type="text" [(ngModel)]="aForm.title" placeholder="Announcement title" />
+                </div>
+                <div class="field">
+                    <label>Source</label>
+                    <input type="text" [(ngModel)]="aForm.source" placeholder="e.g. Dean's Office" />
+                </div>
+                <div class="field">
+                    <label>Date</label>
+                    <input type="date" [(ngModel)]="aForm.date" />
+                </div>
+                <div class="field">
+                    <label>Description</label>
+                    <textarea [(ngModel)]="aForm.description" rows="3" placeholder="Announcement details..."></textarea>
+                </div>
+            </ng-container>
+
+            <!-- Event fields -->
+            <ng-container *ngIf="popupType === 'event'">
+                <div class="field">
+                    <label>Title</label>
+                    <input type="text" [(ngModel)]="eForm.title" placeholder="Event title" />
+                </div>
+                <div class="field">
+                    <label>Host</label>
+                    <input type="text" [(ngModel)]="eForm.host" placeholder="e.g. CS Department" />
+                </div>
+                <div class="field">
+                    <label>Location</label>
+                    <input type="text" [(ngModel)]="eForm.location" placeholder="e.g. Main Hall" />
+                </div>
+                <div class="field">
+                    <label>Date</label>
+                    <input type="date" [(ngModel)]="eForm.date" />
+                </div>
+                <div class="field">
+                    <label>Description</label>
+                    <textarea [(ngModel)]="eForm.description" rows="3" placeholder="Event details..."></textarea>
+                </div>
+            </ng-container>
+
+            <!-- Assignment fields -->
+            <ng-container *ngIf="popupType === 'assignment'">
+                <div class="field">
+                    <label>Course</label>
+                    <div class="select-wrap">
+                        <select [(ngModel)]="tForm.course_id" (change)="onCourseChange()">
+                            <option value="" disabled>Select course</option>
+                            <option *ngFor="let c of courses" [value]="c.id">{{ c.course_name }} — {{ c.department |
+                                uppercase }} Y{{ c.year }}</option>
+                        </select>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="field" *ngIf="tForm.course_id">
+                    <label>Doctor</label>
+                    <div class="select-wrap">
+                        <select [(ngModel)]="tForm.coursedoctor_id">
+                            <option value="" disabled>Select doctor</option>
+                            <option *ngFor="let d of filteredDoctors" [value]="d.coursedoctor_id">{{ d.name }}</option>
+                        </select>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="field">
+                    <label>Title</label>
+                    <input type="text" [(ngModel)]="tForm.title" placeholder="Assignment title" />
+                </div>
+                <div class="field">
+                    <label>Type</label>
+                    <div class="select-wrap">
+                        <select [(ngModel)]="tForm.type">
+                            <option value="" disabled>Select type</option>
+                            <option value="assignment">Assignment</option>
+                            <option value="exam">Exam</option>
+                            <option value="project">Project</option>
+                        </select>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="field">
+                    <label>Deadline</label>
+                    <input type="date" [(ngModel)]="tForm.deadline" />
+                </div>
+                <div class="field">
+                    <label>Details</label>
+                    <textarea [(ngModel)]="tForm.details" rows="3" placeholder="Assignment details..."></textarea>
+                </div>
+            </ng-container>
+
+        </div>
+
+        <p class="error-msg" *ngIf="errorMsg">{{ errorMsg }}</p>
+
+        <div class="popup-footer">
+            <button class="btn-back" (click)="close()">Cancel</button>
+            <button class="btn-primary" (click)="onSubmit()" [disabled]="isLoading">
+                <span *ngIf="!isLoading">Publish</span>
+                <span *ngIf="isLoading" class="spinner"></span>
+            </button>
+        </div>
+
+    </div>
+</div>
