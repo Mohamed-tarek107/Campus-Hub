@@ -35,10 +35,10 @@ export const routes: Routes = [
     { path: 'admin/dashboard', component: AdminDashboardComponent },
     { path: 'admin/feedbacks', component: AdminFeedbacksComponent},
     { path: 'admin/events', component: AdminEventsComponent},
-    { path: 'admin/academics', component: AdminAcademicsComponent}
+    { path: 'admin/academics', component: AdminAcademicsComponent},
 
 
 
-    //Not found route
-    // { path: '**', component: NotFoundPageComponent}
+    // Not found route
+    { path: '**', component: NotFoundPageComponent}
 ];
