@@ -280,7 +280,12 @@ const deleteAnnouncement = async (req, res) => {
 
 const listAllFeedbacks = async (req,res) => {
     try {
-        const {rows: feedbacks} = db.query("SELECT * FROM feedbacks")
+        const {rows: feedbacks} = await db.query(
+            `SELECT f.id, f.feedback, f.created_at, u.username 
+            FROM feedbacks f 
+            LEFT JOIN users u ON f.user_id = u.id 
+            ORDER BY f.created_at DESC`
+        )
 
         if(feedbacks.length === 0) return res.status(404).json({ message: "No feedbacks Added :(" });
 
