@@ -11,7 +11,9 @@ import { FeedbackComponent } from './components/feedback.component/feedback.comp
 import { SettingsComponent } from './components/settings.component/settings.component';
 import { NotFoundPageComponent } from './components/not-found-page/not-found-page.component';
 import { AdminDashboardComponent } from './components/Admin/admin.dashboard/admin.dashboard.component';
-import { AdminFeedbacksComponent } from './components/Admin/feedbacks/feedbacks.component';
+import { AdminFeedbacksComponent } from './components/Admin/admin.feedbacks/feedbacks.component';
+import { AdminAcademicsComponent } from './components/Admin/admin.academics/admin.academics.component';
+import { AdminEventsComponent } from './components/Admin/admin.events/admin.events.component';
 
 export const routes: Routes = [
     //starter route
@@ -30,8 +32,10 @@ export const routes: Routes = [
     { path: 'settings', component: SettingsComponent},
     
     //Admin Routes
-    { path: 'adminDashboard', component: AdminDashboardComponent },
-    { path: 'adminFeedbacks', component: AdminFeedbacksComponent}
+    { path: 'admin/dashboard', component: AdminDashboardComponent },
+    { path: 'admin/feedbacks', component: AdminFeedbacksComponent},
+    { path: 'admin/events', component: AdminEventsComponent},
+    { path: 'admin/academics', component: AdminAcademicsComponent}
 
 
 

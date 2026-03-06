@@ -37,7 +37,7 @@ export class LoginPage {
       // On success: 
 
       if(this.credentials.username == 'admin'){
-        this.router.navigate(['/adminDashboard']);
+        this.router.navigate(['/admin/dashboard']);
       }else{
           this.router.navigate(['/dashboard']);
       }
