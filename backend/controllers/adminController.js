@@ -296,6 +296,30 @@ const listAllFeedbacks = async (req,res) => {
     }
 }
 
+
+const deleteCourse = async (req,res) => {
+    try {
+            const { course_id } = req.params
+            if(!course_id) return res.status(401).json({ message: "No course_id provided" })
+            
+            db.query("DELETE FROM courses WHERE id = $1", [course_id])
+            db.query("DELETE FROM coursedoctors WHERE course_id = $1", [course_id])
+            db.query("DELETE FROM studentcourses WHERE course_id = $1", [course_id])
+
+            res.status(203).json({ message: "deleted successfually"})
+    } catch (error) {
+        console.error("deleteCourse error:", error.message);
+        res.status(500).json({ message: "Server error" });
+    }
+}
+
+
+const courseDoctor_Counter = async (req,res) => {
+    
+}
+
+
+
 module.exports = {
     addDoctor,
     addCourse,
