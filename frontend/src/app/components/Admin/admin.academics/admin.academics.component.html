@@ -1,1 +1,193 @@
-<p>admin.academics.component works!</p>
+<div class="layout">
+  <app-admin-sidenav></app-admin-sidenav>
+
+  <div class="main">
+    <app-admin-topnav></app-admin-topnav>
+
+    <div class="page">
+
+      <!-- Header -->
+      <div class="page-header">
+        <div>
+          <h1>Academics</h1>
+          <p>Manage courses and their assigned doctors.</p>
+        </div>
+        <button class="btn-add" (click)="openWizard()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="12" y1="5" x2="12" y2="19"/>
+            <line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          Add Course
+        </button>
+      </div>
+
+      <!-- Empty state -->
+      <div class="empty-state" *ngIf="courses.length === 0">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+        </svg>
+        <p>No courses yet</p>
+        <span>Click "Add Course" to get started.</span>
+      </div>
+
+      <!-- Course Cards -->
+      <div class="courses-grid" *ngIf="courses.length > 0">
+        <div class="course-card" *ngFor="let c of courses">
+
+          <div class="course-card-header">
+            <h3 class="course-name">{{ c.course_name }}</h3>
+            <div class="course-meta">
+              <span class="meta-tag">{{ c.department | uppercase }}</span>
+              <span class="meta-tag">Year {{ c.year }}</span>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="doctors-list">
+            <p class="doctors-label">Doctors</p>
+            <div class="doctor-item" *ngFor="let d of c.doctors">
+              <div class="doctor-dot"></div>
+              <span>{{ d }}</span>
+            </div>
+            <p class="no-doctors" *ngIf="c.doctors.length === 0">No doctors assigned</p>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ── Wizard Overlay ─────────────────────────────────── -->
+<div class="overlay" *ngIf="wizardOpen" (click)="closeWizard()">
+  <div class="wizard" (click)="$event.stopPropagation()">
+
+    <!-- Wizard Header -->
+    <div class="wizard-header">
+      <div>
+        <h2>{{ wizardTitle }}</h2>
+        <p class="step-indicator">Step {{ currentStep }} of 3</p>
+      </div>
+      <button class="close-btn" (click)="closeWizard()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Step progress -->
+    <div class="step-bar">
+      <div class="step-fill" [style.width.%]="(currentStep / 3) * 100"></div>
+    </div>
+
+    <!-- ── STEP 1: Course Info ── -->
+    <div class="wizard-body" *ngIf="currentStep === 1">
+      <div class="field">
+        <label>Course Name</label>
+        <input type="text" [(ngModel)]="form.course_name" placeholder="e.g. Data Structures" />
+      </div>
+      <div class="field">
+        <label>Department</label>
+        <div class="select-wrap">
+          <select [(ngModel)]="form.department">
+            <option value="" disabled>Select department</option>
+            <option value="bis">BIS</option>
+            <option value="fmi">FMI</option>
+          </select>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </div>
+      </div>
+      <div class="field">
+        <label>Year</label>
+        <div class="select-wrap">
+          <select [(ngModel)]="form.year">
+            <option value="" disabled>Select year</option>
+            <option [value]="1">Year 1</option>
+            <option [value]="2">Year 2</option>
+            <option [value]="3">Year 3</option>
+            <option [value]="4">Year 4</option>
+          </select>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── STEP 2: Doctors ── -->
+    <div class="wizard-body" *ngIf="currentStep === 2">
+      <p class="step-hint">Add the doctors teaching this course.</p>
+
+      <div class="doctors-inputs">
+        <div class="doctor-input-row" *ngFor="let d of form.doctors; let i = index">
+          <div class="field" style="flex:1; margin-bottom:0">
+            <label>Doctor {{ i + 1 }}</label>
+            <input type="text" [(ngModel)]="form.doctors[i]" placeholder="e.g. Dr. Ahmed Hassan" />
+          </div>
+          <button class="remove-btn" (click)="removeDoctor(i)" *ngIf="form.doctors.length > 1">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="18" y1="6" x2="6" y2="18"/>
+              <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <button class="btn-add-doctor" (click)="addDoctorField()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="12" y1="5" x2="12" y2="19"/>
+          <line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        Add another doctor
+      </button>
+    </div>
+
+    <!-- ── STEP 3: Review ── -->
+    <div class="wizard-body" *ngIf="currentStep === 3">
+      <p class="step-hint">Review before submitting.</p>
+
+      <div class="review-block">
+        <div class="review-row">
+          <span class="review-label">Course</span>
+          <span class="review-value">{{ form.course_name }}</span>
+        </div>
+        <div class="review-row">
+          <span class="review-label">Department</span>
+          <span class="review-value">{{ form.department | uppercase }}</span>
+        </div>
+        <div class="review-row">
+          <span class="review-label">Year</span>
+          <span class="review-value">Year {{ form.year }}</span>
+        </div>
+        <div class="review-row">
+          <span class="review-label">Doctors</span>
+          <div class="review-doctors">
+            <span *ngFor="let d of filledDoctors">{{ d }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Error -->
+    <p class="error-msg" *ngIf="errorMsg">{{ errorMsg }}</p>
+
+    <!-- Wizard Footer -->
+    <div class="wizard-footer">
+      <button class="btn-back" (click)="prevStep()" *ngIf="currentStep > 1">Back</button>
+      <button class="btn-back" style="visibility:hidden" *ngIf="currentStep === 1">Back</button>
+
+      <button class="btn-next" (click)="nextStep()" *ngIf="currentStep < 3">Next</button>
+      <button class="btn-next btn-done" (click)="onSubmit()" *ngIf="currentStep === 3" [disabled]="isLoading">
+        <span *ngIf="!isLoading">Done</span>
+        <span *ngIf="isLoading" class="spinner"></span>
+      </button>
+    </div>
+
+  </div>
+</div>
