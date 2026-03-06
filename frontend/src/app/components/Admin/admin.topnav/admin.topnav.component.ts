@@ -22,4 +22,8 @@ export class AdminTopnavComponent {
     // this.authService.logout();
     this.router.navigate(['/login']);
   }
+
+  BackToStudentPanel(): void {
+    this.router.navigate(['/dashboard'])
+  }
 }
