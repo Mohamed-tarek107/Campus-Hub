@@ -21,112 +21,104 @@ interface Course {
 })
 export class AdminAcademicsComponent implements OnInit {
 
-  // ── Courses list ──────────────────────────────────────
-  // TODO: replace with GET /api/admin/courses
   courses: Course[] = [
     { course_name: 'Data Structures', department: 'bis', year: 2, doctors: ['Dr. Ahmed Hassan', 'Dr. Sara Kamel'] },
     { course_name: 'Database Systems', department: 'fmi', year: 3, doctors: ['Dr. Omar Fathy'] },
-    { course_name: 'Web Development',  department: 'bis', year: 3, doctors: ['Dr. Layla Mahmoud', 'Dr. Nour El-Din'] },
+    { course_name: 'Web Development',  department: 'bis', year: 3, doctors: ['Dr. Layla Mahmoud'] },
   ];
 
-  // ── Wizard state ──────────────────────────────────────
-  wizardOpen   = false;
-  currentStep  = 1;
-  isLoading    = false;
-  errorMsg     = '';
+  // ── Course Wizard ─────────────────────────────────────
+  wizardOpen  = false;
+  currentStep = 1;
+  isLoading   = false;
+  errorMsg    = '';
 
-  form = {
-    course_name: '',
-    department:  '' as string,
-    year:        '' as number | string,
-    doctors:     [''] as string[]
-  };
+  form = { course_name: '', department: '' as string, year: '' as number | string, doctors: [''] };
 
-  // ── Computed ──────────────────────────────────────────
-  get wizardTitle(): string {
-    if (this.currentStep === 1) return 'Course Details';
-    if (this.currentStep === 2) return 'Assign Doctors';
-    return 'Review';
+  get wizardTitle() {
+    return ['Course Details', 'Assign Doctors', 'Review'][this.currentStep - 1];
   }
 
-  get filledDoctors(): string[] {
+  get filledDoctors() {
     return this.form.doctors.filter(d => d.trim() !== '');
   }
 
-  ngOnInit(): void {
-    // TODO: GET /api/admin/courses → replace mock courses
-  }
+  // ── Fix: trackBy prevents re-render on every keystroke ──
+  trackByIndex(index: number) { return index; }
 
-  // ── Wizard controls ───────────────────────────────────
-  openWizard(): void {
-    this.wizardOpen  = true;
-    this.currentStep = 1;
-    this.errorMsg    = '';
+  openWizard() {
+    this.wizardOpen = true; this.currentStep = 1; this.errorMsg = '';
     this.form = { course_name: '', department: '', year: '', doctors: [''] };
   }
 
-  closeWizard(): void {
-    this.wizardOpen = false;
-  }
+  closeWizard() { this.wizardOpen = false; }
 
-  nextStep(): void {
+  nextStep() {
     this.errorMsg = '';
-
-    if (this.currentStep === 1) {
-      if (!this.form.course_name.trim() || !this.form.department || !this.form.year) {
-        this.errorMsg = 'Please fill in all fields.';
-        return;
-      }
+    if (this.currentStep === 1 && (!this.form.course_name.trim() || !this.form.department || !this.form.year)) {
+      this.errorMsg = 'Please fill in all fields.'; return;
     }
-
-    if (this.currentStep === 2) {
-      if (this.filledDoctors.length === 0) {
-        this.errorMsg = 'Add at least one doctor.';
-        return;
-      }
+    if (this.currentStep === 2 && this.filledDoctors.length === 0) {
+      this.errorMsg = 'Add at least one doctor.'; return;
     }
-
     this.currentStep++;
   }
 
-  prevStep(): void {
-    this.errorMsg = '';
-    this.currentStep--;
-  }
+  prevStep() { this.errorMsg = ''; this.currentStep--; }
 
-  // ── Doctor fields ─────────────────────────────────────
-  addDoctorField(): void {
-    this.form.doctors.push('');
-  }
+  addDoctorField() { this.form.doctors.push(''); }
 
-  removeDoctor(index: number): void {
-    this.form.doctors.splice(index, 1);
-  }
+  removeDoctor(i: number) { this.form.doctors.splice(i, 1); }
 
-  // ── Submit ────────────────────────────────────────────
-  onSubmit(): void {
-    this.isLoading = true;
-    this.errorMsg  = '';
+  onSubmit() {
+    this.isLoading = true; this.errorMsg = '';
+    const payload = { course_name: this.form.course_name.trim(), department: this.form.department, year: Number(this.form.year), doctors: this.filledDoctors };
 
-    const payload = {
-      course_name: this.form.course_name.trim(),
-      department:  this.form.department,
-      year:        Number(this.form.year),
-      doctors:     this.filledDoctors
-    };
-
-    // TODO when service ready:
-    // STEP 1 — POST /api/admin/courses with { course_name, department, year }
-    // STEP 2 — for each doctor in payload.doctors:
-    //           POST /api/admin/courses/:course_id/doctors with { doctor_name }
-    // on success → push to this.courses and closeWizard()
-    // on error   → this.errorMsg = err.error?.message
-
-    // MOCK — adds directly to the local list
+    // TODO:
+    // POST /api/admin/courses with { course_name, department, year }
+    // then for each doctor: POST /api/admin/courses/:id/doctors with { doctor_name }
     setTimeout(() => {
       this.courses.unshift({ ...payload });
       this.isLoading = false;
       this.closeWizard();
     }, 700);
+  }
+
+  deleteCourse(i: number) {
+    // TODO: DELETE /api/admin/courses/:id
+    this.courses.splice(i, 1);
+  }
+
+  // ── Add Doctor Popup ──────────────────────────────────
+  doctorPopupOpen  = false;
+  isDoctorLoading  = false;
+  doctorErrorMsg   = '';
+  doctorForm = { name: '', course_name: '' };
+
+  openDoctorPopup() {
+    this.doctorPopupOpen = true; this.doctorErrorMsg = '';
+    this.doctorForm = { name: '', course_name: '' };
+  }
+
+  closeDoctorPopup() { this.doctorPopupOpen = false; }
+
+  onAddDoctor() {
+    this.doctorErrorMsg = '';
+    if (!this.doctorForm.name.trim()) { this.doctorErrorMsg = 'Enter a doctor name.'; return; }
+    if (!this.doctorForm.course_name)  { this.doctorErrorMsg = 'Select a course.'; return; }
+
+    this.isDoctorLoading = true;
+
+    // TODO: POST /api/admin/courses/:course_id/doctors with { doctor_name }
+    setTimeout(() => {
+      const course = this.courses.find(c => c.course_name === this.doctorForm.course_name);
+      if (course) course.doctors.push(this.doctorForm.name.trim());
+      this.isDoctorLoading = false;
+      this.closeDoctorPopup();
+    }, 500);
+  }
+
+  ngOnInit(): void {
+    // TODO: GET /api/admin/courses → replace mock
   }
 }
