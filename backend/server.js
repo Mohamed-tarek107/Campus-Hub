@@ -23,11 +23,15 @@ app.use(cors({
 const authRoutes = require("./routes/auth.routes.js");
 const adminRoutes = require("./routes/admin.routes.js");
 const studentRoutes = require("./routes/students.routes.js");
+const userRoutes = require("./routes/user.routes.js");
+const gpaRoutes = require("./routes/gpaCac.routes.js");
 
 app.get("/", (req, res) => res.send("Server is running..."));
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/student", studentRoutes);
+app.use("/api/user", userRoutes);
+app.use("/api/gpa", gpaRoutes);
 
 // 404
 app.use((req, res) => {
