@@ -43,4 +43,22 @@ export class AuthService {
         );
     }
 
+    refreshtoken() {
+        return this.http.post(
+            `${this.authApi}/refresh-token`,
+            {},
+            { withCredentials: true }
+        );
+    }
+
+
+    logout() {
+        return this.http.post(`${this.authApi}/logout`,
+            {},
+            { withCredentials: true }).pipe(
+                tap(() => {
+                    this.isLoggedin = false; // reset flag on logout
+                })
+            );
+    }
 }
