@@ -12,7 +12,7 @@ const registerRoute = async (req, res) => {
         });
     }
 
-    const { username, phone_number, password, confirmpassword, department, year } = req.body
+    const { username, email, password, confirmpassword, department, year } = req.body
 
     if (password !== confirmpassword) return res.status(400).json({ message: "Password doesn't match confirmation" })
 
@@ -25,8 +25,8 @@ const registerRoute = async (req, res) => {
         const hashedPass = await bcrypt.hash(password, 12)
 
         await db.query(
-            `INSERT INTO users (username, phone_number, hashedpass, department, year, is_firstlogin) VALUES($1, $2, $3, $4, $5, $6)`,
-            [username, phone_number, hashedPass, department, year, true]
+            `INSERT INTO users (username, email, hashedpass, department, year, is_firstlogin) VALUES($1, $2, $3, $4, $5, $6)`,
+            [username, email, hashedPass, department, year, true]
         )
 
         return res.status(201).json({ message: "User registered successfully" })

@@ -14,7 +14,7 @@ export class RegisterPage {
 
   form = {
     username: '',
-    phone_number: '',
+    email: '',
     department: '',
     year: '',
     password: '',
@@ -29,7 +29,7 @@ export class RegisterPage {
   constructor(private router: Router) { }
 
   async onRegister() {
-    if (!this.form.username || !this.form.phone_number ||
+    if (!this.form.username || !this.form.email ||
       !this.form.department || !this.form.year ||
       !this.form.password || !this.form.confirmpassword) {
       this.errorMessage = 'Please fill in all fields.';
