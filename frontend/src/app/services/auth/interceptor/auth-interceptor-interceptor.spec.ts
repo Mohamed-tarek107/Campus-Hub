@@ -5,7 +5,7 @@ import { authInterceptor } from './auth-interceptor-interceptor';
 
 describe('authInterceptorInterceptor', () => {
   const interceptor: HttpInterceptorFn = (req, next) => 
-    TestBed.runInInjectionContext(() => authInterceptor(req, next));
+    authInterceptor(req, next);
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
