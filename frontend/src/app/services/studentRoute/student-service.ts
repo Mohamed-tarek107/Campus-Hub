@@ -38,20 +38,28 @@ export class StudentService {
     )
   }
 
-  getCourseDoctors(){
-    
+  getCourseDoctors(id: number){
+    this.http.get(`${this.studentApi}/${id}/doctors`,
+      {withCredentials: true}
+    )
   }
 
   viewAllstudent_courses(){
-
+    this.http.get(`${this.studentApi}/viewAllStudentCourses`,
+      {withCredentials: true}
+    )
   }
 
   viewAllstudent_doctors(){
-
+    this.http.get(`${this.studentApi}/viewAllStudentdoctors`,
+      {withCredentials: true}
+    )
   }
 
   viewAllstudent_tasks(){
-
+    this.http.get(`${this.studentApi}/viewAllStudenttasks`,
+      {withCredentials: true}
+    )
   }
-
+  
 }
