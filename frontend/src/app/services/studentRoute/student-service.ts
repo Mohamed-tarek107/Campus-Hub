@@ -25,16 +25,21 @@ export class StudentService {
     )
   }
 
-  takeFeedback(){
-
+  takeFeedback(feedback: string){
+    this.http.post(`${this.studentApi}/takeFeedback`,
+      {feedback},
+      {withCredentials: true}
+    )
   }
   
   getStudentCourses(){
-
+    this.http.get(`${this.studentApi}/available`,
+      {withCredentials: true}
+    )
   }
 
   getCourseDoctors(){
-
+    
   }
 
   viewAllstudent_courses(){
