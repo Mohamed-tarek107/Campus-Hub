@@ -8,42 +8,64 @@ import { HttpClient } from '@angular/common/http';
 export class AdminPanelService {
   private readonly AdminApi = `${environment.apiUrl}/admin`
 
-  constructor(private http: HttpClient){}
+  constructor(private http: HttpClient) { }
 
-  AssignDoctors(){
-
-  }
-
-
-  getStudentCourses(){
+  addCoursec() {
 
   }
 
 
-  getCourseDoctors(){
+  listAllcourses() {
 
   }
 
 
-  viewAllstudent_courses(){
+  addDoctor() {
 
   }
 
 
-  viewAllstudent_doctors(){
+  courseDoctors() {
 
   }
 
 
-  viewAllstudent_tasks(){
+  addAssignment() {
 
   }
 
 
-  takeFeedback(){
-    
+  listAllEvents() {
+
   }
-  
 
 
+  addEvent() {
+
+  }
+
+  listAllAnnouncements() {
+
+  }
+  addAnnouncement() {
+
+  }
+
+  listAllFeedbacks() {
+
+  }
+  dashboardStats() {
+
+  }
+  deleteEvent() {
+
+  }
+
+
+  deleteAnnouncement() {
+
+  }
+  deleteCourse() {
+
+  }
 }
