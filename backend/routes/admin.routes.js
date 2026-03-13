@@ -42,6 +42,6 @@ router.get("/dashbordStats", ensureAuthenticated, requireAdmin, dashboardStats)
 
 router.delete("/events/:event_id", ensureAuthenticated, requireAdmin, deleteEvent)
 router.delete("/announcements/:announcement_id", ensureAuthenticated, requireAdmin, deleteAnnouncement)
-router.delete("courses/:course_id", ensureAuthenticated, requireAdmin, deleteCourse)
+router.delete("/courses/:course_id", ensureAuthenticated, requireAdmin, deleteCourse)
 
 module.exports = router
