@@ -20,6 +20,6 @@ export class GpaCalcService {
   chatBot(msg: string, history: []){
     return this.http.post(`${this.gpaApi}/aiChat`,
     { msg, history },
-    {withCredentials: true})
+    { withCredentials: true })
   }
 }
