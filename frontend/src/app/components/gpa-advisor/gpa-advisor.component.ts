@@ -1,6 +1,8 @@
 import { Component, ElementRef, ViewChild, AfterViewChecked } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { firstValueFrom } from 'rxjs';
+import { GpaCalcService } from '../../services/gpaCalc/gpa-calc-service';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -18,6 +20,8 @@ export class GpaAdvisorComponent implements AfterViewChecked {
 
   @ViewChild('messagesContainer') messagesContainer!: ElementRef;
 
+  constructor(private gpaCalcService: GpaCalcService) {}
+
   // ── State ─────────────────────────────────────────────
   isOpen = false;
   isTyping = false;
@@ -33,17 +37,6 @@ export class GpaAdvisorComponent implements AfterViewChecked {
     'How are grades calculated?',
     'Tips for exam preparation?',
   ];
-
-  // ── System prompt sent to Claude ──────────────────────
-  private systemPrompt = `You are a helpful GPA advisor for university students. 
-  Your role is to:
-- Help students understand how GPA is calculated
-- Give advice on improving grades and academic performance  
-- Answer questions about grade scales (A+/A = 4.0, B+ = 3.5, B = 3.0, C+ = 2.5, C = 2.0, D = 1.0, F = 0.0)
-- Provide study tips and academic guidance
-- Be encouraging and supportive
-
-Keep responses concise and practical. Use simple formatting. Do not use markdown headers.`;
 
   ngAfterViewChecked(): void {
     this.scrollToBottom();
@@ -66,10 +59,15 @@ Keep responses concise and practical. Use simple formatting. Do not use markdown
     this.inputText = '';
   }
 
-  // ── Send message to Anthropic API ────────────────────
+  // ── Send message to GPA advisor service ──────────────
   async sendMessage(): Promise<void> {
     const text = this.inputText.trim();
     if (!text || this.isTyping) return;
+
+    const history = this.messages.map(message => ({
+      role: message.role === 'assistant' ? 'model' as const : 'user' as const,
+      text: message.content,
+    }));
 
     // Add user message
     this.messages.push({ role: 'user', content: text });
@@ -77,24 +75,9 @@ Keep responses concise and practical. Use simple formatting. Do not use markdown
     this.isTyping = true;
 
     try {
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 1000,
-          system: this.systemPrompt,
-          messages: this.messages.map(m => ({
-            role: m.role,
-            content: m.content
-          }))
-        })
-      });
-
-      const data = await response.json();
-      const reply = data.content?.[0]?.text || 'Sorry, I could not get a response. Please try again.';
+      const response = await firstValueFrom(this.gpaCalcService.chatBot(text, history));
+      const reply = response.newHistory[response.newHistory.length - 1]?.text
+        || 'Sorry, I could not get a response. Please try again.';
 
       this.messages.push({ role: 'assistant', content: reply });
 

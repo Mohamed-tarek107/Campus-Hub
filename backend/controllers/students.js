@@ -67,7 +67,7 @@ const getStudentCourses = async (req,res) => {
     const user_id = req.user.id
     try {
         const {rows: user} = await db.query(`
-            SELECT department, year FROM users WHERE id = ?`,
+            SELECT department, year FROM users WHERE id = $1`,
             [user_id]
         )
 
@@ -89,7 +89,7 @@ const getStudentCourses = async (req,res) => {
 const getCourseDoctors = async (req,res) => {
     const { course_id } = req.params
     try {
-        const {rows: doctors} = db.query(`
+        const {rows: doctors} = await db.query(`
             SELECT d.id, d.name
             FROM coursedoctors cd
             JOIN doctors d ON cd.doctor_id = d.id

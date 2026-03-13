@@ -10,6 +10,6 @@ router.patch("/editInfo", ensureAuthenticated, editInfo)
 
 router.patch("/changePassword", ensureAuthenticated, changepass)
 
-router.delete("/deleteAccount", deleteAccount)
+router.delete("/deleteAccount",ensureAuthenticated, deleteAccount)
 
 module.exports = router
