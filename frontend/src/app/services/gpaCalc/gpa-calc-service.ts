@@ -11,7 +11,7 @@ export class GpaCalcService {
 
   constructor(private http: HttpClient){}
 
-  editUserGpa(gpa: Number){
+  editUserGpa(gpa: number){
     return this.http.post(`${this.gpaApi}/assginGpa`,
       { gpa },
       {withCredentials: true})

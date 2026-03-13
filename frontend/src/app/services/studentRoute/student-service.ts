@@ -19,45 +19,45 @@ export class StudentService {
   constructor(private http: HttpClient){}
 
   AssignDoctors(selections: DoctorSelection[]){
-    this.http.post(`${this.studentApi}/assignDoctors`,
+    return this.http.post(`${this.studentApi}/assignDoctors`,
       {selections},
       {withCredentials: true}
     )
   }
 
   takeFeedback(feedback: string){
-    this.http.post(`${this.studentApi}/takeFeedback`,
+    return this.http.post(`${this.studentApi}/takeFeedback`,
       {feedback},
       {withCredentials: true}
     )
   }
   
   getStudentCourses(){
-    this.http.get(`${this.studentApi}/available`,
+    return this.http.get(`${this.studentApi}/available`,
       {withCredentials: true}
     )
   }
 
   getCourseDoctors(id: number){
-    this.http.get(`${this.studentApi}/${id}/doctors`,
+    return this.http.get(`${this.studentApi}/${id}/doctors`,
       {withCredentials: true}
     )
   }
 
   viewAllstudent_courses(){
-    this.http.get(`${this.studentApi}/viewAllStudentCourses`,
+    return this.http.get(`${this.studentApi}/viewAllStudentCourses`,
       {withCredentials: true}
     )
   }
 
   viewAllstudent_doctors(){
-    this.http.get(`${this.studentApi}/viewAllStudentdoctors`,
+    return this.http.get(`${this.studentApi}/viewAllStudentdoctors`,
       {withCredentials: true}
     )
   }
 
   viewAllstudent_tasks(){
-    this.http.get(`${this.studentApi}/viewAllStudenttasks`,
+    return this.http.get(`${this.studentApi}/viewAllStudenttasks`,
       {withCredentials: true}
     )
   }
