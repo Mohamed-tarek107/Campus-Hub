@@ -11,15 +11,24 @@ export class UserProfileService {
     constructor(private http: HttpClient){}
 
     userInfo(){
-
+      return this.http.get(`${this.userApi}/userInfo`,
+        {withCredentials: true}
+      )
     }
-    editInfo(){
-
+    editInfo(phone_number: number, username: string, year: number, bio: string){
+      return this.http.patch(`${this.userApi}/editInfo`,
+        { phone_number, username, year, bio },
+        {withCredentials: true})
     }
-    changepass(){
 
+    changepass(currentpass: string, newpass: string, confirmpass: string){
+      return this.http.patch(`${this.userApi}/changePassword`,
+        { currentpass, newpass, confirmpass },
+        { withCredentials: true })
     }
     deleteAccount(){
-      
+      return this.http.delete(`${this.userApi}/deleteAccount`,
+        {withCredentials: true}
+      )
     }
 }
