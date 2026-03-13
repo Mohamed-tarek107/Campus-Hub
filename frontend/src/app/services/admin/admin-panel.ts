@@ -6,66 +6,85 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root',
 })
 export class AdminPanelService {
-  private readonly AdminApi = `${environment.apiUrl}/admin`
+  // Main admin API endpoint.
+  private readonly AdminApi = `${environment.apiUrl}/admin`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
+  // Add a new course.
   addCoursec() {
 
   }
 
 
+  // Get all courses.
   listAllcourses() {
 
   }
 
 
+  // Add a doctor.
   addDoctor() {
 
   }
 
 
-  courseDoctors() {
+  // Get doctors for a course.
+  courseDoctors(course_id: number) {
 
   }
 
 
-  addAssignment() {
+  // Add an assignment for a course doctor.
+  addAssignment(courseDoctor_id: number) {
 
   }
 
 
+  // Get all events.
   listAllEvents() {
 
   }
 
 
+  // Add a new event.
   addEvent() {
 
   }
 
+  // Get all announcements.
   listAllAnnouncements() {
 
   }
+
+  // Add a new announcement.
   addAnnouncement() {
 
   }
 
+  // Get all feedback items.
   listAllFeedbacks() {
 
   }
+
+  // Load dashboard stats.
   dashboardStats() {
 
   }
-  deleteEvent() {
+
+
+  // Delete an event.
+  deleteEvent(event_id: number) {
 
   }
 
-
-  deleteAnnouncement() {
+  // Delete an announcement.
+  deleteAnnouncement(announcement_id: number) {
 
   }
-  deleteCourse() {
+
+  // Delete a course.
+  deleteCourse(course_id: number) {
 
   }
 }
