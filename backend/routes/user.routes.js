@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { editInfo, userInfo, deleteAccount, changepass } = require("../controllers/user.js")
+const { editInfo, userInfo, deleteAccount, changepass } = require("../controllers/userProfile.controller.js")
 const { ensureAuthenticated } = require("../middlewares/authMiddleware")
 
 

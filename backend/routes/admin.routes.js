@@ -14,7 +14,7 @@ const {
     listAllFeedbacks,
     deleteCourse,
     dashboardStats,
-} = require("../controllers/adminController.js");
+} = require("../controllers/admin.controller.js");
 const { ensureAuthenticated, requireAdmin } = require("../middlewares/authMiddleware")
 const router = express.Router();
 

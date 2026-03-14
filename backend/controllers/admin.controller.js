@@ -1,4 +1,4 @@
-const db = require("../config/db");
+const db = require("../config/db.js");
 const { notificationMail } = require("../services/notification.service.js")
 const { HTMLresponse_AI } = require("../services/mailerAI.service.js")
 

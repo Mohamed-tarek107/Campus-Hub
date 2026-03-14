@@ -1,5 +1,5 @@
 const express = require("express");
-const { editUserGpa, chatBot } = require("../controllers/AI_gpaCalc.js");
+const { editUserGpa, chatBot } = require("../controllers/AI_gpaCalc.controller.js");
 const { ensureAuthenticated } = require("../middlewares/authMiddleware.js")
 const router = express.Router();
 

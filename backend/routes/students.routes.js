@@ -1,5 +1,8 @@
 const express = require("express");
-const { AssignDoctors, viewAllstudent_courses, viewAllstudent_doctors, viewAllstudent_tasks, getCourseDoctors, getStudentCourses, takeFeedback } = require("../controllers/students.js");
+const { AssignDoctors } = require("../controllers/students/assignDoctors.controller.js");
+const { getCourseDoctors, getStudentCourses } = require("../controllers/students/catalog.controller.js");
+const { viewAllstudent_courses, viewAllstudent_doctors, viewAllstudent_tasks } = require("../controllers/students/views.controller.js");
+const { takeFeedback } = require("../controllers/students/feedback.controller.js");
 const { ensureAuthenticated } = require("../middlewares/authMiddleware.js")
 const router = express.Router();
 
