@@ -56,10 +56,16 @@ export class StudentService {
     )
   }
 
-  viewAllstudent_tasks(){
-    return this.http.get(`${this.studentApi}/viewAllStudenttasks`,
+  viewDoneTasks(){
+    return this.http.get(`${this.studentApi}/viewDoneTasks`,
       {withCredentials: true}
     )
   }
   
+  markTaskDone(task_id: number){
+    return this.http.get(`${this.studentApi}/markTaskDone/${task_id}`,
+      {withCredentials: true}
+    )
+  }
+
 }
