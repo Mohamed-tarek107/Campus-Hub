@@ -181,9 +181,9 @@
             <button class="btn-back" (click)="prevStep()"
                 [style.visibility]="currentStep > 1 ? 'visible' : 'hidden'">Back</button>
             <button class="btn-next" (click)="nextStep()" *ngIf="currentStep < 3">Next</button>
-            <button class="btn-next" (click)="onSubmit()" *ngIf="currentStep === 3" [disabled]="isLoading">
+            <button class="btn-next" (click)="submitCourse()" *ngIf="currentStep === 3" [disabled]="isLoading">
                 <span *ngIf="!isLoading">Done</span>
-                <span *ngIf="isLoading" class="spinner"></span>
+                <span *ngIf="isLoading" class="spinner"></span> 
             </button>
         </div>
 
@@ -235,7 +235,7 @@
 
         <div class="wizard-footer">
             <button class="btn-back" (click)="closeDoctorPopup()">Cancel</button>
-            <button class="btn-next" (click)="onAddDoctor()" [disabled]="isDoctorLoading">
+            <button class="btn-next" (click)="submitDoctor()" [disabled]="isDoctorLoading">
                 <span *ngIf="!isDoctorLoading">Add Doctor</span>
                 <span *ngIf="isDoctorLoading" class="spinner"></span>
             </button>
