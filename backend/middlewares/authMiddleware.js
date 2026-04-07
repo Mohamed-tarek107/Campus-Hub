@@ -38,7 +38,7 @@ const requireAdmin = async (req,res,next) => {
 
 // Limiters
 const loginLimiter = rateLimit({
-    windowsMs: 15* 60 * 1000, //15 min
+    windowMs: 15 * 60 * 1000, // 15 min
     max: 5,
     message: "Too many login attempts",
     legacyHeaders: false,
@@ -51,7 +51,7 @@ const registerLimiter = rateLimit({
     message: "Too many accounts created, try again later",
     standardHeaders: true,
     legacyHeaders: false,
-    keyGenerator: (req) => req.ip
+    keyGenerator: (req) => rateLimit.ipKeyGenerator(req.ip)
 });
 
 
