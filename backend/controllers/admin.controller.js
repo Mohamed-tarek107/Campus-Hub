@@ -121,10 +121,10 @@ const courseDoctors = async (req, res) => {
     const { course_id } = req.params;
     try {
         const { rows: doctors } = await db.query(
-            `SELECT cd.id AS coursedoctor_id, d.id AS doctor_id, d.name
-             FROM coursedoctors cd
-             JOIN doctors d ON cd.doctor_id = d.id
-             WHERE cd.course_id = $1`,
+            `   SELECT cd.id AS coursedoctor_id, d.id AS doctor_id, d.name
+                FROM coursedoctors cd
+                JOIN doctors d ON cd.doctor_id = d.id
+                WHERE cd.course_id = $1`,
             [course_id]
         );
         if (doctors.length == 0)

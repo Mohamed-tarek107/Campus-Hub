@@ -11,7 +11,7 @@ interface Course {
   course_name: string;
   department:  string;
   year:        number;
-  doctors:     string[];
+  doctors?:     string[];
 }
 
 // ─────────────────────────────────────────────────────────
@@ -56,7 +56,22 @@ export class AdminAcademicsComponent implements OnInit {
       })
     ).subscribe({
       next: (data: any) => {
-          this.courses = data.courses ?? []
+          this.courses = (data.courses ?? []).map((course: any) => ({
+            ...course,
+            doctors: []
+          }))
+
+          this.courses.forEach((course, index) => {
+            this.adminService.courseDoctors(course.id)
+            .subscribe({
+              next: (res: any) => {
+                this.courses[index].doctors = (res.doctors ?? []).map((doc: any) => doc.name)
+              },
+              error: (err) => {
+                  console.error(err.message ? err.message : err)
+              }
+            })
+          })
       },
       error: (err) => {
         console.error(err.message ? err.message : err)
@@ -140,7 +155,7 @@ export class AdminAcademicsComponent implements OnInit {
     )
     .subscribe({
       next: () => {
-        course?.doctors.push(this.doctorForm.name.trim());
+        course?.doctors?.push(this.doctorForm.name.trim());
         this.closeDoctorPopup();
       },
       error: (err) => {
