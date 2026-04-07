@@ -7,18 +7,26 @@ const helmet = require("helmet");
 
 const app = express();
 
+const allowedOrigins = new Set([
+    process.env.FRONTEND_URL,
+    process.env.FRONTEND_PROD_URL,
+    "http://localhost:4200"
+].filter(Boolean).map((origin) => origin.trim()));
+
+const corsOptions = {
+    origin: (origin, callback) => {
+        if (!origin) return callback(null, true);
+        return callback(null, allowedOrigins.has(origin));
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"]
+};
+
 app.use(helmet());
+app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
-
-const isProd = process.env.NODE_ENV === "production"
-
-app.use(cors({
-    origin: isProd ? process.env.FRONTEND_PROD_URL : process.env.FRONTEND_URL,
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-    allowedHeaders: ["Content-Type", "Authorization"]
-}));
 
 // Routes
 const authRoutes = require("./routes/auth.routes.js");
