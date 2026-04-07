@@ -49,6 +49,20 @@ export class AdminAcademicsComponent implements OnInit {
     // TODO: call this.adminService.listAllcourses()
     // on next: this.courses = res.courses (map doctors from courseDoctors calls if needed)
     // on error: console.error
+    this.isLoading = true
+    this.adminService.listAllcourses().pipe(
+      finalize(() => {
+        this.isLoading = false
+      })
+    ).subscribe({
+      next: (data: any) => {
+          this.courses = data.courses ?? []
+      },
+      error: (err) => {
+        console.error(err.message ? err.message : err)
+        this.errorMsg = err.error?.message
+      }
+    })
   }
 
   submitCourse() {
@@ -95,9 +109,6 @@ export class AdminAcademicsComponent implements OnInit {
       return;
     }
     this.isLoading = true
-    // TODO: this.adminService.deleteCourse(course.id!)
-    // on next: this.courses.splice(i, 1)
-    // on error: console.error
     this.adminService.deleteCourse(course.id).pipe(
       finalize(() => {
         this.isLoading = false

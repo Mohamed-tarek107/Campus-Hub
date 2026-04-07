@@ -76,13 +76,16 @@ const addCourse = async (req, res) => {
         );
         if (courses.length > 0) throw new Error("Course_alreadyExist");
 
-        await client.query(
-            "INSERT INTO courses (course_name, department, year) VALUES ($1, $2, $3)",
+        const { rows: insertedCourse } = await client.query(
+            "INSERT INTO courses (course_name, department, year) VALUES ($1, $2, $3) RETURNING id",
             [course_name, department, year]
         );
 
         await client.query('COMMIT');
-        res.status(201).json({ message: "Course Added Successfully" });
+        res.status(201).json({
+            message: "Course Added Successfully",
+            course_id: insertedCourse[0].id
+        });
 
     } catch (error) {
         await client.query('ROLLBACK');
