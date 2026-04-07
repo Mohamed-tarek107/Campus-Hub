@@ -4,9 +4,10 @@ import { FormsModule } from '@angular/forms';
 import { AdminSidenavComponent } from '../admin.sidenav/admin.sidenav.component';
 import { AdminTopnavComponent } from '../admin.topnav/admin.topnav.component';
 import { AdminPanelService } from '../../../services/admin/admin-panel';
+import { finalize } from 'rxjs';
 
 interface Course {
-  id?:         number;
+  id:         number;
   course_name: string;
   department:  string;
   year:        number;
@@ -50,33 +51,72 @@ export class AdminAcademicsComponent implements OnInit {
     // on error: console.error
   }
 
-  submitCourse() {
-    this.isLoading = true; this.errorMsg = '';
-    const payload = {
-      course_name: this.form.course_name.trim(),
-      department:  this.form.department,
-      year:        Number(this.form.year),
-      doctors:     this.filledDoctors
-    };
+  // submitCourse() {
+  //   this.isLoading = true; this.errorMsg = '';
+  //   const payload = {
+  //     course_name: this.form.course_name.trim(),
+  //     department:  this.form.department,
+  //     year:        Number(this.form.year),
+  //     doctors:     this.filledDoctors
+  //   };
 
-    // TODO: this.adminService.addCourse(payload.course_name, payload.department, payload.year)
-    // on next: (res: any) =>
-    //   for each doctor in payload.doctors:
-    //     this.adminService.addDoctor(res.course_id, doctor).subscribe()
-    //   this.courses.unshift({ ...payload, id: res.course_id })
-    //   this.closeWizard()
-    // on error: this.errorMsg = err.error?.message
-    // finally: this.isLoading = false
-    void payload;
-    this.isLoading = false;
-  }
+  //   // TODO: this.adminService.addCourse(payload.course_name, payload.department, payload.year)
+  //   // on next: (res: any) =>
+  //   //   for each doctor in payload.doctors:
+  //   //     this.adminService.addDoctor(res.course_id, doctor).subscribe()
+  //   //   this.courses.unshift({ ...payload, id: res.course_id })
+  //   //   this.closeWizard()
+  //   // on error: this.errorMsg = err.error?.message
+  //   // finally: this.isLoading = false
+
+
+  //   this.adminService
+  //   .addCourse(payload.course_name, payload.department, payload.year)
+  //   .pipe(
+  //     finalize (() => {
+  //       this.isLoading = false;
+  //   }))
+  //   .subscribe({
+  //       next: (res: any) => {
+  //         payload.doctors.forEach((doc) => {
+  //           this.adminService.addDoctor(res.course_id, doc)
+  //           .subscribe({
+  //             next: () => {},
+  //             error: (err) => {
+  //               console.error(err)
+  //             }
+  //           })
+  //         })
+  //       },
+  //       error: (err) => {
+
+  //       }
+  //   })
+  //   this.isLoading = false;
+  // }
 
   deleteCourse(i: number) {
     const course = this.courses[i];
+    if (!course?.id) {
+      console.error('Invalid course id');
+      return;
+    }
+    this.isLoading = true
     // TODO: this.adminService.deleteCourse(course.id!)
     // on next: this.courses.splice(i, 1)
     // on error: console.error
-    void course;
+    this.adminService.deleteCourse(course.id).pipe(
+      finalize(() => {
+        this.isLoading = false
+      })
+    ).subscribe({
+      next: () => {
+        this.courses.splice(i, 1)
+      },
+      error: (err) => {
+        console.error(err.message? err.message : err)
+      }
+    })
   }
 
   submitDoctor() {
@@ -86,12 +126,22 @@ export class AdminAcademicsComponent implements OnInit {
     this.isDoctorLoading = true;
 
     const course = this.courses.find(c => c.course_name === this.doctorForm.course_name);
-    // TODO: this.adminService.addDoctor(course!.id!, this.doctorForm.name.trim())
-    // on next: course!.doctors.push(this.doctorForm.name.trim()); this.closeDoctorPopup()
-    // on error: this.doctorErrorMsg = err.error?.message
-    // finally: this.isDoctorLoading = false
-    void course;
-    this.isDoctorLoading = false;
+
+    this.adminService.addDoctor(course!.id!, this.doctorForm.name.trim())
+    .pipe(
+      finalize(() => {
+        this.isDoctorLoading = false;
+      })
+    )
+    .subscribe({
+      next: () => {
+        course?.doctors.push(this.doctorForm.name.trim());
+        this.closeDoctorPopup();
+      },
+      error: (err) => {
+        this.doctorErrorMsg = err.error?.message;
+      }
+    });
   }
 
   // ═════════════════════════════════════════════════════
