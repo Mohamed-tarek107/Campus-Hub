@@ -7,11 +7,11 @@ import { AdminPanelService } from '../../../services/admin/admin-panel';
 import { finalize } from 'rxjs';
 
 interface Course {
-  id:         number;
+  id: number;
   course_name: string;
-  department:  string;
-  year:        number;
-  doctors?:     string[];
+  department: string;
+  year: number;
+  doctors?: string[];
 }
 
 // ─────────────────────────────────────────────────────────
@@ -27,19 +27,19 @@ export class AdminAcademicsComponent implements OnInit {
   courses: Course[] = [];
 
   // ── Course wizard state ───────────────────────────────
-  wizardOpen  = false;
+  wizardOpen = false;
   currentStep = 1;
-  isLoading   = false;
-  errorMsg    = '';
+  isLoading = false;
+  errorMsg = '';
   form = { course_name: '', department: '' as string, year: '' as number | string, doctors: [''] };
 
   // ── Add doctor popup state ────────────────────────────
   doctorPopupOpen = false;
   isDoctorLoading = false;
-  doctorErrorMsg  = '';
+  doctorErrorMsg = '';
   doctorForm = { name: '', course_name: '' };
 
-  constructor(private adminService: AdminPanelService) {}
+  constructor(private adminService: AdminPanelService) { }
 
   // ═════════════════════════════════════════════════════
   // API INTEGRATION POINTS
@@ -56,22 +56,22 @@ export class AdminAcademicsComponent implements OnInit {
       })
     ).subscribe({
       next: (data: any) => {
-          this.courses = (data.courses ?? []).map((course: any) => ({
-            ...course,
-            doctors: []
-          }))
+        this.courses = (data.courses ?? []).map((course: any) => ({
+          ...course,
+          doctors: []
+        }))
 
-          this.courses.forEach((course, index) => {
-            this.adminService.courseDoctors(course.id)
+        this.courses.forEach((course, index) => {
+          this.adminService.courseDoctors(course.id)
             .subscribe({
               next: (res: any) => {
                 this.courses[index].doctors = (res.doctors ?? []).map((doc: any) => doc.name)
               },
               error: (err) => {
-                  console.error(err.message ? err.message : err)
+                console.error(err.message ? err.message : err)
               }
             })
-          })
+        })
       },
       error: (err) => {
         console.error(err.message ? err.message : err)
@@ -84,37 +84,37 @@ export class AdminAcademicsComponent implements OnInit {
     this.isLoading = true; this.errorMsg = '';
     const payload = {
       course_name: this.form.course_name.trim(),
-      department:  this.form.department,
-      year:        Number(this.form.year),
-      doctors:     this.filledDoctors
+      department: this.form.department,
+      year: Number(this.form.year),
+      doctors: this.filledDoctors
     };
 
     this.adminService.addCourse(payload.course_name, payload.department, payload.year)
-    .pipe(
-      finalize (() => {
-        this.isLoading = false;
-    }))
+      .pipe(
+        finalize(() => {
+          this.isLoading = false;
+        }))
 
-    .subscribe({
+      .subscribe({
         next: (res: any) => {
           //doctors inside course creation
           payload.doctors.forEach((doc) => {
             this.adminService.addDoctor(res.course_id, doc)
-            .subscribe({
-              next: () => {},
-              error: (err) => {
-                console.error(err)
-              }
-            })
+              .subscribe({
+                next: () => { },
+                error: (err) => {
+                  console.error(err)
+                }
+              })
           })
 
-          this.courses.unshift({...payload, id: res.course_id })
+          this.courses.unshift({ ...payload, id: res.course_id })
           this.closeWizard()
         },
         error: (err) => {
           this.errorMsg = err.error?.message
         }
-    })
+      })
   }
 
   deleteCourse(i: number) {
@@ -133,7 +133,7 @@ export class AdminAcademicsComponent implements OnInit {
         this.courses.splice(i, 1)
       },
       error: (err) => {
-        console.error(err.message? err.message : err)
+        console.error(err.message ? err.message : err)
         this.errorMsg = err.error?.message
       }
     })
@@ -141,35 +141,35 @@ export class AdminAcademicsComponent implements OnInit {
 
   submitDoctor() {
     this.doctorErrorMsg = '';
-    if (!this.doctorForm.name.trim())  { this.doctorErrorMsg = 'Enter a doctor name.'; return; }
-    if (!this.doctorForm.course_name)  { this.doctorErrorMsg = 'Select a course.'; return; }
+    if (!this.doctorForm.name.trim()) { this.doctorErrorMsg = 'Enter a doctor name.'; return; }
+    if (!this.doctorForm.course_name) { this.doctorErrorMsg = 'Select a course.'; return; }
     this.isDoctorLoading = true;
 
     const course = this.courses.find(c => c.course_name === this.doctorForm.course_name);
 
     this.adminService.addDoctor(course!.id!, this.doctorForm.name.trim())
-    .pipe(
-      finalize(() => {
-        this.isDoctorLoading = false;
-      })
-    )
-    .subscribe({
-      next: () => {
-        course?.doctors?.push(this.doctorForm.name.trim());
-        this.closeDoctorPopup();
-      },
-      error: (err) => {
-        this.doctorErrorMsg = err.error?.message;
-        this.errorMsg = err.error?.message
-      }
-    });
+      .pipe(
+        finalize(() => {
+          this.isDoctorLoading = false;
+        })
+      )
+      .subscribe({
+        next: () => {
+          course?.doctors?.push(this.doctorForm.name.trim());
+          this.closeDoctorPopup();
+        },
+        error: (err) => {
+          this.doctorErrorMsg = err.error?.message;
+          this.errorMsg = err.error?.message
+        }
+      });
   }
 
   // ═════════════════════════════════════════════════════
   // UI HELPERS — do not touch
   // ═════════════════════════════════════════════════════
 
-  get wizardTitle()   { return ['Course Details', 'Assign Doctors', 'Review'][this.currentStep - 1]; }
+  get wizardTitle() { return ['Course Details', 'Assign Doctors', 'Review'][this.currentStep - 1]; }
   get filledDoctors() { return this.form.doctors.filter(d => d.trim() !== ''); }
   trackByIndex(index: number) { return index; }
 
@@ -177,10 +177,10 @@ export class AdminAcademicsComponent implements OnInit {
     this.wizardOpen = true; this.currentStep = 1; this.errorMsg = '';
     this.form = { course_name: '', department: '', year: '', doctors: [''] };
   }
-  closeWizard()     { this.wizardOpen = false; }
+  closeWizard() { this.wizardOpen = false; }
   openDoctorPopup() { this.doctorPopupOpen = true; this.doctorErrorMsg = ''; this.doctorForm = { name: '', course_name: '' }; }
-  closeDoctorPopup(){ this.doctorPopupOpen = false; }
-  addDoctorField()  { this.form.doctors.push(''); }
+  closeDoctorPopup() { this.doctorPopupOpen = false; }
+  addDoctorField() { this.form.doctors.push(''); }
   removeDoctor(i: number) { this.form.doctors.splice(i, 1); }
   prevStep() { this.errorMsg = ''; this.currentStep--; }
 
