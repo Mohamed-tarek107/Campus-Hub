@@ -1,31 +1,50 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { AdminSidenavComponent } from '../admin.sidenav/admin.sidenav.component';
 import { AdminTopnavComponent } from '../admin.topnav/admin.topnav.component';
+import { AdminPanelService } from '../../../services/admin/admin-panel';
 
 interface Feedback {
+  id: number;
   username: string;
-  message:  string;
-  date:     string;
+  message: string;
+  date: string;
 }
 
 @Component({
   selector: 'app-feedbacks.component',
+  standalone: true,
   imports: [CommonModule, AdminSidenavComponent, AdminTopnavComponent],
   templateUrl: './feedbacks.component.html',
   styleUrl: './feedbacks.component.css',
 })
-export class AdminFeedbacksComponent {
-      // TODO: replace with GET /api/admin/feedback
-  feedbacks: Feedback[] = [
-    { username: 'Ahmed Youssef',  message: 'The GPA calculator is really helpful, would love to see a semester history feature.', date: 'Mar 3, 2026' },
-    { username: 'Sara El-Sayed',  message: 'Announcement emails are great but they arrive a bit late sometimes.', date: 'Mar 2, 2026' },
-    { username: 'Omar Khaled',    message: 'The assign doctors page was a bit confusing at first but works well once you get it.', date: 'Feb 28, 2026' },
-    { username: 'Nour Hassan',    message: 'Would be nice to have a dark mode toggle but overall the design looks good.', date: 'Feb 25, 2026' },
-  ];
+export class AdminFeedbacksComponent implements OnInit {
+  feedbacks: Feedback[] = []
 
+
+  constructor(private adminService: AdminPanelService, private cdr: ChangeDetectorRef){}
   ngOnInit(): void {
-    // TODO: GET /api/admin/feedback → replace mock feedbacks array
+    this.listFeedbacks();
+  }
+
+
+  listFeedbacks(){
+    this.adminService.listAllFeedbacks().subscribe({
+      next: (data: any) => {
+        this.feedbacks = (data.feedbacks ?? []).map((f: any) => {
+          return {
+            id: f.id,
+            username: f.username,
+            message: f.feedback,
+            date: f.created_at,
+          };
+        });
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error(err.message ? err.message : err);
+      }
+    });
   }
 
   getInitials(name: string): string {
