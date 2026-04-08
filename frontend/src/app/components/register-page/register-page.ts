@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
+import { AuthService } from '../../services/auth/auth-service';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-register',
@@ -16,7 +18,7 @@ export class RegisterPage {
     username: '',
     email: '',
     department: '',
-    year: '',
+    year: null as number | null,
     password: '',
     confirmpassword: ''
   };
@@ -26,7 +28,7 @@ export class RegisterPage {
   isLoading = false;
   errorMessage = '';
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private authService: AuthService) {}
 
   async onRegister() {
     if (!this.form.username || !this.form.email ||
@@ -43,15 +45,29 @@ export class RegisterPage {
 
     this.isLoading = true;
     this.errorMessage = '';
-
-    try {
       // TODO: inject AuthService and call this.authService.register(this.form)
       // On success: this.router.navigate(['/login']);
-      console.log('Register payload:', this.form);
-    } catch (error: any) {
-      this.errorMessage = error?.message || 'Registration failed. Please try again.';
-    } finally {
-      this.isLoading = false;
-    }
+        this.authService.register(
+          this.form.username,
+          this.form.email,
+          this.form.password,
+          this.form.confirmpassword,
+          this.form.department,
+          this.form.year
+        )
+        .pipe(
+          finalize(() => {
+            this.isLoading = false
+            console.log('Register payload:', this.form);
+          })
+        ).subscribe({
+          next: () => {
+            this.router.navigate(['/login']);
+          },
+          error: (err) => {
+            console.error(err.message ? err.message : err)
+            this.errorMessage = err.error?.message
+          }
+        })
   }
 }

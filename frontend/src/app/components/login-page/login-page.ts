@@ -30,12 +30,17 @@ export class LoginPage {
     }
     this.isLoading = true;
     this.errorMessage = '';
-    try {
       // TODO: inject AuthService and call this.authService.login(this.credentials)
       // this.router.navigate(['/dashboard']);
       // this.router.navigate(['/assignDoctors']);
       this.authService.login(this.credentials.username, this.credentials.password)
-        .subscribe({
+      .pipe(
+        finalize (() => {
+          this.isLoading = false
+          console.log('Login payload:', this.credentials);
+        })
+      )  
+      .subscribe({
           next: (user: any) => {
             if(user.role == 'admin'){
               this.router.navigate(['/admin/dashboard']);
@@ -59,11 +64,5 @@ export class LoginPage {
       // }else{
       //     this.router.navigate(['/dashboard']);
       // }
-      console.log('Login payload:', this.credentials);
-    } catch (error: any) {
-      this.errorMessage = error?.message || 'Login failed. Please try again.';
-    } finally {
-      this.isLoading = false;
     }
-  }
 }
