@@ -219,9 +219,9 @@
             <div class="field">
                 <label>Course</label>
                 <div class="select-wrap">
-                    <select [(ngModel)]="doctorForm.course_name">
-                        <option value="" disabled>Select course</option>
-                        <option *ngFor="let c of courses" [value]="c.course_name">{{ c.course_name }} — {{ c.department
+                    <select [(ngModel)]="doctorForm.course_id">
+                        <option [ngValue]="null" disabled>Select course</option>
+                        <option *ngFor="let c of courses" [ngValue]="c.id">{{ c.course_name }} — {{ c.department
                             | uppercase }} Y{{ c.year }}</option>
                     </select>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

@@ -38,7 +38,7 @@ export class AdminAcademicsComponent implements OnInit {
   doctorPopupOpen = false;
   isDoctorLoading = false;
   doctorErrorMsg = '';
-  doctorForm = { name: '', course_name: '' };
+  doctorForm = { name: '', course_id: null as number | null };
 
   constructor(private adminService: AdminPanelService, private cdr: ChangeDetectorRef) { }
 
@@ -85,7 +85,7 @@ export class AdminAcademicsComponent implements OnInit {
               })
             )
           )
-        );``
+        );
       }),
 
       // finalize: runs after everything is done whether it succeeded or failed
@@ -169,12 +169,18 @@ export class AdminAcademicsComponent implements OnInit {
   submitDoctor() {
     this.doctorErrorMsg = '';
     if (!this.doctorForm.name.trim()) { this.doctorErrorMsg = 'Enter a doctor name.'; return; }
-    if (!this.doctorForm.course_name) { this.doctorErrorMsg = 'Select a course.'; return; }
+    if (!this.doctorForm.course_id) { this.doctorErrorMsg = 'Select a course.'; return; }
     this.isDoctorLoading = true;
 
-    const course = this.courses.find(c => c.course_name === this.doctorForm.course_name);
+    const course = this.courses.find(c => c.id === this.doctorForm.course_id);
+    if (!course) {
+      this.isDoctorLoading = false;
+      this.doctorErrorMsg = 'Selected course not found.';
+      return;
+    }
 
-    this.adminService.addDoctor(course!.id!, this.doctorForm.name.trim())
+    const doctorName = this.doctorForm.name.trim();
+    this.adminService.addDoctor(course.id, doctorName)
       .pipe(
         finalize(() => {
           this.isDoctorLoading = false;
@@ -182,8 +188,11 @@ export class AdminAcademicsComponent implements OnInit {
       )
       .subscribe({
         next: () => {
-          course?.doctors?.push(this.doctorForm.name.trim());
+          course.doctors = [...(course.doctors ?? []), doctorName];
+          this.isDoctorLoading = false;
+          this.doctorPopupOpen = false;
           this.closeDoctorPopup();
+          this.cdr.detectChanges();
         },
         error: (err) => {
           this.doctorErrorMsg = err.error?.message;
@@ -205,7 +214,7 @@ export class AdminAcademicsComponent implements OnInit {
     this.form = { course_name: '', department: '', year: '', doctors: [''] };
   }
   closeWizard() { this.wizardOpen = false; }
-  openDoctorPopup() { this.doctorPopupOpen = true; this.doctorErrorMsg = ''; this.doctorForm = { name: '', course_name: '' }; }
+  openDoctorPopup() { this.doctorPopupOpen = true; this.doctorErrorMsg = ''; this.doctorForm = { name: '', course_id: null }; }
   closeDoctorPopup() { this.doctorPopupOpen = false; }
   addDoctorField() { this.form.doctors.push(''); }
   removeDoctor(i: number) { this.form.doctors.splice(i, 1); }
