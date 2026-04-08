@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AdminSidenavComponent } from '../admin.sidenav/admin.sidenav.component';
 import { AdminTopnavComponent } from '../admin.topnav/admin.topnav.component';
 import { AdminPanelService } from '../../../services/admin/admin-panel';
-import { finalize } from 'rxjs';
+import { catchError, finalize, forkJoin, map, of, switchMap } from 'rxjs';
 
 interface Course {
   id: number;
@@ -17,6 +17,7 @@ interface Course {
 // ─────────────────────────────────────────────────────────
 @Component({
   selector: 'app-admin-academics',
+  standalone: true,
   imports: [CommonModule, FormsModule, AdminSidenavComponent, AdminTopnavComponent],
   templateUrl: './admin.academics.component.html',
   styleUrl: './admin.academics.component.css',
@@ -39,45 +40,71 @@ export class AdminAcademicsComponent implements OnInit {
   doctorErrorMsg = '';
   doctorForm = { name: '', course_name: '' };
 
-  constructor(private adminService: AdminPanelService) { }
+  constructor(private adminService: AdminPanelService, private cdr: ChangeDetectorRef) { }
 
   // ═════════════════════════════════════════════════════
   // API INTEGRATION POINTS
   // ═════════════════════════════════════════════════════
 
   ngOnInit() {
-    // TODO: call this.adminService.listAllcourses()
-    // on next: this.courses = res.courses (map doctors from courseDoctors calls if needed)
-    // on error: console.error
-    this.isLoading = true
-    this.adminService.listAllcourses().pipe(
-      finalize(() => {
-        this.isLoading = false
-      })
-    ).subscribe({
-      next: (data: any) => {
-        this.courses = (data.courses ?? []).map((course: any) => ({
-          ...course,
-          doctors: []
-        }))
+    this.loadCourses();
+  }
 
-        this.courses.forEach((course, index) => {
-          this.adminService.courseDoctors(course.id)
-            .subscribe({
-              next: (res: any) => {
-                this.courses[index].doctors = (res.doctors ?? []).map((doc: any) => doc.name)
-              },
-              error: (err) => {
-                console.error(err.message ? err.message : err)
-              }
-            })
-        })
+  loadCourses() {
+    this.isLoading = true;
+
+    this.adminService.listAllcourses().pipe(
+
+      // switchMap: takes the courses response and immediately starts a new
+      // set of API calls (doctor calls) before passing the result to subscribe
+      switchMap((data: any) => {
+        // Map raw API response into Course objects with an empty doctors array
+        const baseCourses: Course[] = (data.courses ?? []).map((c: any) => ({ ...c, doctors: [] }));
+
+        // If no courses exist, skip doctor calls and return empty array immediately
+        if (baseCourses.length === 0) return of(baseCourses);
+
+        // forkJoin: fires all doctor calls in parallel and waits for ALL of them
+        // to finish before continuing — like Promise.all()
+        return forkJoin(
+          baseCourses.map((course) =>
+            this.adminService.courseDoctors(course.id).pipe(
+
+              // map: transform the doctor response into a course object
+              // that has the doctors array filled in
+              map((res: any) => ({
+                ...course,
+                doctors: (res.doctors ?? []).map((doc: any) => doc.name)
+              })),
+
+              // catchError: if a course has no doctors the API returns 404
+              // instead of crashing everything, return the course with empty doctors
+              catchError((err) => {
+                console.error(err.message ? err.message : err);
+                return of(course); // of() wraps a plain value into an Observable
+              })
+            )
+          )
+        );``
+      }),
+
+      // finalize: runs after everything is done whether it succeeded or failed
+      // used here to turn off the loading spinner
+      finalize(() => { this.isLoading = false; })
+
+    ).subscribe({
+      next: (courses: Course[]) => {
+        // Set the courses array — Angular now has all courses with their doctors
+        this.courses = courses;
+        // Manually tell Angular to re-render because forkJoin runs outside
+        // Angular's change detection zone in some configurations
+        this.cdr.detectChanges();
       },
       error: (err) => {
-        console.error(err.message ? err.message : err)
-        this.errorMsg = err.error?.message
+        console.error(err.message ? err.message : err);
+        this.errorMsg = err.error?.message;
       }
-    })
+    });
   }
 
   submitCourse() {
