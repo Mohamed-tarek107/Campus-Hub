@@ -1,11 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AdminSidenavComponent } from '../admin.sidenav/admin.sidenav.component';
 import { AdminTopnavComponent } from '../admin.topnav/admin.topnav.component';
+import { AdminPanelService } from '../../../services/admin/admin-panel';
 
-interface Announcement { id?: number; title: string; source: string; date: string; description: string; }
-interface Event        { id?: number; title: string; host: string; location: string; date: string; description: string; }
+interface Announcement { id: number; title: string; source: string; date: string; description: string; }
+interface Event        { id: number; title: string; host: string; location: string; date: string; description: string; }
 interface Course       { id: number; course_name: string; department: string; year: number; }
 interface CourseDoctor { coursedoctor_id: number; name: string; }
 
@@ -21,26 +22,13 @@ export class AdminPublishComponent implements OnInit {
   activeTab: 'announcements' | 'events' = 'announcements';
 
   // TODO: replace mocks with GET /api/admin/announcements, GET /api/admin/events, GET /api/admin/courses
-  announcements: Announcement[] = [
-    { id: 1, title: 'Mid-Term Exam Schedule', source: "Dean's Office", date: '2026-03-01', description: 'Mid-term exams will be held from March 15 to March 20.' },
-  ];
-
-  events: Event[] = [
-    { id: 1, title: 'Tech Career Fair', host: 'CS Department', location: 'Main Hall', date: '2026-03-10', description: 'Annual tech career fair with 20+ companies.' },
-  ];
-
-  courses: Course[] = [
-    { id: 1, course_name: 'Data Structures', department: 'bis', year: 2 },
-    { id: 2, course_name: 'Database Systems', department: 'fmi', year: 3 },
-  ];
+  announcements: Announcement[] = [];
+  events: Event[] = [];
+  courses: Course[] = [];
 
   // coursedoctors keyed by course_id — loaded when course is selected
   // TODO: GET /api/admin/courses/:course_id/doctors → populate filteredDoctors
-  allCourseDoctors: { [course_id: number]: CourseDoctor[] } = {
-    1: [{ coursedoctor_id: 10, name: 'Dr. Ahmed Hassan' }, { coursedoctor_id: 11, name: 'Dr. Sara Kamel' }],
-    2: [{ coursedoctor_id: 12, name: 'Dr. Omar Fathy' }],
-  };
-
+  allCourseDoctors: { [course_id: number]: CourseDoctor[] } = {};
   filteredDoctors: CourseDoctor[] = [];
 
   // ── Popup state ───────────────────────────────────────
@@ -56,8 +44,27 @@ export class AdminPublishComponent implements OnInit {
     return { announcement: 'New Announcement', event: 'New Event', assignment: 'New Assignment' }[this.popupType!] ?? '';
   }
 
+
+  constructor(private adminService: AdminPanelService, private cdr: ChangeDetectorRef){}
+
   ngOnInit(): void {
     // TODO: load announcements, events, courses from API
+    this.adminService.listAllAnnouncements().subscribe({
+        next: (res: any) => { this.announcements = res.announcements ?? []; this.cdr.detectChanges(); },
+        error: (err) => console.error(err)
+    });
+
+    // load events
+    this.adminService.listAllEvents().subscribe({
+        next: (res: any) => { this.events = res.events ?? []; this.cdr.detectChanges(); },
+        error: (err) => console.error(err)
+    });
+
+    // load courses for assignment dropdown
+    this.adminService.listAllcourses().subscribe({
+        next: (res: any) => { this.courses = res.courses ?? []; },
+        error: (err) => console.error(err)
+    });
   }
 
   open(type: 'announcement' | 'event' | 'assignment') {
@@ -73,9 +80,13 @@ export class AdminPublishComponent implements OnInit {
 
   onCourseChange() {
     this.tForm.coursedoctor_id = '';
+    this.filteredDoctors = [];
     const id = Number(this.tForm.course_id);
-    this.filteredDoctors = this.allCourseDoctors[id] ?? [];
-    // TODO: GET /api/admin/courses/:course_id/doctors → set filteredDoctors
+
+    this.adminService.courseDoctors(id).subscribe({
+        next: (res: any) => { this.filteredDoctors = res.doctors ?? []; },
+        error: () => { this.filteredDoctors = []; }
+    });
   }
 
   onSubmit() {
@@ -85,42 +96,74 @@ export class AdminPublishComponent implements OnInit {
       const { title, source, date, description } = this.aForm;
       if (!title || !source || !date || !description) { this.errorMsg = 'Please fill in all fields.'; return; }
       this.isLoading = true;
-      // TODO: POST /api/admin/announcements with { title, description, source, date }
-      setTimeout(() => {
-        this.announcements.unshift({ ...this.aForm });
-        this.isLoading = false; this.close();
-      }, 600);
+
+      this.adminService.addAnnouncement(title,description,source,date)
+      .subscribe({
+        next: (res: any) => {
+            this.announcements.unshift({ id: res.announcement_id, ...this.aForm });
+            this.isLoading = false;
+            this.close();
+        },
+        error: (err) => {
+          console.error(err.message ? err.message : err);
+        }
+      })
     }
 
     else if (this.popupType === 'event') {
       const { title, host, location, date, description } = this.eForm;
       if (!title || !host || !location || !date || !description) { this.errorMsg = 'Please fill in all fields.'; return; }
       this.isLoading = true;
-      // TODO: POST /api/admin/events with { title, description, location, host, date }
-      setTimeout(() => {
-        this.events.unshift({ ...this.eForm });
-        this.isLoading = false; this.close();
-      }, 600);
+
+      this.adminService.addEvent(title,description,location,host,date)
+      .subscribe({
+        next: (res: any) => {
+            this.events.unshift({ id: res.event_id, ...this.eForm });
+            this.isLoading = false;
+            this.close();
+        },
+        error: (err) => {
+          console.error(err.message ? err.message : err);
+        }
+      })
+
+      
     }
 
     else if (this.popupType === 'assignment') {
       const { coursedoctor_id, title, type, deadline, details } = this.tForm;
       if (!coursedoctor_id || !title || !type || !deadline || !details) { this.errorMsg = 'Please fill in all fields.'; return; }
       this.isLoading = true;
-      // TODO: POST /api/admin/assignments/:coursedoctor_id with { title, deadline, type, details }
-      setTimeout(() => {
-        this.isLoading = false; this.close();
-      }, 600);
+
+      this.adminService.addAssignment(Number(coursedoctor_id),title,deadline,type as 'exam' | 'assignment' | 'project',details)
+      .subscribe({
+        next: () => {
+            this.isLoading = false;
+            this.close();
+        },
+        error: (err) => {
+          console.error(err.message ? err.message : err);
+        }
+      })
     }
   }
 
   deleteAnnouncement(i: number) {
     // TODO: DELETE /api/admin/announcements/:announcement_id
-    this.announcements.splice(i, 1);
+    this.adminService.deleteAnnouncement(this.announcements[i].id).subscribe({
+      next: () => {
+        this.announcements.splice(i, 1);
+      }
+    })
+    
   }
 
   deleteEvent(i: number) {
     // TODO: DELETE /api/admin/events/:event_id
-    this.events.splice(i, 1);
+    this.adminService.deleteEvent(this.events[i].id).subscribe({
+      next: () => {
+        this.events.splice(i, 1);
+      }
+    })
   }
 }

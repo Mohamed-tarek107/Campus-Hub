@@ -46,7 +46,7 @@ export class AdminPanelService {
   addAssignment(
     courseDoctor_id: number,
     title: string,
-    deadline: string | Date,
+    deadline: string,
     type: 'exam' | 'assignment' | 'project',
     details: string
   ) {
@@ -66,7 +66,7 @@ export class AdminPanelService {
 
 
   // Add a new event.
-  addEvent(title: string, description: string, location: string, host: string, date: Date) {
+  addEvent(title: string, description: string, location: string, host: string, date: string) {
     return this.http.post(`${this.AdminApi}/addEvent`,
       { title, description, location, host, date },
       { withCredentials: true }
@@ -74,7 +74,7 @@ export class AdminPanelService {
   }
 
   // Add a new announcement.
-  addAnnouncement(title: string, description: string, source: string, date: Date) {
+  addAnnouncement(title: string, description: string, source: string, date: string) {
     return this.http.post(`${this.AdminApi}/addAnnouncment`,
       { title, description, source, date },
       { withCredentials: true }

@@ -186,14 +186,14 @@ const addEvent = async (req, res) => {
         if (!title || !description || !location || !host || !date)
             return res.status(400).json({ message: "Missing input" });
 
-        await db.query(
-            "INSERT INTO events (title, description, location, host, date) VALUES ($1, $2, $3, $4, $5)",
+        const { rows: inserted } = await db.query(
+            "INSERT INTO events (title, description, location, host, date) VALUES ($1, $2, $3, $4, $5) RETURNING id",
             [title, description, location, host, date]
         );
         const html = await HTMLresponse_AI(title, description, date, "Event", host, location )
         await notificationMail(title, html)
 
-        res.status(201).json({ message: "Event created successfully" });
+        res.status(201).json({ message: "Event created successfully", event_id: inserted[0].id });
     } catch (error) {
         console.error("addEvent error:", error.message);
         res.status(500).json({ message: "Server error" });
@@ -219,15 +219,15 @@ const addAnnouncement = async (req, res) => {
         if (!title || !description || !source || !date)
             return res.status(400).json({ message: "Missing input" });
 
-        await db.query(
-            "INSERT INTO announcements (title, description, source, date) VALUES ($1, $2, $3, $4)",
+        const { rows: inserted } = await db.query(
+            "INSERT INTO announcements (title, description, source, date) VALUES ($1, $2, $3, $4) RETURNING id",
             [title, description, source, date]
         );
 
         const html = await HTMLresponse_AI(title, description, date, "Announcement", source)
         await notificationMail(title, html)
     
-        res.status(201).json({ message: "Announcement created successfully" });
+        res.status(201).json({ message: "Announcement created successfully", announcement_id: inserted[0].id });
     } catch (error) {
         console.error("addAnnouncement error:", error.message);
         res.status(500).json({ message: "Server error" });
