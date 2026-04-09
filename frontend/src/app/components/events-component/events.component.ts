@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { SidenavComponent } from '../sidenav/sidenav.component';
 import { TopnavComponent } from '../uppernav/uppernav.component';
-import { StudentService } from '../../services/studentRoute/student-service';
 import { AdminPanelService } from '../../services/admin/admin-panel';
 
 interface Event {
