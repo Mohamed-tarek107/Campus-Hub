@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SidenavComponent } from '../sidenav/sidenav.component';
 import { TopnavComponent } from '../uppernav/uppernav.component';
+import { StudentService } from '../../services/studentRoute/student-service';
 
 @Component({
   selector: 'app-feedback',
@@ -16,8 +17,17 @@ export class FeedbackComponent {
   isLoading = false;
   submitted = false;
 
+  constructor(private studentService: StudentService){}
+
   onSubmit(): void {
     // TODO: POST /api/feedback with { message: this.feedbackText }
     // on success → set submitted = true
+    this.isLoading = true
+    this.studentService.takeFeedback(this.feedbackText).subscribe({
+      next: () => {
+          this.submitted = true
+          this.isLoading = false
+      }
+    })
   }
 }
