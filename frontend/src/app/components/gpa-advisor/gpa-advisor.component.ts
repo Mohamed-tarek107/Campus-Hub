@@ -29,7 +29,7 @@ export class GpaAdvisorComponent implements AfterViewChecked {
 
   // ── Messages history ──────────────────────────────────
   messages: Message[] = [];
-
+  private lastMessageCount = 0;
   // ── Quick suggestion chips ────────────────────────────
   suggestions = [
     'How can I improve my GPA?',
@@ -39,7 +39,10 @@ export class GpaAdvisorComponent implements AfterViewChecked {
   ];
 
   ngAfterViewChecked(): void {
+    if (this.messages.length !== this.lastMessageCount) {
     this.scrollToBottom();
+    this.lastMessageCount = this.messages.length;
+  }
   }
 
   // ── Toggle chat open/close ────────────────────────────
