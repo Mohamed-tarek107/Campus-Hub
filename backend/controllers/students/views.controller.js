@@ -108,4 +108,31 @@ const viewDoneTasks = async (req,res) => {
     }
 }
 
+
+const viewCourse_tasks = async (req, res) => {
+    const user_id = req.user.id;
+    const { coursedoctor_id } = req.params;
+    try {
+        const { rows: tasks } = await db.query(
+            `SELECT 
+                t.id AS task_id,
+                t.title,
+                t.type,
+                t.deadline,
+                COALESCE(st.status, 'pending') AS status
+            FROM tasks t
+            LEFT JOIN studenttasks st 
+                ON st.task_id = t.id AND st.student_id = $1
+            WHERE t.coursedoctor_id = $2`,
+            [user_id, coursedoctor_id]
+        );
+
+        return res.status(200).json({ tasks });
+
+    } catch (error) {
+        console.error("viewCourseTasks error:", error.message);
+        return res.status(500).json({ message: "Server error" });
+    }
+};
+
 module.exports = { viewAllstudent_courses, viewAllstudent_doctors, viewAllstudent_tasks, markTaskDone, viewDoneTasks };
