@@ -5,9 +5,19 @@ const viewAllstudent_courses = async (req, res) => {
     const user_id = req.user.id;
     try {
         const { rows: courses } = await db.query(
-            `SELECT c.*
-            FROM studentCourses sc
+            `SELECT 
+                c.id AS course_id,
+                c.course_name,
+                c.department,
+                c.year,
+                d.name AS doctor_name,
+                cd.id AS coursedoctor_id,
+                sc.day,
+                sc.timeslot
+            FROM studentcourses sc
             JOIN courses c ON c.id = sc.course_id
+            JOIN doctors d ON d.id = sc.doctor_id
+            JOIN coursedoctors cd ON cd.course_id = sc.course_id AND cd.doctor_id = sc.doctor_id
             WHERE sc.student_id = $1`,
             [user_id]
         );
