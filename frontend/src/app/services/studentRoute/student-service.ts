@@ -68,4 +68,13 @@ export class StudentService {
     )
   }
 
+  viewAllstudent_tasks(){
+    return this.http.get(`${this.studentApi}/viewAllStudenttasks`,
+    )
+  }
+
+
+  viewCourse_tasks(){
+    return this.http.get(`${this.studentApi}/viewCourseTasks`)
+  }
 }

@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { SidenavComponent } from '../sidenav/sidenav.component';
 import { TopnavComponent } from '../uppernav/uppernav.component';
+import { StudentService } from '../../services/studentRoute/student-service';
+import { of, switchMap } from 'rxjs';
 
 interface Task {
   title:    string;
@@ -48,15 +50,25 @@ export class MyCoursesComponent implements OnInit {
     }
   ];
 
+  constructor(private studentService: StudentService){}
+
   ngOnInit(): void {
     // TODO: GET /api/student/courses → replace mock courses + tasks
     // Each course should include its tasks array from the API
     // or: GET /api/student/courses/:course_id/tasks per course when modal opens
   }
 
-  loadCourses_Tasks(){
-    
-  }
+  // loadCourses_Tasks(){
+  //   this.studentService.viewAllstudent_courses().pipe(
+  //     switchMap((data: any) => {
+  //       const baseCourses: Course[] = (data.courses ?? []).map((c: any) => ({ ...c, tasks: [] }));
+
+
+  //       if (baseCourses.length === 0) return of(baseCourses);
+        
+  //     })
+  //   )
+  // }
 
 
 
