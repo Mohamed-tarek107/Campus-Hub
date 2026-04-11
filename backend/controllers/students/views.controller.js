@@ -145,4 +145,4 @@ const viewCourse_tasks = async (req, res) => {
     }
 };
 
-module.exports = { viewAllstudent_courses, viewAllstudent_doctors, viewAllstudent_tasks, markTaskDone, viewDoneTasks };
+module.exports = { viewAllstudent_courses, viewAllstudent_doctors, viewAllstudent_tasks, markTaskDone, viewDoneTasks, viewCourse_tasks };

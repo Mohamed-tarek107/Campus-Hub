@@ -1,7 +1,7 @@
 const express = require("express");
 const { AssignDoctors } = require("../controllers/students/assignDoctors.controller.js");
 const { getCourseDoctors, getStudentCourses } = require("../controllers/students/catalog.controller.js");
-const { viewAllstudent_courses, viewAllstudent_doctors, viewAllstudent_tasks, viewDoneTasks, markTaskDone } = require("../controllers/students/views.controller.js");
+const { viewAllstudent_courses, viewAllstudent_doctors, viewAllstudent_tasks, viewDoneTasks, markTaskDone, viewCourse_tasks } = require("../controllers/students/views.controller.js");
 const { takeFeedback } = require("../controllers/students/feedback.controller.js");
 const { ensureAuthenticated } = require("../middlewares/authMiddleware.js")
 const router = express.Router();
@@ -16,4 +16,5 @@ router.get("/viewAllStudenttasks", ensureAuthenticated, viewAllstudent_tasks)
 router.post("/takeFeedback", ensureAuthenticated, takeFeedback)
 router.post("/markTaskDone/:task_id", ensureAuthenticated, markTaskDone)
 router.get("/viewDoneTasks", ensureAuthenticated, viewDoneTasks)
+router.get("/viewCourseTasks", ensureAuthenticated, viewCourse_tasks)
 module.exports = router
