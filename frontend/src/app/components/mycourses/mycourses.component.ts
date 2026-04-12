@@ -84,6 +84,13 @@ export class MyCoursesComponent implements OnInit {
   }
 
 
+  markDone(task_id: number){
+    this.studentService.markTaskDone(task_id).subscribe({
+      next: () => {
+        
+      }
+    })
+  }
 
   openTasks(course: Course): void {}
 

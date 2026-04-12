@@ -33,7 +33,7 @@
             </div>
             <div>
               <h3 class="course-name">{{ course.course_name }}</h3>
-              <span class="course-credits">{{ course.credits }} Credit Hours</span>
+              <span class="course-credits">{{ course.credit }} Credit Hours</span>
             </div>
           </div>
 
@@ -125,20 +125,30 @@
       </div>
 
       <div class="task-item" *ngFor="let task of selectedCourse.tasks">
-        <div class="task-left">
-          <div class="task-check" [class.done]="task.done">
-            <svg *ngIf="task.done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-              <polyline points="20 6 9 17 4 12"/>
-            </svg>
-          </div>
-          <span class="task-title" [class.done]="task.done">{{ task.title }}</span>
-        </div>
-        <span class="task-deadline" [class.overdue]="isOverdue(task.deadline) && !task.done">
-          {{ task.deadline }}
-        </span>
-      </div>
+  <div class="task-left">
 
+    <!-- clicking the checkbox calls markDone, disabled if already done -->
+    <div class="task-check"
+         [class.done]="task.status === 'done'"
+         [class.clickable]="task.status === 'pending'"
+         (click)="task.status === 'pending' && markDone(task.task_id)">
+      <svg *ngIf="task.status === 'done'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+        <polyline points="20 6 9 17 4 12"/>
+      </svg>
     </div>
+
+    <span class="task-title" [class.done]="task.status === 'done'">{{ task.title }}</span>
+  </div>
+
+  <div class="task-right" style="display:flex; align-items:center; gap:.75rem; flex-shrink:0">
+    <span class="task-type-badge">{{ task.type }}</span>
+    <span class="task-deadline"
+          [class.overdue]="isOverdue(task.deadline) && task.status === 'pending'">
+      {{ task.deadline }}
+    </span>
+  </div>
+</div>
+
 
     <span class="copyright">© 2026 Mohamed Tarek.</span>
   </div>

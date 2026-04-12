@@ -28,6 +28,21 @@
   gap: 1rem;
 }
 
+.task-check.clickable { cursor: pointer; }
+.task-check.clickable:hover {
+  border-color: rgba(52,211,153,.4);
+  background: rgba(52,211,153,.07);
+}
+
+.task-type-badge {
+  font-size: .72rem; font-weight: 600;
+  color: rgba(255,255,255,.35);
+  background: rgba(255,255,255,.06);
+  border-radius: 6px;
+  padding: .2rem .55rem;
+  text-transform: capitalize;
+}
+
 .page-header h1 {
   font-family: 'Sora', sans-serif;
   font-size: 1.55rem; font-weight: 700;
