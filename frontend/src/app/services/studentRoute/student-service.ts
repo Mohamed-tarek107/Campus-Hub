@@ -74,7 +74,7 @@ export class StudentService {
   }
 
 
-  viewCourse_tasks(){
-    return this.http.get(`${this.studentApi}/viewCourseTasks`)
+  viewCourse_tasks(coursedoctor_id: number){
+    return this.http.get(`${this.studentApi}/viewCourseTasks/${coursedoctor_id}`)
   }
 }

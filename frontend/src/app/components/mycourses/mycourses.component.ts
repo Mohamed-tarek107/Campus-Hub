@@ -1,24 +1,30 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { SidenavComponent } from '../sidenav/sidenav.component';
 import { TopnavComponent } from '../uppernav/uppernav.component';
 import { StudentService } from '../../services/studentRoute/student-service';
-import { of, switchMap } from 'rxjs';
+import { catchError, forkJoin, map, of, switchMap } from 'rxjs';
 
 interface Task {
+  task_id:  number;
   title:    string;
+  type:     string;
   deadline: string;
-  done:     boolean;
+  status:   'pending' | 'done';
 }
 
 interface Course {
-  course_name: string;
-  credits:     number;
-  doctor_name: string;
-  day:         string;
-  timeslot:    string;
-  tasks:       Task[];
+  course_id:       number;
+  coursedoctor_id: number;
+  credit:          number; 
+  course_name:     string;
+  department:      string;
+  year:            number;
+  doctor_name:     string;
+  day:             string;
+  timeslot:        string;
+  tasks:           Task[];
 }
 
 @Component({
@@ -35,51 +41,51 @@ export class MyCoursesComponent implements OnInit {
   selectedCourse: Course | null = null;
 
   // TODO: replace with GET /api/student/courses (each course includes its tasks)
-  courses: Course[] = [
-    {
-      course_name: 'Data Structures & Algorithms',
-      credits: 3,
-      doctor_name: 'Dr. Ahmed Hassan',
-      day: 'monday',
-      timeslot: '08:00-10:00',
-      tasks: [
-        { title: 'Assignment 1 — Linked Lists',    deadline: 'Mar 10, 2026', done: true  },
-        { title: 'Assignment 2 — Binary Trees',    deadline: 'Mar 24, 2026', done: false },
-        { title: 'Quiz — Sorting Algorithms',      deadline: 'Apr 2, 2026',  done: false },
-      ]
-    }
-  ];
+  courses: Course[] = [];
 
-  constructor(private studentService: StudentService){}
+  constructor(private studentService: StudentService, private cdr: ChangeDetectorRef){}
 
-  ngOnInit(): void {
-    // TODO: GET /api/student/courses → replace mock courses + tasks
-    // Each course should include its tasks array from the API
-    // or: GET /api/student/courses/:course_id/tasks per course when modal opens
+  ngOnInit(): void {  
+    this.loadCoursesAndTasks();
   }
 
-  // loadCourses_Tasks(){
-  //   this.studentService.viewAllstudent_courses().pipe(
-  //     switchMap((data: any) => {
-  //       const baseCourses: Course[] = (data.courses ?? []).map((c: any) => ({ ...c, tasks: [] }));
-
-
-  //       if (baseCourses.length === 0) return of(baseCourses);
+  loadCoursesAndTasks(){
+    this.studentService.viewAllstudent_courses().pipe(
+      switchMap((data: any) => {
+        const baseCourses: Course[] = (data.courses ?? []).map((c: any) => ({ ...c, tasks: [] }));
         
-  //     })
-  //   )
-  // }
-
-
-
-  openTasks(course: Course): void {
-    this.selectedCourse = course;
-    // TODO when service ready:
-    // if tasks aren't loaded yet, fetch here:
-    // this.tasksService.getByCourse(course.course_id).subscribe(tasks => {
-    //   this.selectedCourse!.tasks = tasks;
-    // });
+        if (baseCourses.length === 0) return of(baseCourses);
+        
+        return forkJoin(
+          baseCourses.map((course: Course) =>
+            this.studentService.viewCourse_tasks(course.course_id).pipe(
+              map((res: any) => ({
+                ...course,
+                tasks: (res.tasks ?? []).map((t: any) => ({
+                  task_id:  t.task_id,
+                  title:    t.title,
+                  type:     t.type,
+                  deadline: t.deadline,
+                  status:   t.status
+                }))
+              })),
+              catchError(() => of({...course, tasks: []}))
+            )
+          )
+        );
+      })
+    ).subscribe({
+        next: (courses: any) => {
+          this.courses = courses
+          this.cdr.detectChanges()
+        }
+      }
+    );
   }
+
+
+
+  openTasks(course: Course): void {}
 
   closeTasks(): void {
     this.selectedCourse = null;
