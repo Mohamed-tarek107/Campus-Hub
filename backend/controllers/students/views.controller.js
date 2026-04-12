@@ -101,8 +101,9 @@ const viewDoneTasks = async (req,res) => {
     const user_id = req.user.id;
 
     try {
-    const { rows: tasks } = await db.execute(
-            ` t.id, t.title, t.type, t.deadline, c.course_name, st.status
+    const { rows: tasks } = await db.query(
+        `SELECT
+            t.id, t.title, t.type, t.deadline, c.course_name, st.status
             FROM studentcourses sc
             JOIN coursedoctors cd ON cd.course_id = sc.course_id AND cd.doctor_id = sc.doctor_id
             JOIN tasks t ON t.coursedoctor_id = cd.id

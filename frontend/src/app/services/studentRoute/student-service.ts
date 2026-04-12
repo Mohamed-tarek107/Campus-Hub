@@ -18,54 +18,42 @@ export class StudentService {
 
   constructor(private http: HttpClient){}
 
-  AssignDoctors(selections: DoctorSelection[]){
-    return this.http.post(`${this.studentApi}/assignDoctors`,
-      {selections},
-      {withCredentials: true}
-    )
+  AssignDoctors(body: { selections: DoctorSelection[] }){
+    return this.http.post(`${this.studentApi}/assignDoctors`, body)
   }
 
   takeFeedback(feedback: string){
     return this.http.post(`${this.studentApi}/takeFeedback`,
       {feedback},
-      {withCredentials: true}
     )
   }
   
   getStudentCourses(){
     return this.http.get(`${this.studentApi}/available`,
-      {withCredentials: true}
     )
   }
 
   getCourseDoctors(id: number){
     return this.http.get(`${this.studentApi}/${id}/doctors`,
-      {withCredentials: true}
     )
   }
 
   viewAllstudent_courses(){
     return this.http.get(`${this.studentApi}/viewAllStudentCourses`,
-      {withCredentials: true}
     )
   }
 
   viewAllstudent_doctors(){
     return this.http.get(`${this.studentApi}/viewAllStudentdoctors`,
-      {withCredentials: true}
     )
   }
 
   viewDoneTasks(){
-    return this.http.get(`${this.studentApi}/viewDoneTasks`,
-      {withCredentials: true}
-    )
+    return this.http.get(`${this.studentApi}/viewDoneTasks`,)
   }
   
   markTaskDone(task_id: number){
-    return this.http.get(`${this.studentApi}/markTaskDone/${task_id}`,
-      {withCredentials: true}
-    )
+    return this.http.patch(`${this.studentApi}/markTaskDone/${task_id}`,{})
   }
 
   viewAllstudent_tasks(){

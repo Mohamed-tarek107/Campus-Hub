@@ -12,7 +12,7 @@ const getStudentCourses = async (req, res) => {
         if (user.length === 0) return res.status(404).json({ message: "User not found" });
 
         const { rows: courses } = await db.query(
-            "SELECT id, course_name FROM courses WHERE department = $1 AND year = $2",
+            "SELECT * FROM courses WHERE department = $1 AND year = $2",
             [user[0].department, user[0].year]
         );
 
@@ -29,7 +29,7 @@ const getCourseDoctors = async (req, res) => {
     const { course_id } = req.params;
     try {
         const { rows: doctors } = await db.query(
-            `SELECT d.id, d.name
+            `SELECT d.*
             FROM coursedoctors cd
             JOIN doctors d ON cd.doctor_id = d.id
             WHERE cd.course_id = $1`,
