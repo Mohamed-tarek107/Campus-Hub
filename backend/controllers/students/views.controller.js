@@ -9,6 +9,7 @@ const viewAllstudent_courses = async (req, res) => {
                 c.id AS course_id,
                 c.course_name,
                 c.department,
+                c.credit,
                 c.year,
                 d.name AS doctor_name,
                 cd.id AS coursedoctor_id,
