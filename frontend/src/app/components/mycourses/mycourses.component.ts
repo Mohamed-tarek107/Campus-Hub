@@ -58,7 +58,7 @@ export class MyCoursesComponent implements OnInit {
         
         return forkJoin(
           baseCourses.map((course: Course) =>
-            this.studentService.viewCourse_tasks(course.course_id).pipe(
+            this.studentService.viewCourse_tasks(course.coursedoctor_id).pipe(
               map((res: any) => ({
                 ...course,
                 tasks: (res.tasks ?? []).map((t: any) => ({
@@ -87,12 +87,28 @@ export class MyCoursesComponent implements OnInit {
   markDone(task_id: number){
     this.studentService.markTaskDone(task_id).subscribe({
       next: () => {
-        
+        for(const course of this.courses){
+          const task = course.tasks.find(t => t.task_id === task_id);
+
+          if(task){
+            task.status = 'done'
+            if(this.selectedCourse?.course_id === course.course_id){
+              this.selectedCourse = { ...course };
+            }
+              break;
+          }
+        }
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error(err)
       }
-    })
+    });
   }
 
-  openTasks(course: Course): void {}
+  openTasks(course: Course): void {
+    this.selectedCourse = course;
+  }
 
   closeTasks(): void {
     this.selectedCourse = null;
