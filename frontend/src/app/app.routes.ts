@@ -14,28 +14,29 @@ import { AdminDashboardComponent } from './components/Admin/admin.dashboard/admi
 import { AdminFeedbacksComponent } from './components/Admin/admin.feedbacks/feedbacks.component';
 import { AdminAcademicsComponent } from './components/Admin/admin.academics/admin.academics.component';
 import { AdminPublishComponent } from './components/Admin/admin.publish/admin.publish.component';
+import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
     //starter route
     { path: '', redirectTo: 'login', pathMatch: 'full'},
 
     //user routes
-    { path: 'login', component: LoginPage },
+    { path: 'login',component: LoginPage },
     { path: 'register', component: RegisterPage },
-    { path: 'dashboard', component: DashboardComponent},
-    { path: 'assignDoctors', component: AssignDoctorsComponent},
-    { path: 'gpaCalculator', component: GpaCalculatorComponent},
-    { path: 'myCourses', component: MyCoursesComponent},
-    { path: 'announcements', component: AnnouncementsComponent},
-    { path: 'events', component: EventsComponent},
-    { path: 'feedback', component: FeedbackComponent},
-    { path: 'settings', component: SettingsComponent},
+    { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard]},
+    { path: 'assignDoctors', component: AssignDoctorsComponent, canActivate: [authGuard]},
+    { path: 'gpaCalculator', component: GpaCalculatorComponent, canActivate: [authGuard]},
+    { path: 'myCourses', component: MyCoursesComponent, canActivate: [authGuard]},
+    { path: 'announcements', component: AnnouncementsComponent, canActivate: [authGuard]},
+    { path: 'events', component: EventsComponent, canActivate: [authGuard]},
+    { path: 'feedback', component: FeedbackComponent, canActivate: [authGuard]},
+    { path: 'settings', component: SettingsComponent, canActivate: [authGuard]},
     
     //Admin Routes
-    { path: 'admin/dashboard', component: AdminDashboardComponent },
-    { path: 'admin/feedbacks', component: AdminFeedbacksComponent},
-    { path: 'admin/publish', component: AdminPublishComponent},
-    { path: 'admin/academics', component: AdminAcademicsComponent},
+    { path: 'admin/dashboard', component: AdminDashboardComponent , canActivate: [authGuard]},
+    { path: 'admin/feedbacks', component: AdminFeedbacksComponent, canActivate: [authGuard]},
+    { path: 'admin/publish', component: AdminPublishComponent, canActivate: [authGuard]},
+    { path: 'admin/academics', component: AdminAcademicsComponent, canActivate: [authGuard]},
 
 
 
