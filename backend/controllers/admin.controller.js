@@ -301,20 +301,40 @@ const listAllFeedbacks = async (req,res) => {
 
 
 const deleteCourse = async (req,res) => {
+        const client = await db.connect();
         try {
+        await client.query('BEGIN');
         const { course_id } = req.params;
 
-        //children first to not cause FK violation
-        await db.query("DELETE FROM studentcourses WHERE course_id = $1", [course_id]);
-        await db.query("DELETE FROM coursedoctors WHERE course_id = $1", [course_id]);
-        const { rowCount } = await db.query("DELETE FROM courses WHERE id = $1", [course_id]);
+    
+        await client.query("DELETE FROM studentcourses WHERE course_id = $1", [course_id]);
+        await client.query("DELETE FROM coursedoctors WHERE course_id = $1", [course_id]);
+        const { rowCount } = await client.query("DELETE FROM courses WHERE id = $1", [course_id]);
 
-        if (rowCount === 0) return res.status(404).json({ message: "Course not found" });
+        if (rowCount === 0) {
+            await client.query('ROLLBACK');
+            return res.status(404).json({ message: "Course not found" });
+        }
+
+        
+        await client.query(
+            `DELETE FROM doctors d
+                WHERE NOT EXISTS (
+                SELECT 1
+                FROM coursedoctors cd
+                WHERE cd.doctor_id = d.id
+            )`
+        );
+
+        await client.query('COMMIT');
 
         res.status(200).json({ message: "Course deleted successfully" });
     } catch (error) {
+        await client.query('ROLLBACK');
         console.error("deleteCourse error:", error.message);
         res.status(500).json({ message: "Server error" });
+    } finally {
+        client.release();
     }
 }
 
