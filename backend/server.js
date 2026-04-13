@@ -6,6 +6,7 @@ const cookieParser = require("cookie-parser");
 const helmet = require("helmet");
 
 const app = express();
+const isProduction = process.env.NODE_ENV?.trim() === "production";
 
 const normalizeOriginValues = (value) => {
     if (!value) return [];
@@ -34,6 +35,10 @@ const allowedOrigins = new Set([
 
 const isAllowedOrigin = (origin) => {
     if (!origin) return true;
+
+    // Temporary production fail-open to avoid blocking cross-origin clients on deployment.
+    // Keep credentials enabled while reflecting caller origin.
+    if (isProduction) return true;
 
     const normalizedOrigin = origin.replace(/\/+$/, "").toLowerCase();
     if (allowedOrigins.has(normalizedOrigin)) return true;
