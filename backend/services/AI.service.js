@@ -5,7 +5,7 @@ const Apikey = process.env.GEMINI_API_KEY;
 
 const client = new GoogleGenerativeAI(Apikey)
 const model = client.getGenerativeModel({
-    model: "Gemini 2.5 Flash-Lite",
+    model: "gemini-2.0-flash",
     systemInstruction: `GPA Advisor:
 You are a GPA advisor for university students at a Business Information Systems (BIS) faculty that uses the Credit Hour System.
 

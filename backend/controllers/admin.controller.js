@@ -190,8 +190,8 @@ const addEvent = async (req, res) => {
             "INSERT INTO events (title, description, location, host, date) VALUES ($1, $2, $3, $4, $5) RETURNING id",
             [title, description, location, host, date]
         );
-        const html = await HTMLresponse_AI(title, description, date, "Event", host, location )
-        await notificationMail(title, html)
+        // const html = await HTMLresponse_AI(title, description, date, "Event", host, location )
+        // await notificationMail(title, html)
 
         res.status(201).json({ message: "Event created successfully", event_id: inserted[0].id });
     } catch (error) {
@@ -224,8 +224,8 @@ const addAnnouncement = async (req, res) => {
             [title, description, source, date]
         );
 
-        const html = await HTMLresponse_AI(title, description, date, "Announcement", source)
-        await notificationMail(title, html)
+        // const html = await HTMLresponse_AI(title, description, date, "Announcement", source)
+        // await notificationMail(title, html)
     
         res.status(201).json({ message: "Announcement created successfully", announcement_id: inserted[0].id });
     } catch (error) {
