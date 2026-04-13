@@ -76,11 +76,11 @@ const LoginRoute = async (req, res) => {
             expiresIn: "7d"
         })
 
-        await db.query("DELETE FROM refreshtokens WHERE user_id = $1", [userId])
+        await db.query("DELETE FROM refreshtokens WHERE user_id = $1", [userId]);
         await db.query(
             "INSERT INTO refreshtokens (user_id, refresh_token, ip_address) VALUES ($1, $2, $3)",
             [userId, refreshToken, req.ip]
-        )
+        );
 
         const cookieOptions = {
             httpOnly: true,
