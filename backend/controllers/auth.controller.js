@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const { validationResult } = require("express-validator");
 
 const isProduction = process.env.NODE_ENV?.trim() === "production";
+const sameSitePolicy = isProduction ? "none" : "strict";
 
 const registerRoute = async (req, res) => {
     const errors = validationResult(req)
@@ -85,7 +86,7 @@ const LoginRoute = async (req, res) => {
             httpOnly: true,
             secure: isProduction,
             path: "/",
-            sameSite: "strict",
+            sameSite: sameSitePolicy,
             maxAge: 7 * 24 * 60 * 60 * 1000
         };
 
@@ -151,7 +152,7 @@ const refreshRoute = async (req, res) => {
             httpOnly: true,
             secure: isProduction,
             path: "/",
-            sameSite: "strict",
+            sameSite: sameSitePolicy,
             maxAge: 15 * 60 * 1000
         };
 
@@ -177,8 +178,8 @@ const logout = async (req, res) => {
 
         await db.query("DELETE FROM refreshtokens WHERE refresh_token = $1", [refreshToken])
 
-        res.clearCookie("accessToken", { httpOnly: true, secure: isProduction, sameSite: 'strict', path: "/" });
-        res.clearCookie("refreshToken", { httpOnly: true, secure: isProduction, sameSite: 'strict', path: "/" });
+        res.clearCookie("accessToken", { httpOnly: true, secure: isProduction, sameSite: sameSitePolicy, path: "/" });
+        res.clearCookie("refreshToken", { httpOnly: true, secure: isProduction, sameSite: sameSitePolicy, path: "/" });
 
         return res.status(200).json({ message: "Logged out" });
     } catch (error) {
