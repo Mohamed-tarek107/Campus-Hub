@@ -7,16 +7,37 @@ const helmet = require("helmet");
 
 const app = express();
 
+const normalizeOriginValues = (value) => {
+    if (!value) return [];
+
+    const trimmed = value.trim().replace(/\/+$/, "");
+    if (!trimmed) return [];
+
+    if (/^https?:\/\//i.test(trimmed)) {
+        try {
+            return [new URL(trimmed).origin.toLowerCase()];
+        } catch {
+            return [];
+        }
+    }
+
+    // If scheme is omitted in env vars, allow both for resilience.
+    return [`https://${trimmed}`.toLowerCase(), `http://${trimmed}`.toLowerCase()];
+};
+
 const allowedOrigins = new Set([
-    process.env.FRONTEND_URL,
-    process.env.FRONTEND_PROD_URL,
-    "http://localhost:4200"
-].filter(Boolean).map((origin) => origin.trim()));
+    ...normalizeOriginValues(process.env.FRONTEND_URL),
+    ...normalizeOriginValues(process.env.FRONTEND_PROD_URL),
+    "http://localhost:4200",
+    "https://campus-hub-bis.netlify.app"
+].map((origin) => origin.toLowerCase()));
 
 const corsOptions = {
     origin: (origin, callback) => {
         if (!origin) return callback(null, true);
-        return callback(null, allowedOrigins.has(origin));
+
+        const normalizedOrigin = origin.replace(/\/+$/, "").toLowerCase();
+        return callback(null, allowedOrigins.has(normalizedOrigin));
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
