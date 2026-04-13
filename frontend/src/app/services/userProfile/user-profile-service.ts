@@ -15,9 +15,9 @@ export class UserProfileService {
         {withCredentials: true}
       )
     }
-    editInfo(phone_number: number, username: string, year: number, bio: string){
+    editInfo(email: string, username: string, year: number, bio: string){
       return this.http.patch(`${this.userApi}/editInfo`,
-        { phone_number, username, year, bio },
+        { email, username, year, bio },
         {withCredentials: true})
     }
 

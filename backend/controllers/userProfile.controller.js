@@ -7,11 +7,12 @@ const userInfo = async (req, res) => {
         const { rows: user } = await db.query(`SELECT
                 id,
                 username,
-                phone_number,
+                email,
                 bio,
                 department,
                 role,
                 year,
+                gpa,
                 is_firstlogin,
                 created_at
                 FROM users WHERE id = $1`, [id])
@@ -30,9 +31,9 @@ const editInfo = async (req, res) => {
     try {
         let updates = {}
 
-        const { phone_number, username, year, bio } = req.body
+        const { email, username, year, bio } = req.body
 
-        if (phone_number) updates.phone_number = phone_number
+        if (email) updates.email = email
         if (username) updates.username = username
         if (year) updates.year = year
         if (bio) updates.bio = bio
@@ -41,7 +42,7 @@ const editInfo = async (req, res) => {
         if (Object.keys(updates).length == 0) {
             return res.status(400).json({ message: "NO info detected in updating" })
         }
-        const allowedFields = ["phone_number", "username", "year", "bio"];
+        const allowedFields = ["email", "username", "year", "bio"];
         const keys = Object.keys(updates).filter((key) => allowedFields.includes(key));
         if (keys.length === 0) {
             return res.status(400).json({ message: "NO valid fields detected in updating" });
