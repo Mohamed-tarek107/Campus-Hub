@@ -16,5 +16,5 @@ router.get("/viewAllStudenttasks", ensureAuthenticated, viewAllstudent_tasks)
 router.post("/takeFeedback", ensureAuthenticated, takeFeedback)
 router.post("/markTaskDone/:task_id", ensureAuthenticated, markTaskDone)
 router.get("/viewDoneTasks", ensureAuthenticated, viewDoneTasks)
-router.get("/viewCourseTasks", ensureAuthenticated, viewCourse_tasks)
+router.get("/viewCourseTasks/:coursedoctor_id", ensureAuthenticated, viewCourse_tasks)
 module.exports = router
