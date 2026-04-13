@@ -22,15 +22,13 @@ export class GpaCalcService {
 
   editUserGpa(gpa: number) {
     return this.http.post(`${this.gpaApi}/assginGpa`,
-      { gpa },
-      { withCredentials: true }
+      { gpa }
     );
   }
 
   chatBot(msg: string, history: ChatHistoryItem[]) {
     return this.http.post<ChatBotResponse>(`${this.gpaApi}/aiChat`,
-      { msg, history },
-      { withCredentials: true }
+      { msg, history }
     );
   }
 }

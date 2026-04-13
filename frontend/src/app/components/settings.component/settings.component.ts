@@ -43,7 +43,6 @@ export class SettingsComponent implements OnInit {
   constructor(private router: Router, private userService: UserProfileService) { }
 
   ngOnInit(): void {
-    // TODO: GET /api/student/profile → populate profileForm fields
     this.userService.userInfo().subscribe({
       next: (data: any) => {
         const u = data.user[0];
@@ -61,12 +60,7 @@ export class SettingsComponent implements OnInit {
       }
     })
   }
-
-  // Navigates to assign-doctors.
-  // Pass mode='edit' so the component knows to load existing selections.
-  // Pass mode='assign' for first-time students (handled by is_firstlogin check server-side).
-  // The assign-doctors component itself decides what to show based on whether
-  // the student already has enrolled courses or not.
+  
   goToAssignDoctors(): void {
     this.router.navigate(['/assignDoctors']);
   }
@@ -104,7 +98,7 @@ export class SettingsComponent implements OnInit {
       this.passwordForm.newPassword,
       this.passwordForm.confirmPassword
     ).subscribe({
-      next: (err) => {
+      next: () => {
         this.successMsg = 'Password changed successfully.';
         this.passwordForm = { currentPassword: '', newPassword: '', confirmPassword: '' };
         this.isLoadingPassword = false;
