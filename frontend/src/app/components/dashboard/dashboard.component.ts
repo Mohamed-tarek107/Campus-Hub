@@ -96,7 +96,10 @@ export class DashboardComponent implements OnInit {
     })
     // TODO: GET /api/student/courses → set enrolledCount
     this.studentService.viewAllstudent_courses().subscribe({ next: (data: any) => { 
-      this.enrolledCount = data.length;
+      this.enrolledCount = data.courses?.length ?? 0;
+      this.cdr.detectChanges();
+    }, error: () => {
+      this.enrolledCount = 0;
       this.cdr.detectChanges();
     }})
     // TODO: GET /api/student/tasks → count pending/done, populate upcomingTasks
