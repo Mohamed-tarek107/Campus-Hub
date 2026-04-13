@@ -3,6 +3,9 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { SidenavComponent } from '../sidenav/sidenav.component';
 import { TopnavComponent } from '../uppernav/uppernav.component';
+import { UserProfileService } from '../../services/userProfile/user-profile-service';
+import { StudentService } from '../../services/studentRoute/student-service';
+import { AdminPanelService } from '../../services/admin/admin-panel';
 
 
 interface Announcement {
@@ -59,11 +62,26 @@ export class DashboardComponent implements OnInit {
     return 'gpa-fail';
   }
 
+  constructor(private userService: UserProfileService, private studentService: StudentService, private adminService: AdminPanelService){}
   ngOnInit(): void {
-    // TODO: load username from AuthService
-    // TODO: GET /api/student/courses → set enrolledCount
-    // TODO: GET /api/student/tasks → count pending/done, populate upcomingTasks
-    // TODO: GET /api/announcements → populate announcements
+    // TODO: load username
     // TODO: GET /api/student/gpa → set currentGpa
+    this.userService.userInfo().subscribe({ 
+      next: (data: any) => { 
+        this.username = data.user.username
+        this.currentGpa = data.user.gpa
+      }})
+    // TODO: GET /api/student/courses → set enrolledCount
+    this.studentService.viewAllstudent_courses().subscribe({ next: (data: any) => { this.enrolledCount = data.length } })
+    // TODO: GET /api/student/tasks → count pending/done, populate upcomingTasks
+    this.studentService.viewAllstudent_tasks().subscribe({ 
+      next: (data: any) => {
+        this.upcomingTasks = data.tasks.filter((t: any) => t.status === 'pending');
+        this.pendingTasksCount = data.tasks.filter((t: any) => t.status === 'pending').length;
+        this.doneTasksCount = data.tasks.filter((t: any) => t.status === 'done').length;
+      }
+    })
+    // TODO: GET /api/announcements → populate announcements
+    this.adminService.listAllAnnouncements().subscribe({ next: (data: any) => { this.announcements = data.announcements ?? [] }})
   }
 }
