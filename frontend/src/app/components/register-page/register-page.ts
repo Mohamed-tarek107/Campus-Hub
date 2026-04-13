@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
@@ -28,7 +28,7 @@ export class RegisterPage {
   isLoading = false;
   errorMessage = '';
 
-  constructor(private router: Router, private authService: AuthService) { }
+  constructor(private router: Router, private authService: AuthService, private cdr: ChangeDetectorRef) { }
 
   async onRegister() {
     if (!this.form.username || !this.form.email ||
@@ -67,6 +67,7 @@ export class RegisterPage {
         error: (err) => {
           console.error(err.message ? err.message : err)
           this.errorMessage = err.error?.message
+          this.cdr.detectChanges();
         }
       })
   }

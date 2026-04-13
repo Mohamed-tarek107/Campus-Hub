@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SidenavComponent } from '../sidenav/sidenav.component';
@@ -17,7 +17,7 @@ export class FeedbackComponent {
   isLoading = false;
   submitted = false;
 
-  constructor(private studentService: StudentService){}
+  constructor(private studentService: StudentService, private cdr: ChangeDetectorRef){}
 
   onSubmit(): void {
     // TODO: POST /api/feedback with { message: this.feedbackText }
@@ -27,6 +27,7 @@ export class FeedbackComponent {
       next: () => {
           this.submitted = true
           this.isLoading = false
+          this.cdr.detectChanges();
       }
     })
   }

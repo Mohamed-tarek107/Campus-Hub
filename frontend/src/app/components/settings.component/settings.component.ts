@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -40,7 +40,7 @@ export class SettingsComponent implements OnInit {
     confirmPassword: ''
   };
 
-  constructor(private router: Router, private userService: UserProfileService) { }
+  constructor(private router: Router, private userService: UserProfileService, private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
     this.userService.userInfo().subscribe({
@@ -54,6 +54,7 @@ export class SettingsComponent implements OnInit {
           year: u.year,
           gpa: u.gpa | 0.00
         };
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error(err);
@@ -78,10 +79,12 @@ export class SettingsComponent implements OnInit {
       next: () => {
         this.successMsg = 'Profile updated successfully.'
         this.isLoadingProfile = false;
+        this.cdr.detectChanges();
       },
       error: (err) => {
         this.errorMsg = err.error?.message ?? 'Failed to update profile.';
         this.isLoadingProfile = false;
+        this.cdr.detectChanges();
       }
     })
   }

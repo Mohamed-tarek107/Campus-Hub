@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { SidenavComponent } from '../sidenav/sidenav.component';
@@ -23,11 +23,12 @@ export class AnnouncementsComponent implements OnInit {
 
   announcements: Announcement[] = [];
 
-  constructor(private listings: AdminPanelService){}
+  constructor(private listings: AdminPanelService, private cdr: ChangeDetectorRef){}
     ngOnInit(): void {
       this.listings.listAllAnnouncements().subscribe({
         next: (res: any) => {
           this.announcements = res.announcements ?? []
+          this.cdr.detectChanges();
         },
     error: (err) => {
       console.error(err);

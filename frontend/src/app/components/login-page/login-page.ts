@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
@@ -19,7 +19,7 @@ export class LoginPage {
   isLoading = false;
   errorMessage = '';
 
-  constructor(private router: Router, private authService: AuthService) { }
+  constructor(private router: Router, private authService: AuthService, private cdr: ChangeDetectorRef) { }
 
   //test case login:
   //normal account: 
@@ -43,6 +43,7 @@ export class LoginPage {
       .pipe(
         finalize(() => {
           this.isLoading = false
+          this.cdr.detectChanges();
           console.log('Login payload:', this.credentials);
         })
       )
@@ -65,6 +66,7 @@ export class LoginPage {
         error: (err) => {
           console.error(err.message ? err.message : err)
           this.errorMessage = err.error?.message
+          this.cdr.detectChanges();
         }
       }
       )

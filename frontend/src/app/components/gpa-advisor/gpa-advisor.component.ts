@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild, AfterViewChecked } from '@angular/core';
+import { Component, ElementRef, ViewChild, AfterViewChecked, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
@@ -20,7 +20,7 @@ export class GpaAdvisorComponent implements AfterViewChecked {
 
   @ViewChild('messagesContainer') messagesContainer!: ElementRef;
 
-  constructor(private gpaCalcService: GpaCalcService) {}
+  constructor(private gpaCalcService: GpaCalcService, private cdr: ChangeDetectorRef) {}
 
   // ── State ─────────────────────────────────────────────
   isOpen = false;
@@ -83,14 +83,17 @@ export class GpaAdvisorComponent implements AfterViewChecked {
         || 'Sorry, I could not get a response. Please try again.';
 
       this.messages.push({ role: 'assistant', content: reply });
+      this.cdr.detectChanges();
 
     } catch (error) {
       this.messages.push({
         role: 'assistant',
         content: 'Something went wrong. Please check your connection and try again.'
       });
+      this.cdr.detectChanges();
     } finally {
       this.isTyping = false;
+      this.cdr.detectChanges();
     }
   }
 

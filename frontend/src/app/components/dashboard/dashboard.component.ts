@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { SidenavComponent } from '../sidenav/sidenav.component';
@@ -62,7 +62,7 @@ export class DashboardComponent implements OnInit {
     return 'gpa-fail';
   }
 
-  constructor(private userService: UserProfileService, private studentService: StudentService, private adminService: AdminPanelService){}
+  constructor(private userService: UserProfileService, private studentService: StudentService, private adminService: AdminPanelService, private cdr: ChangeDetectorRef){}
   ngOnInit(): void {
     // TODO: load username
     // TODO: GET /api/student/gpa → set currentGpa
@@ -70,18 +70,26 @@ export class DashboardComponent implements OnInit {
       next: (data: any) => { 
         this.username = data.user.username
         this.currentGpa = data.user.gpa
+        this.cdr.detectChanges();
       }})
     // TODO: GET /api/student/courses → set enrolledCount
-    this.studentService.viewAllstudent_courses().subscribe({ next: (data: any) => { this.enrolledCount = data.length } })
+    this.studentService.viewAllstudent_courses().subscribe({ next: (data: any) => { 
+      this.enrolledCount = data.length;
+      this.cdr.detectChanges();
+    }})
     // TODO: GET /api/student/tasks → count pending/done, populate upcomingTasks
     this.studentService.viewAllstudent_tasks().subscribe({ 
       next: (data: any) => {
         this.upcomingTasks = data.tasks.filter((t: any) => t.status === 'pending');
         this.pendingTasksCount = data.tasks.filter((t: any) => t.status === 'pending').length;
         this.doneTasksCount = data.tasks.filter((t: any) => t.status === 'done').length;
+        this.cdr.detectChanges();
       }
     })
     // TODO: GET /api/announcements → populate announcements
-    this.adminService.listAllAnnouncements().subscribe({ next: (data: any) => { this.announcements = data.announcements ?? [] }})
+    this.adminService.listAllAnnouncements().subscribe({ next: (data: any) => { 
+      this.announcements = data.announcements ?? []
+      this.cdr.detectChanges();
+    }})
   }
 }

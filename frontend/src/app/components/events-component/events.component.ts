@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { SidenavComponent } from '../sidenav/sidenav.component';
@@ -23,11 +23,12 @@ interface Event {
 export class EventsComponent implements OnInit {
   events: Event[] = [];
 
-  constructor(private listings: AdminPanelService){}
+  constructor(private listings: AdminPanelService, private cdr: ChangeDetectorRef){}
   ngOnInit(): void {
     this.listings.listAllEvents().subscribe({
       next: (res: any) => {
         this.events = res.events ?? []
+        this.cdr.detectChanges();
       },
     error: (err) => {
         console.error(err);

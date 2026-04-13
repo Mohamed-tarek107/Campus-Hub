@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
@@ -42,7 +42,7 @@ export class AssignDoctorsComponent implements OnInit {
     return this.selections.length > 0 && this.completedCount === this.selections.length;
   }
 
-  constructor(private router: Router, private studentService: StudentService) { }
+  constructor(private router: Router, private studentService: StudentService, private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
 
@@ -62,6 +62,7 @@ export class AssignDoctorsComponent implements OnInit {
             doctors: []
           }));
           this.loadDoctorsForSelections();
+          this.cdr.detectChanges();
         } else {
           // FIRST TIME MODE — empty selections, student picks everything fresh
           this.isEditMode = false;
@@ -76,6 +77,7 @@ export class AssignDoctorsComponent implements OnInit {
                 doctors: []
               }))
               this.loadDoctorsForSelections();
+              this.cdr.detectChanges();
             }
           });
         }
@@ -93,9 +95,11 @@ export class AssignDoctorsComponent implements OnInit {
             id: d.doctor_id,
             name: d.name
           }));
+          this.cdr.detectChanges();
         },
         error: () => {
           this.selections[i].doctors = [];
+          this.cdr.detectChanges();
         }
       });
     });
@@ -127,11 +131,13 @@ export class AssignDoctorsComponent implements OnInit {
     this.studentService.AssignDoctors(body).subscribe({
       next: () => {
         this.isLoading = false;
+        this.cdr.detectChanges();
         this.router.navigate(['/dashboard']);
       },
       error: (err) => {
         this.isLoading = false;
         this.errorMessage = err.error?.message ?? 'Something went wrong.';
+        this.cdr.detectChanges();
       }
     })
   }
