@@ -54,7 +54,7 @@ app.use(helmet());
 app.use(cors(corsOptions));
 
 // Handle preflight requests explicitly
-app.options("/(.*)", cors(corsOptions));
+
 
 app.use(cookieParser());
 app.use(express.json());
