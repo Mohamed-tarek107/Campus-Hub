@@ -32,12 +32,19 @@ const allowedOrigins = new Set([
     "https://campus-hub-bis.netlify.app"
 ].map((origin) => origin.toLowerCase()));
 
+const isAllowedOrigin = (origin) => {
+    if (!origin) return true;
+
+    const normalizedOrigin = origin.replace(/\/+$/, "").toLowerCase();
+    if (allowedOrigins.has(normalizedOrigin)) return true;
+
+    // Safety fallback for Netlify preview deploy URLs in production.
+    return /^https:\/\/.*\.netlify\.app$/i.test(normalizedOrigin);
+};
+
 const corsOptions = {
     origin: (origin, callback) => {
-        if (!origin) return callback(null, true);
-
-        const normalizedOrigin = origin.replace(/\/+$/, "").toLowerCase();
-        return callback(null, allowedOrigins.has(normalizedOrigin));
+        return callback(null, isAllowedOrigin(origin));
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
@@ -46,6 +53,7 @@ const corsOptions = {
 
 app.use(helmet());
 app.use(cors(corsOptions));
+app.options(/.*/, cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
 
