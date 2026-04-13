@@ -70,6 +70,7 @@ const userRoutes = require("./routes/user.routes.js");
 const gpaRoutes = require("./routes/gpaCac.routes.js");
 
 app.get("/", (req, res) => res.send("Server is running..."));
+app.get("/health", (req, res) => res.status(200).json({ status: "ok" }));
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/student", studentRoutes);
