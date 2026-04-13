@@ -1,11 +1,13 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { SidenavComponent } from '../sidenav/sidenav.component';
 import { TopnavComponent } from '../uppernav/uppernav.component';
 import { UserProfileService } from '../../services/userProfile/user-profile-service';
 import { StudentService } from '../../services/studentRoute/student-service';
 import { AdminPanelService } from '../../services/admin/admin-panel';
+import { GpaCalcService } from '../../services/gpaCalc/gpa-calc-service';
 
 
 interface Announcement {
@@ -24,7 +26,7 @@ interface Task {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule, SidenavComponent, TopnavComponent],
+  imports: [CommonModule, FormsModule, RouterModule, SidenavComponent, TopnavComponent],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
@@ -34,10 +36,16 @@ export class DashboardComponent implements OnInit {
   username = '';                  // TODO: get from AuthService
 
   // ── Stats ─────────────────────────────────────────────
-  currentGpa: number | string = 0;   // TODO: get from GPA service/API
+  currentGpa = 0;
   enrolledCount = 0;                 // TODO: get from student courses API
   pendingTasksCount = 0;             // TODO: get from student tasks API
   doneTasksCount = 0;                // TODO: get from student tasks API
+
+  isEditingGpa = false;
+  isSavingGpa = false;
+  gpaInput = 0;
+  gpaMessage = '';
+  gpaError = '';
 
   // ── Data ──────────────────────────────────────────────
   announcements: Announcement[] = [];   // TODO: GET /api/announcements
@@ -62,16 +70,30 @@ export class DashboardComponent implements OnInit {
     return 'gpa-fail';
   }
 
-  constructor(private userService: UserProfileService, private studentService: StudentService, private adminService: AdminPanelService, private cdr: ChangeDetectorRef){}
+  constructor(
+    private userService: UserProfileService,
+    private studentService: StudentService,
+    private adminService: AdminPanelService,
+    private gpaService: GpaCalcService,
+    private cdr: ChangeDetectorRef
+  ){}
   ngOnInit(): void {
     // TODO: load username
     // TODO: GET /api/student/gpa → set currentGpa
     this.userService.userInfo().subscribe({ 
       next: (data: any) => { 
-        this.username = data.user.username
-        this.currentGpa = data.user.gpa
+        const user = Array.isArray(data.user) ? data.user[0] : data.user;
+        this.username = user?.username ?? '';
+        this.currentGpa = Number(user?.gpa ?? 0);
+        this.gpaInput = this.currentGpa;
         this.cdr.detectChanges();
-      }})
+      },
+      error: () => {
+        this.currentGpa = 0;
+        this.gpaInput = 0;
+        this.cdr.detectChanges();
+      }
+    })
     // TODO: GET /api/student/courses → set enrolledCount
     this.studentService.viewAllstudent_courses().subscribe({ next: (data: any) => { 
       this.enrolledCount = data.length;
@@ -91,5 +113,54 @@ export class DashboardComponent implements OnInit {
       this.announcements = data.announcements ?? []
       this.cdr.detectChanges();
     }})
+  }
+
+  formatGpa(value: number): string {
+    return Number(value || 0).toFixed(2);
+  }
+
+  openGpaEditor(): void {
+    this.gpaError = '';
+    this.gpaMessage = '';
+    this.gpaInput = Number(this.currentGpa || 0);
+    this.isEditingGpa = true;
+    this.cdr.detectChanges();
+  }
+
+  cancelGpaEditor(): void {
+    this.isEditingGpa = false;
+    this.gpaError = '';
+    this.gpaMessage = '';
+    this.gpaInput = Number(this.currentGpa || 0);
+    this.cdr.detectChanges();
+  }
+
+  saveGpa(): void {
+    const nextGpa = Number(this.gpaInput);
+
+    if (Number.isNaN(nextGpa) || nextGpa < 0 || nextGpa > 4) {
+      this.gpaError = 'GPA must be between 0.00 and 4.00.';
+      this.cdr.detectChanges();
+      return;
+    }
+
+    this.isSavingGpa = true;
+    this.gpaError = '';
+    this.gpaMessage = '';
+
+    this.gpaService.editUserGpa(nextGpa).subscribe({
+      next: () => {
+        this.currentGpa = nextGpa;
+        this.isEditingGpa = false;
+        this.gpaMessage = 'GPA updated successfully.';
+        this.isSavingGpa = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.gpaError = err.error?.message ?? 'Failed to update GPA.';
+        this.isSavingGpa = false;
+        this.cdr.detectChanges();
+      }
+    });
   }
 }

@@ -45,11 +45,9 @@ export class AssignDoctorsComponent implements OnInit {
   constructor(private router: Router, private studentService: StudentService, private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
-
     this.studentService.viewAllstudent_courses().subscribe({
       next: (res: any) => {
-        const enrolled = res.courses ?? []
-
+        const enrolled = res.courses ?? [];
 
         if (enrolled.length > 0) {
           this.isEditMode = true;
@@ -63,27 +61,46 @@ export class AssignDoctorsComponent implements OnInit {
           }));
           this.loadDoctorsForSelections();
           this.cdr.detectChanges();
-        } else {
-          // FIRST TIME MODE — empty selections, student picks everything fresh
-          this.isEditMode = false;
-          this.studentService.getStudentCourses().subscribe({
-            next: (available: any) => {
-              this.selections = (available.courses ?? []).map((c: any) => ({
-                course_id: c.id,
-                course_name: c.course_name,
-                doctor_name: '',
-                day: '',
-                timeslot: '',
-                doctors: []
-              }))
-              this.loadDoctorsForSelections();
-              this.cdr.detectChanges();
-            }
-          });
+          return;
         }
+
+        this.loadAvailableCourses();
+      },
+      error: (err) => {
+        if (err.status === 404) {
+          this.loadAvailableCourses();
+          return;
+        }
+
+        this.errorMessage = err.error?.message ?? 'Failed to load doctor selections.';
+        this.cdr.detectChanges();
       }
     });
 
+  }
+
+
+  private loadAvailableCourses(): void {
+    // FIRST TIME MODE — empty selections, student picks everything fresh
+    this.isEditMode = false;
+    this.studentService.getStudentCourses().subscribe({
+      next: (available: any) => {
+        this.selections = (available.courses ?? []).map((c: any) => ({
+          course_id: c.id,
+          course_name: c.course_name,
+          doctor_name: '',
+          day: '',
+          timeslot: '',
+          doctors: []
+        }));
+        this.loadDoctorsForSelections();
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.errorMessage = err.error?.message ?? 'Failed to load available courses.';
+        this.cdr.detectChanges();
+      }
+    });
   }
 
 

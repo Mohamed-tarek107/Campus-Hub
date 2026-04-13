@@ -3,6 +3,8 @@ const db = require("../config/db");
 const jwt = require("jsonwebtoken");
 const { validationResult } = require("express-validator");
 
+const isProduction = process.env.NODE_ENV?.trim() === "production";
+
 const registerRoute = async (req, res) => {
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
@@ -25,8 +27,8 @@ const registerRoute = async (req, res) => {
         const hashedPass = await bcrypt.hash(password, 12)
 
         await db.query(
-            `INSERT INTO users (username, email, hashedpass, department, year, is_firstlogin) VALUES($1, $2, $3, $4, $5, $6)`,
-            [username, email, hashedPass, department, year, true]
+            `INSERT INTO users (username, email, hashedpass, department, year, gpa, is_firstlogin) VALUES($1, $2, $3, $4, $5, $6, $7)`,
+            [username, email, hashedPass, department, year, 0.00, true]
         )
 
         return res.status(201).json({ message: "User registered successfully" })
@@ -79,19 +81,18 @@ const LoginRoute = async (req, res) => {
             [userId, refreshToken, req.ip]
         )
 
-        res.cookie("refreshToken", refreshToken, {
+        const cookieOptions = {
             httpOnly: true,
-            secure: true,
+            secure: isProduction,
             path: "/",
             sameSite: "strict",
             maxAge: 7 * 24 * 60 * 60 * 1000
-        })
+        };
+
+        res.cookie("refreshToken", refreshToken, cookieOptions)
 
         res.cookie("accessToken", accessToken, {
-            httpOnly: true,
-            secure: true,
-            path: "/",
-            sameSite: "strict",
+            ...cookieOptions,
             maxAge: 15 * 60 * 1000
         })
 
@@ -146,19 +147,18 @@ const refreshRoute = async (req, res) => {
             [decoded.id, newRefreshToken, req.ip]
         );
 
-        res.cookie("accessToken", newAccessToken, {
+        const cookieOptions = {
             httpOnly: true,
-            secure: false,
+            secure: isProduction,
             path: "/",
             sameSite: "strict",
             maxAge: 15 * 60 * 1000
-        });
+        };
+
+        res.cookie("accessToken", newAccessToken, cookieOptions);
 
         res.cookie("refreshToken", newRefreshToken, {
-            httpOnly: true,
-            secure: false,
-            path: "/",
-            sameSite: "strict",
+            ...cookieOptions,
             maxAge: 7 * 24 * 60 * 60 * 1000
         });
 
@@ -177,8 +177,8 @@ const logout = async (req, res) => {
 
         await db.query("DELETE FROM refreshtokens WHERE refresh_token = $1", [refreshToken])
 
-        res.clearCookie("accessToken", { httpOnly: true, secure: false, sameSite: 'strict', path: "/" });
-        res.clearCookie("refreshToken", { httpOnly: true, secure: false, sameSite: 'strict', path: "/" });
+        res.clearCookie("accessToken", { httpOnly: true, secure: isProduction, sameSite: 'strict', path: "/" });
+        res.clearCookie("refreshToken", { httpOnly: true, secure: isProduction, sameSite: 'strict', path: "/" });
 
         return res.status(200).json({ message: "Logged out" });
     } catch (error) {

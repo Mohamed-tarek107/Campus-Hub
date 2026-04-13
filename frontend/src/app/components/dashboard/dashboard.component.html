@@ -50,8 +50,33 @@
               <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
             </svg>
           </div>
-          <p class="stat-value">{{ currentGpa }}</p>
+          <div class="gpa-row">
+            <p class="stat-value">{{ formatGpa(currentGpa) }}</p>
+            <button type="button" class="gpa-edit-btn" (click)="openGpaEditor()">Set GPA</button>
+          </div>
           <p class="stat-label" [ngClass]="gpaClass">{{ gpaLabel }}</p>
+
+          <div class="gpa-editor" *ngIf="isEditingGpa">
+            <label for="gpaInput">Override GPA</label>
+            <div class="gpa-editor-row">
+              <input
+                id="gpaInput"
+                type="number"
+                min="0"
+                max="4"
+                step="0.01"
+                [(ngModel)]="gpaInput"
+                placeholder="0.00"
+              />
+              <button type="button" class="gpa-save-btn" (click)="saveGpa()" [disabled]="isSavingGpa">
+                {{ isSavingGpa ? 'Saving...' : 'Save' }}
+              </button>
+            </div>
+            <button type="button" class="gpa-cancel-btn" (click)="cancelGpaEditor()">Cancel</button>
+          </div>
+
+          <p class="gpa-feedback error" *ngIf="gpaError">{{ gpaError }}</p>
+          <p class="gpa-feedback success" *ngIf="gpaMessage">{{ gpaMessage }}</p>
         </div>
 
         <div class="stat-card">
