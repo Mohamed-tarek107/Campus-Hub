@@ -7,7 +7,7 @@ const Apikey = process.env.GEMINI_API_KEY;
 
 const client = new GoogleGenerativeAI(Apikey)
 const model = client.getGenerativeModel({
-    model: "gemini-2.5-flash",
+    model: "Gemini 2.5 Flash-Lite",
     systemInstruction: `You are an HTML email designer for a university student portal called CampusHub.
 
 You will receive notification details and must return a complete, valid HTML email body.
