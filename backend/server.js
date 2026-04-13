@@ -34,7 +34,7 @@ const allowedOrigins = new Set([
 ].map((origin) => origin.toLowerCase()));
 
 const isAllowedOrigin = (origin) => {
-    if (!origin) return true;
+    if (!origin || typeof origin !== "string") return true;
 
     // Temporary production fail-open to avoid blocking cross-origin clients on deployment.
     // Keep credentials enabled while reflecting caller origin.
@@ -49,7 +49,12 @@ const isAllowedOrigin = (origin) => {
 
 const corsOptions = {
     origin: (origin, callback) => {
-        return callback(null, isAllowedOrigin(origin));
+        try {
+            return callback(null, isAllowedOrigin(origin));
+        } catch (error) {
+            console.error("CORS origin check failed:", error.message);
+            return callback(null, false);
+        }
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
@@ -58,7 +63,6 @@ const corsOptions = {
 
 app.use(helmet());
 app.use(cors(corsOptions));
-app.options(/.*/, cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
 
