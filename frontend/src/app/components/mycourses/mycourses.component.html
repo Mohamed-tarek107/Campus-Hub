@@ -127,11 +127,11 @@
       <div class="task-item" *ngFor="let task of selectedCourse.tasks">
   <div class="task-left">
 
-    <!-- clicking the checkbox calls markDone, disabled if already done -->
+    <!-- clicking the checkbox toggles done/undone -->
     <div class="task-check"
          [class.done]="task.status === 'done'"
-         [class.clickable]="task.status === 'pending'"
-         (click)="task.status === 'pending' && markDone(task.task_id)">
+         [class.clickable]="true"
+         (click)="markDone(selectedCourse, task)">
       <svg *ngIf="task.status === 'done'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
         <polyline points="20 6 9 17 4 12"/>
       </svg>
@@ -142,6 +142,9 @@
 
   <div class="task-right" style="display:flex; align-items:center; gap:.75rem; flex-shrink:0">
     <span class="task-type-badge">{{ task.type }}</span>
+    <button type="button" class="task-toggle-btn" (click)="markDone(selectedCourse, task)">
+      {{ task.status === 'done' ? 'Mark Undone' : 'Mark Done' }}
+    </button>
     <span class="task-deadline"
           [class.overdue]="isOverdue(task.deadline) && task.status === 'pending'">
       {{ task.deadline }}

@@ -105,9 +105,16 @@ export class DashboardComponent implements OnInit {
     // TODO: GET /api/student/tasks → count pending/done, populate upcomingTasks
     this.studentService.viewAllstudent_tasks().subscribe({ 
       next: (data: any) => {
-        this.upcomingTasks = data.tasks.filter((t: any) => t.status === 'pending');
-        this.pendingTasksCount = data.tasks.filter((t: any) => t.status === 'pending').length;
-        this.doneTasksCount = data.tasks.filter((t: any) => t.status === 'done').length;
+        const tasks = data.studentTasks ?? data.tasks ?? [];
+        this.upcomingTasks = tasks.filter((t: any) => (t.status ?? 'pending') === 'pending');
+        this.pendingTasksCount = tasks.filter((t: any) => (t.status ?? 'pending') === 'pending').length;
+        this.doneTasksCount = tasks.filter((t: any) => t.status === 'done').length;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.upcomingTasks = [];
+        this.pendingTasksCount = 0;
+        this.doneTasksCount = 0;
         this.cdr.detectChanges();
       }
     })

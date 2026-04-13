@@ -84,20 +84,26 @@ export class MyCoursesComponent implements OnInit {
   }
 
 
-  markDone(task_id: number){
-    this.studentService.markTaskDone(task_id).subscribe({
-      next: () => {
-        for(const course of this.courses){
-          const task = course.tasks.find(t => t.task_id === task_id);
+  markDone(course: Course, task: Task): void {
+    this.studentService.markTaskDone(task.task_id).subscribe({
+      next: (res: any) => {
+        const nextStatus = res.status === 'pending' ? 'pending' : 'done';
 
-          if(task){
-            task.status = 'done'
-            if(this.selectedCourse?.course_id === course.course_id){
-              this.selectedCourse = { ...course };
-            }
-              break;
-          }
+        const targetCourse = this.courses.find(c => c.course_id === course.course_id);
+        const targetTask = targetCourse?.tasks.find(t => t.task_id === task.task_id);
+
+        if (targetTask) {
+          targetTask.status = nextStatus;
         }
+
+        if (this.selectedCourse?.course_id === course.course_id) {
+          const selectedTask = this.selectedCourse.tasks.find(t => t.task_id === task.task_id);
+          if (selectedTask) {
+            selectedTask.status = nextStatus;
+          }
+          this.selectedCourse = { ...this.selectedCourse, tasks: [...this.selectedCourse.tasks] };
+        }
+
         this.cdr.detectChanges();
       },
       error: (err) => {

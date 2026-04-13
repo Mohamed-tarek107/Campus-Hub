@@ -53,7 +53,7 @@ export class StudentService {
   }
   
   markTaskDone(task_id: number){
-    return this.http.patch(`${this.studentApi}/markTaskDone/${task_id}`,{})
+    return this.http.post(`${this.studentApi}/markTaskDone/${task_id}`,{})
   }
 
   viewAllstudent_tasks(){

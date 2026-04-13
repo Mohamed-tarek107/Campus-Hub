@@ -83,13 +83,33 @@ const markTaskDone = async (req,res) => {
     try {
         const { task_id } = req.params
 
-        const { rowCount } = await db.query("UPDATE studenttasks SET status = 'done' WHERE task_id = $1 AND student_id = $2",
+        const { rows: existingRows } = await db.query(
+            "SELECT status FROM studenttasks WHERE task_id = $1 AND student_id = $2",
             [task_id, user_id]
         )
-        if (rowCount === 0) return res.status(404).json({ message: "Task not found" });
+
+        let newStatus = 'done'
+
+        if (existingRows.length === 0) {
+            await db.query(
+                "INSERT INTO studenttasks (student_id, task_id, status) VALUES ($1, $2, 'done')",
+                [user_id, task_id]
+            );
+        } else if (existingRows[0].status === 'done') {
+            newStatus = 'pending'
+            await db.query(
+                "UPDATE studenttasks SET status = 'pending' WHERE task_id = $1 AND student_id = $2",
+                [task_id, user_id]
+            )
+        } else {
+            await db.query(
+                "UPDATE studenttasks SET status = 'done' WHERE task_id = $1 AND student_id = $2",
+                [task_id, user_id]
+            )
+        }
 
 
-        res.json({ message: "Task marked as done" });
+        res.json({ message: `Task marked as ${newStatus}`, status: newStatus });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
