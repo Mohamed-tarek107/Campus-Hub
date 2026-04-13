@@ -18,8 +18,6 @@
       <div class="notif-item" *ngFor="let n of notifications">
         <div class="notif-dot-sm"></div>
         <div>
-          <p class="notif-text">{{ n.message }}</p>
-          <p class="notif-time">{{ n.time }}</p>
         </div>
       </div>
       <p class="dropdown-empty" *ngIf="notifications.length === 0">No new notifications</p>

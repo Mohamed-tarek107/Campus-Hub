@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { SidenavComponent } from '../sidenav/sidenav.component';
 import { TopnavComponent } from '../uppernav/uppernav.component';
 import { GpaAdvisorComponent } from '../gpa-advisor/gpa-advisor.component';
+import { UserProfileService } from '../../services/userProfile/user-profile-service';
+import { StudentService } from '../../services/studentRoute/student-service';
 
 interface Course {
   course_name: string;
@@ -21,21 +23,10 @@ interface Course {
 })
 export class GpaCalculatorComponent implements OnInit {
 
-  // ── Data ──────────────────────────────────────────────
-  currentGpa: number = 0;    // TODO: GET /api/student/gpa
+  
+  currentGpa: number = 0;    
+  courses: Course[] = [];
 
-  // Static 6 courses until services are configured
-  // TODO: replace with GET /api/student/courses
-  courses: Course[] = [
-    { course_name: 'Mathematics', credits: 3, selectedGrade: '' },
-    { course_name: 'Data Structures', credits: 3, selectedGrade: '' },
-    { course_name: 'Web Development', credits: 3, selectedGrade: '' },
-    { course_name: 'Database Systems', credits: 3, selectedGrade: '' },
-    { course_name: 'Operating Systems', credits: 3, selectedGrade: '' },
-    { course_name: 'Software Engineering', credits: 3, selectedGrade: '' },
-  ];
-
-  // ── Grade scale — BIS/FMI Credit Hour System ──────────
   // A+  90% and above        → 4.00
   // A   85% to less than 90% → 3.75
   // B+  80% to less than 85% → 3.40
@@ -57,10 +48,9 @@ export class GpaCalculatorComponent implements OnInit {
     { label: 'F',  value: 0.00 },
   ];
 
-  // ── State ─────────────────────────────────────────────
   projectedGpa: number | null = null;
 
-  // ── Computed ──────────────────────────────────────────
+  
   get gpaDiff(): number {
     if (this.projectedGpa === null) return 0;
     return parseFloat((this.projectedGpa - this.currentGpa).toFixed(2));
@@ -82,19 +72,36 @@ export class GpaCalculatorComponent implements OnInit {
     return this.projectedGpa !== null ? this.getGpaClass(this.projectedGpa) : '';
   }
 
-  // ── Lifecycle ─────────────────────────────────────────
+
+  constructor(private userService: UserProfileService, private studentService: StudentService, private cdr: ChangeDetectorRef){}
+  
   ngOnInit(): void {
     // TODO: GET /api/student/gpa → set currentGpa
+    this.userService.userInfo().subscribe({
+      next: (data: any) => {
+        const user = Array.isArray(data.user) ? data.user[0] : data.user;
+        this.currentGpa = Number(user?.gpa ?? 0);
+        this.cdr.detectChanges();
+      }
+    })
     // TODO: GET /api/student/courses → replace static courses array
+    this.studentService.viewAllstudent_courses().subscribe({
+      next: (courses: any) => {
+        this.courses = (courses.courses ?? []).map((c: any) => ({
+          course_name: c.course_name,
+          credits: Number(c.credit ?? 0),
+          selectedGrade: ''
+        }));
+        this.cdr.detectChanges();
+      }
+    })
   }
 
-  // ── Methods ───────────────────────────────────────────
 
   getGradePoints(value: string): number {
     return parseFloat(value);
   }
 
-  // GPA = sum(score × credit hours) / total credit hours
   onGradeChange(): void {
     const graded = this.courses.filter(c => c.selectedGrade !== '');
     if (graded.length === 0) {
