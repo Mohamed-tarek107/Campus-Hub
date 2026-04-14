@@ -43,7 +43,7 @@ export class AuthService {
             { withCredentials: true }
         ).pipe(
             tap(() => {
-                this.isLoggedin = true; // set flag on successful login
+                this.isLoggedin = true;
             })
         );
     }
@@ -53,6 +53,10 @@ export class AuthService {
             `${this.authApi}/refresh-token`,
             {},
             { withCredentials: true }
+        ).pipe(
+            tap(() => {
+                this.isLoggedin = true;
+            })
         );
     }
 

@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const { validationResult } = require("express-validator");
 
 const isProduction = process.env.NODE_ENV?.trim() === "production";
-const sameSitePolicy = isProduction ? "none" : "lax";
+const sameSitePolicy = "lax";
 
 const buildCookieOptions = (maxAge) => ({
     httpOnly: true,
