@@ -21,20 +21,26 @@ export class AuthService {
         department: string,
         year: number
     ) {
-        return this.http.post(`${this.authApi}/register`, {
-            username,
-            email,
-            password,
-            confirmpassword,
-            department,
-            year
-        })
+        return this.http.post(
+            `${this.authApi}/register`,
+            {
+                username,
+                email,
+                password,
+                confirmpassword,
+                department,
+                year
+            },
+            { withCredentials: true }
+        )
     }
 
 
     login(username: string, password: string): Observable<any> {
-        return this.http.post(`${this.authApi}/login`,
-            { username, password }
+        return this.http.post(
+            `${this.authApi}/login`,
+            { username, password },
+            { withCredentials: true }
         ).pipe(
             tap(() => {
                 this.isLoggedin = true; // set flag on successful login
@@ -45,14 +51,18 @@ export class AuthService {
     refreshtoken() {
         return this.http.post(
             `${this.authApi}/refresh-token`,
-            {}
+            {},
+            { withCredentials: true }
         );
     }
 
 
     logout() {
-        return this.http.post(`${this.authApi}/logout`,
-            {}).pipe(
+        return this.http.post(
+            `${this.authApi}/logout`,
+            {},
+            { withCredentials: true }
+        ).pipe(
                 tap(() => {
                     this.isLoggedin = false; // reset flag on logout
                 })

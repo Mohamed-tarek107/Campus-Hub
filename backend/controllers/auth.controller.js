@@ -4,7 +4,15 @@ const jwt = require("jsonwebtoken");
 const { validationResult } = require("express-validator");
 
 const isProduction = process.env.NODE_ENV?.trim() === "production";
-const sameSitePolicy = isProduction ? "none" : "strict";
+const sameSitePolicy = isProduction ? "none" : "lax";
+
+const buildCookieOptions = (maxAge) => ({
+    httpOnly: true,
+    secure: isProduction,
+    path: "/",
+    sameSite: sameSitePolicy,
+    maxAge
+});
 
 const registerRoute = async (req, res) => {
     const errors = validationResult(req)
@@ -82,19 +90,10 @@ const LoginRoute = async (req, res) => {
             [userId, refreshToken, req.ip]
         );
 
-        const cookieOptions = {
-            httpOnly: true,
-            secure: isProduction,
-            path: "/",
-            sameSite: sameSitePolicy,
-            maxAge: 7 * 24 * 60 * 60 * 1000
-        };
-
-        res.cookie("refreshToken", refreshToken, cookieOptions)
+        res.cookie("refreshToken", refreshToken, buildCookieOptions(7 * 24 * 60 * 60 * 1000))
 
         res.cookie("accessToken", accessToken, {
-            ...cookieOptions,
-            maxAge: 15 * 60 * 1000
+            ...buildCookieOptions(15 * 60 * 1000)
         })
 
         return res.status(200).json({
@@ -148,18 +147,10 @@ const refreshRoute = async (req, res) => {
             [decoded.id, newRefreshToken, req.ip]
         );
 
-        const cookieOptions = {
-            httpOnly: true,
-            secure: isProduction,
-            path: "/",
-            sameSite: sameSitePolicy,
-            maxAge: 15 * 60 * 1000
-        };
-
-        res.cookie("accessToken", newAccessToken, cookieOptions);
+        res.cookie("accessToken", newAccessToken, buildCookieOptions(15 * 60 * 1000));
 
         res.cookie("refreshToken", newRefreshToken, {
-            ...cookieOptions,
+            ...buildCookieOptions(7 * 24 * 60 * 60 * 1000),
             maxAge: 7 * 24 * 60 * 60 * 1000
         });
 
