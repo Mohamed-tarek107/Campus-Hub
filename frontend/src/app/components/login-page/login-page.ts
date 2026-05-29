@@ -21,14 +21,7 @@ export class LoginPage {
 
   constructor(private router: Router, private authService: AuthService, private cdr: ChangeDetectorRef) { }
 
-  //test case login:
-  //normal account: 
-  // username: tarekk10
-  // password: Test12345
 
-  //Admin account:
-  // username: MohamedTarekk10
-  // password: Mohamed_tarekk107
   async onLogin() {
     if (!this.credentials.username || !this.credentials.password) {
       this.errorMessage = 'Please fill in all fields.';
